@@ -88,6 +88,7 @@ function _makeFunction(name, classToMock)
     return function(self, ...)
         classToMock["__" .. name]['calls'] = classToMock["__" .. name]['calls'] + 1
         local callingArguments = table.pack(...)
+        table.insert(callingArguments, self)
         classToMock["__" .. name]['latestCallWith'] = callingArguments
         if name == 'new' then
             return classToMock
