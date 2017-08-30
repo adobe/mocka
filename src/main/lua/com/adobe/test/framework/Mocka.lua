@@ -90,7 +90,7 @@ function _makeFunction(name, classToMock)
         local callingArguments = table.pack(...)
         table.insert(callingArguments, self)
         classToMock["__" .. name]['latestCallWith'] = callingArguments
-        if name == 'new' then
+        if name == 'new' and classToMock["__" .. name].doReturn == nil then
             return classToMock
         elseif classToMock["__" .. name].doReturn ~= nil then
             return classToMock["__" .. name].doReturn(...)
