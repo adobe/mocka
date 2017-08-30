@@ -91,7 +91,10 @@ function _makeFunction(name, classToMock)
         table.insert(callingArguments, self)
         classToMock["__" .. name]['latestCallWith'] = callingArguments
         if name == 'new' and classToMock["__" .. name].doReturn == nil then
-            return classToMock
+            local o = callingArguments or {}
+            setmetatable(o, self)
+            self.__index = self
+            return o
         elseif classToMock["__" .. name].doReturn ~= nil then
             return classToMock["__" .. name].doReturn(...)
         end
