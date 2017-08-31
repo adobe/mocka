@@ -43,10 +43,6 @@ function beforeEach(fn)
 end
 
 function test(description, fn, assertFail)
-    if(beforeFn ~= nil) then
-        pcall(beforeFn)
-    end
-
     for k, v in pairs(mocks) do
         for method, impl in pairs(v) do
             if impl~=nil and type(impl) == 'table' and impl.calls then
@@ -56,6 +52,11 @@ function test(description, fn, assertFail)
             end
         end
     end
+
+    if(beforeFn ~= nil) then
+        pcall(beforeFn)
+    end
+
     local status, result = pcall(fn)
     if not status and not assertFail then
         print("\t\t " .. description .. " ----- FAIL ")
