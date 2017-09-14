@@ -2,7 +2,9 @@ package = "mocka"
 version = "1.0-1"
 local function make_plat(plat)
     return { modules = {
-        mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua"
+        mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
+        ["luacov.cobertura.luatoxml"] = "luacov-cobertura/luacov/cobertura/luatoxml.lua",
+        ["luacov.reporter.cobertura"] = "luacov-cobertura/luacov/reporter/cobertura.lua"
     } }
 end
 source = {
