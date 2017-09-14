@@ -8,6 +8,11 @@
 oldRequire = require
 local mocks = {}
 local beforeFn = nil;
+mockaStats = {
+    no = 0,
+    noOK = 0,
+    noNOK = 0
+}
 
 local function _compare(t1, t2)
     local ty1 = type(t1)
@@ -62,9 +67,12 @@ function test(description, fn, assertFail)
     if not status and not assertFail then
         print("\t\t " .. description .. " ----- FAIL ")
         print(result)
+        mockaStats.noNOK = mockaStats.noNOK + 1;
     else
         print("\t\t " .. description .. " ----- SUCCESS ")
+        mockaStats.noOK = mockaStats.noOK + 1;
     end
+    mockaStats.no = mockaStats.no + 1;
 end
 
 function clearMocks()

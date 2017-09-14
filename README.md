@@ -10,3 +10,6 @@ Optional:
 `luacov`
 
 `luacov-cobertura -o coverage_report.xml`
+
+Sugest using 
+GitHub Pull Request Coverage Status and Cobertura Plugin
