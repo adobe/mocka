@@ -1,8 +1,9 @@
 `sudo luarocks make mocka-1.0-1.rockspec`
 
-`luarocks install luacov`
+`sudo luarocks install luacov`
 
-`cp luacov-cobertura/bin/luacov-cobertura /usr/local/bin/loacov-cobertura`
+Optional:
+`sudo luarocks install luacov-coveralls`
 
 `lua -lluacov run_tests.lua`
 

@@ -18,5 +18,10 @@ build = {
 		haiku = make_plat("haiku"),
 		win32 = make_plat("win32"),
 		mingw32 = make_plat("mingw32")
-	}
+	},
+	install = {
+      bin = {
+        ['luacov-cobertura'] = 'luacov-cobertura/bin/luacov-cobertura'
+      }
+    }
 }
