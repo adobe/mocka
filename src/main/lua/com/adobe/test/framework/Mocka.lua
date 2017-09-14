@@ -30,7 +30,8 @@ local function _compare(t1, t2)
 end
 
 require = function(path)
-
+    --wanna force reload the package
+    package.loaded[path] = nil
     if(mocks[path] ~= nil) then
         return mocks[path]
     else
