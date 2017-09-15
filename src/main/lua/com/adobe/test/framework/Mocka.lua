@@ -13,6 +13,7 @@ mockaStats = {
     no = 0,
     noOK = 0,
     noNOK = 0,
+    time = 0
 }
 
 local function _compare(t1, t2)
@@ -35,6 +36,15 @@ local function _compare(t1, t2)
     return true
 end
 
+
+function getCurrentRunInfo()
+    local currentSuiteNumber = #mockaStats.suites;
+    local currentSuiteInfo = mockaStats.suites[currentSuiteNumber];
+    local currentTestNumber = #currentSuiteInfo.tests;
+    local currentTestInfo = currentSuiteInfo.tests[currentTestNumber];
+    return currentSuiteNumber, currentSuiteInfo, currentTestNumber, currentTestInfo
+end
+
 require = function(path)
     --wanna force reload the package
     package.loaded[path] = nil
@@ -50,6 +60,15 @@ function beforeEach(fn)
 end
 
 function test(description, fn, assertFail)
+    table.insert(mockaStats.suites[#mockaStats.suites].tests, {
+        assertions = 0,
+        name = description,
+        className = mockaStats.suites[#mockaStats.suites].name,
+        time = 0,
+        failureMessage = nil,
+        failureTrace = nil
+    });
+
     for k, v in pairs(mocks) do
         for method, impl in pairs(v) do
             if impl~=nil and type(impl) == 'table' and impl.calls then
@@ -64,19 +83,26 @@ function test(description, fn, assertFail)
         pcall(beforeFn)
     end
 
+    local sn, si, tn, ti = getCurrentRunInfo()
+
+    local startTime = os.clock()
     local status, result = pcall(fn)
+    local elapsed = os.clock() - startTime
+
+    ti.time = elapsed
+
     if not status and not assertFail then
         print("\t\t " .. description .. " ----- FAIL ")
         print(result)
         mockaStats.noNOK = mockaStats.noNOK + 1;
-        mockaStats.suites[#mockaStats.suites].noNOK = mockaStats.suites[#mockaStats.suites].noNOK + 1
+        si.noNOK = si.noNOK + 1
     else
         print("\t\t " .. description .. " ----- SUCCESS ")
         mockaStats.noOK = mockaStats.noOK + 1;
-        mockaStats.suites[#mockaStats.suites].noOK = mockaStats.suites[#mockaStats.suites].noOK + 1
+        si.noOK = si.noOK + 1
     end
     mockaStats.no = mockaStats.no + 1;
-    mockaStats.suites[#mockaStats.suites].no = mockaStats.suites[#mockaStats.suites].no + 1
+    si.no = si.no + 1
 end
 
 function clearMocks()
@@ -116,8 +142,13 @@ function _makeFunction(name, classToMock)
 end
 
 function calls(method, times, ...)
+    local errorMessage
+    local sn, si, tn, ti = getCurrentRunInfo()
+    ti.assertions = ti.assertions + 1
     if(method.calls ~= times) then
-        error(method.name .. " wanted " .. times .. " but invoked " .. method.calls)
+        errorMessage = method.name .. " wanted " .. times .. " but invoked " .. method.calls
+        ti.failureMessage = errorMessage
+        error(errorMessage)
     end
 
     local arguments = table.pack(...)
@@ -125,7 +156,9 @@ function calls(method, times, ...)
     for k, v in pairs(arguments) do
         if k ~= 'n' then
             if not _compare(method.latestCallWith[k], v) then
-                error(method.name .. " wanted with some arguments but invoked with other ")
+                errorMessage = method.name .. " wanted with some arguments but invoked with other "
+                ti.failureMessage = errorMessage
+                error(errorMessage)
             end
         end
     end
@@ -147,25 +180,41 @@ end
 
 
 function assertEquals(t1, t2)
+    local errorMessage = "assertEquals failed"
+    local sn, si, tn, ti = getCurrentRunInfo()
+    ti.assertions = ti.assertions + 1
     if not _compare(t1, t2) then
-        error("assertEquals failed")
+        ti.failureMessage = errorMessage
+        error(errorMessage)
     end
 end
 
 function assertNil(t1)
+    local errorMessage = "assertNil failed"
+    local sn, si, tn, ti = getCurrentRunInfo()
+    ti.assertions = ti.assertions + 1
     if t1 ~= nil then
-        error("assertNil failed")
+        ti.failureMessage = errorMessage
+        error(errorMessage)
     end
 end
 
 function assertNotNil(t1)
+    local errorMessage = "assertNotNil failed";
+    local sn, si, tn, ti = getCurrentRunInfo()
+    ti.assertions = ti.assertions + 1
     if t1 == nil then
-        error("assertNotNil failed")
+        ti.failureMessage = errorMessage
+        error(errorMessage)
     end
 end
 
 function assertNotEquals(t1, t2)
+    local errorMessage = "assertNotEquals failed"
+    local sn, si, tn, ti = getCurrentRunInfo()
+    ti.assertions = ti.assertions + 1
     if _compare(t1, t2) then
-        error("assertNotEquals failed")
+        ti.failureMessage = errorMessage
+        error(errorMessage)
     end
 end
