@@ -7,6 +7,7 @@ ARG lua=5.1.4
 ENV LUA_ROCKS_VERSION $luarocks
 ENV LUA_VERSION $lua
 ENV CGO_ENABLED=0
+ENV LUA_LIBRARIES=
 
 ADD ./docker /scripts
 RUN chmod -R +x /scripts
