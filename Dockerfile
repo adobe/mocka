@@ -24,7 +24,7 @@ RUN ln -s /usr/bin/lua5.1 /usr/bin/lua
 RUN /scripts/lua_rocks.sh \
     && /scripts/mocka.sh
 
-RUN git config --global url.https://github.com/.insteadOf git://github.com/
+RUN git config --global url."https://".insteadOf git://
 
 RUN sudo luarocks install jsonpath \
     && sudo luarocks install lua-cjson 1.0.1-1\
