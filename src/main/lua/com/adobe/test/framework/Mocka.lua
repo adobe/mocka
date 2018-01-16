@@ -59,6 +59,10 @@ function beforeEach(fn)
     beforeFn = fn
 end
 
+function xtest(description, ...)
+    print ("\t\t" .. description .. " -- IGNORED")
+end
+
 function test(description, fn, assertFail)
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
