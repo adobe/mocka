@@ -127,7 +127,7 @@ end
 function _makeFunction(name, classToMock)
     return function(self, ...)
         classToMock["__" .. name]['calls'] = classToMock["__" .. name]['calls'] + 1
-        local callingArguments = table.pack(...)
+        local callingArguments = {...}
         table.insert(callingArguments, self)
         classToMock["__" .. name]['latestCallWith'] = callingArguments
         if name == 'new' and classToMock["__" .. name].doReturn == nil then
@@ -136,7 +136,7 @@ function _makeFunction(name, classToMock)
             self.__index = self
             return o
         elseif classToMock["__" .. name].doReturn ~= nil then
-            return classToMock["__" .. name].doReturn(table.unpack(callingArguments))
+            return classToMock["__" .. name].doReturn(unpack(callingArguments))
         end
     end
 end
@@ -151,7 +151,7 @@ function calls(method, times, ...)
         error(errorMessage)
     end
 
-    local arguments = table.pack(...)
+    local arguments = {...}
 
     for k, v in pairs(arguments) do
         if k ~= 'n' then
