@@ -13,3 +13,6 @@ Optional:
 
 Sugest using 
 GitHub Pull Request Coverage Status and Cobertura Plugin
+
+
+In order to ignore a test use `xtest(...)` instead of `test(...)`
