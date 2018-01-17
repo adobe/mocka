@@ -25,13 +25,13 @@ local function _compare(t1, t2)
     -- as well as tables which have the metamethod __eq
     local mt = getmetatable(t1)
     if not ignore_mt and mt and mt.__eq then return t1 == t2 end
-    for k1,v1 in pairs(t1) do
+    for k1, v1 in pairs(t1) do
         local v2 = t2[k1]
-        if v2 == nil or not _compare(v1,v2) then return false end
+        if v2 == nil or not _compare(v1, v2) then return false end
     end
-    for k2,v2 in pairs(t2) do
+    for k2, v2 in pairs(t2) do
         local v1 = t1[k2]
-        if v1 == nil or not _compare(v1,v2) then return false end
+        if v1 == nil or not _compare(v1, v2) then return false end
     end
     return true
 end
@@ -48,10 +48,10 @@ end
 require = function(path)
     --wanna force reload the package
     package.loaded[path] = nil
-    if(mocks[path] ~= nil) then
+    if (mocks[path] ~= nil) then
         return mocks[path]
     else
-       return oldRequire(path)
+        return oldRequire(path)
     end
 end
 
@@ -60,7 +60,7 @@ function beforeEach(fn)
 end
 
 function xtest(description, ...)
-    print ("\t\t" .. description .. " -- IGNORED")
+    print("\t\t" .. description .. " -- IGNORED")
 end
 
 function test(description, fn, assertFail)
@@ -75,7 +75,7 @@ function test(description, fn, assertFail)
 
     for k, v in pairs(mocks) do
         for method, impl in pairs(v) do
-            if impl~=nil and type(impl) == 'table' and impl.calls then
+            if impl ~= nil and type(impl) == 'table' and impl.calls then
                 impl.calls = 0
                 impl.latestCallWith = nil
                 impl.doReturn = nil
@@ -83,7 +83,7 @@ function test(description, fn, assertFail)
         end
     end
 
-    if(beforeFn ~= nil) then
+    if (beforeFn ~= nil) then
         pcall(beforeFn)
     end
 
@@ -115,8 +115,8 @@ end
 
 function mock(class, model)
     local newThing = {}
-    for i,method in ipairs(model or {}) do
-        newThing["__"..method] = {
+    for i, method in ipairs(model or {}) do
+        newThing["__" .. method] = {
             calls = 0,
             name = class .. "." .. method,
             latestCallWith = nil,
@@ -131,7 +131,7 @@ end
 function _makeFunction(name, classToMock)
     return function(self, ...)
         classToMock["__" .. name]['calls'] = classToMock["__" .. name]['calls'] + 1
-        local callingArguments = {...}
+        local callingArguments = { ... }
         table.insert(callingArguments, self)
         classToMock["__" .. name]['latestCallWith'] = callingArguments
         if name == 'new' and classToMock["__" .. name].doReturn == nil then
@@ -149,13 +149,13 @@ function calls(method, times, ...)
     local errorMessage
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
-    if(method.calls ~= times) then
+    if (method.calls ~= times) then
         errorMessage = method.name .. " wanted " .. times .. " but invoked " .. method.calls
         ti.failureMessage = errorMessage
         error(errorMessage)
     end
 
-    local arguments = {...}
+    local arguments = { ... }
 
     for k, v in pairs(arguments) do
         if k ~= 'n' then
@@ -173,33 +173,81 @@ function mockNgx(conf)
         ngx = {
             apiGateway = nil,
             config = {
-                routes = {'smart'}
+                routes = { 'smart' }
             },
             log = function() end,
         }
     else
-        ngx =  conf
+        ngx = conf
     end
 end
 
+-- utility functions
+-- http://lua-users.org/wiki/TableUtils
+
+function table.val_to_str(v)
+    if "string" == type(v) then
+        v = string.gsub(v, "\n", "\\n")
+        if string.match(string.gsub(v, "[^'\"]", ""), '^"+$') then
+            return "'" .. v .. "'"
+        end
+        return '"' .. string.gsub(v, '"', '\\"') .. '"'
+    else
+        return "table" == type(v) and table.tostring(v) or
+                tostring(v)
+    end
+end
+
+function table.key_to_str(k)
+    if "string" == type(k) and string.match(k, "^[_%a][_%a%d]*$") then
+        return k
+    else
+        return "[" .. table.val_to_str(k) .. "]"
+    end
+end
+
+function table.tostring(tbl)
+    local result, done = {}, {}
+    for k, v in ipairs(tbl) do
+        table.insert(result, table.val_to_str(v))
+        done[k] = true
+    end
+    for k, v in pairs(tbl) do
+        if not done[k] then
+            table.insert(result,
+                table.key_to_str(k) .. "=" .. table.val_to_str(v))
+        end
+    end
+    return "{" .. table.concat(result, ",") .. "}"
+end
+
+local function valToString(v)
+    local vType = type(v)
+    if vType == 'table' then
+        return table.tostring(v)
+    end
+    return tostring(v)
+end
+
+-- assertions
 
 function assertEquals(t1, t2)
-    local errorMessage = "assertEquals failed"
+    local errorMessage = "assertEquals failed: expected [%s], was [%s]"
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
     if not _compare(t1, t2) then
-        ti.failureMessage = errorMessage
-        error(errorMessage)
+        ti.failureMessage = string.format(errorMessage, valToString(t1), valToString(t2))
+        error(ti.failureMessage)
     end
 end
 
 function assertNil(t1)
-    local errorMessage = "assertNil failed"
+    local errorMessage = "assertNil failed: expected nil, was [%s]"
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
     if t1 ~= nil then
-        ti.failureMessage = errorMessage
-        error(errorMessage)
+        ti.failureMessage = string.format(errorMessage, valToString(t1))
+        error(ti.failureMessage)
     end
 end
 
@@ -222,3 +270,4 @@ function assertNotEquals(t1, t2)
         error(errorMessage)
     end
 end
+
