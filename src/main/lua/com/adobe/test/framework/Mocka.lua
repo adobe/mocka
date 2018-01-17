@@ -5,6 +5,8 @@
 -- Time: 11:30
 -- To change this template use File | Settings | File Templates.
 --
+local default_mocks = require("mocka.default_mocks")
+
 oldRequire = require
 local mocks = {}
 local beforeFn;
@@ -111,6 +113,7 @@ end
 
 function clearMocks()
     mocks = {}
+    ngx = default_mocks.makeNgxMock()
 end
 
 function mock(class, model)
@@ -170,13 +173,7 @@ end
 
 function mockNgx(conf)
     if not conf then
-        ngx = {
-            apiGateway = nil,
-            config = {
-                routes = {'smart'}
-            },
-            log = function() end,
-        }
+        ngx = default_mocks.makeNgxMock()
     else
         ngx =  conf
     end
