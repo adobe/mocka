@@ -111,6 +111,7 @@ end
 
 function clearMocks()
     mocks = {}
+    ngx = default_mocks.makeNgxMock()
 end
 
 function mock(class, model)
@@ -168,20 +169,6 @@ function calls(method, times, ...)
     end
 end
 
-function mockNgx(conf)
-    if not conf then
-        ngx = {
-            apiGateway = nil,
-            config = {
-                routes = {'smart'}
-            },
-            log = function() end,
-        }
-    else
-        ngx =  conf
-    end
-end
-
 
 function assertEquals(t1, t2)
     local errorMessage = "assertEquals failed"
@@ -220,5 +207,16 @@ function assertNotEquals(t1, t2)
     if _compare(t1, t2) then
         ti.failureMessage = errorMessage
         error(errorMessage)
+    end
+end
+
+--- should be here because of using global mocka definitions
+local default_mocks = require("mocka.default_mocks")
+
+function mockNgx(conf)
+    if not conf then
+        ngx = default_mocks.makeNgxMock()
+    else
+        ngx =  conf
     end
 end
