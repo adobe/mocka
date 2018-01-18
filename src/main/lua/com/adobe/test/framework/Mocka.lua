@@ -13,6 +13,7 @@ mockaStats = {
     no = 0,
     noOK = 0,
     noNOK = 0,
+    noIgnored = 0,
     time = 0
 }
 
@@ -60,7 +61,20 @@ function beforeEach(fn)
 end
 
 function xtest(description, ...)
-    print("\t\t" .. description .. " -- IGNORED")
+    table.insert(mockaStats.suites[#mockaStats.suites].tests, {
+        assertions = 0,
+        name = description,
+        className = mockaStats.suites[#mockaStats.suites].name,
+        time = 0,
+        failureMessage = nil,
+        failureTrace = nil
+    });
+    local sn, si, tn, ti = getCurrentRunInfo()
+    si.noIgnored = si.noIgnored + 1
+    mockaStats.noIgnored = mockaStats.noIgnored + 1
+    si.no = si.no + 1
+    mockaStats.no = mockaStats.no + 1;
+    print("\t\t " .. description .. " -- IGNORED")
 end
 
 function test(description, fn, assertFail)

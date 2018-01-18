@@ -51,6 +51,7 @@ local run_tests = function(tests)
             no = 0,
             noOK = 0,
             noNOK = 0,
+            noIgnored = 0,
             tests = {},
             time = 0
         })
@@ -61,12 +62,14 @@ local run_tests = function(tests)
 
         mockaStats.suites[i].time = elapsed
         print("\n Suite info name " .. mockaStats.suites[i].name .. " Tests: " .. mockaStats.suites[i].no ..
-                " Pass: " .. mockaStats.suites[i].noOK .. " Fail: " .. mockaStats.suites[i].noNOK .. " Duration: " .. tostring(mockaStats.suites[i].time))
+                " Pass: " .. mockaStats.suites[i].noOK .. " Fail: " .. mockaStats.suites[i].noNOK ..
+                " Ignored: " .. mockaStats.suites[i].noIgnored .. " Duration: " .. tostring(mockaStats.suites[i].time))
     end
     local elapsedFullTime = os.clock() - startFullTime
 
     mockaStats.time = elapsedFullTime
-    print("\n Tests: " .. mockaStats.no .. " Pass: " .. mockaStats.noOK .. " Fail: " .. mockaStats.noNOK .. " Duration: " .. tostring(mockaStats.time))
+    print("\n Tests: " .. mockaStats.no .. " Pass: " .. mockaStats.noOK .. " Fail: " .. mockaStats.noNOK ..
+            " Ignored : " .. mockaStats.noIgnored .. " Duration: " .. tostring(mockaStats.time))
 
     xmlOutput()
     if(mockaStats.noNOK > 0) then
