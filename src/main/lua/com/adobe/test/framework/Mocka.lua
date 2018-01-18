@@ -111,6 +111,7 @@ end
 
 function clearMocks()
     mocks = {}
+    ngx = default_mocks.makeNgxMock()
 end
 
 function mock(class, model)
@@ -165,20 +166,6 @@ function calls(method, times, ...)
                 error(errorMessage)
             end
         end
-    end
-end
-
-function mockNgx(conf)
-    if not conf then
-        ngx = {
-            apiGateway = nil,
-            config = {
-                routes = { 'smart' }
-            },
-            log = function() end,
-        }
-    else
-        ngx = conf
     end
 end
 
@@ -271,3 +258,13 @@ function assertNotEquals(t1, t2)
     end
 end
 
+--- should be here because of using global mocka definitions
+local default_mocks = require("mocka.default_mocks")
+
+function mockNgx(conf)
+    if not conf then
+        ngx = default_mocks.makeNgxMock()
+    else
+        ngx =  conf
+    end
+end
