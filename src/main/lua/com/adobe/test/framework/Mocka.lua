@@ -114,9 +114,8 @@ function test(description, fn, assertFail)
     if not status and not assertFail then
         print("\t\t " .. description .. " ----- FAIL ")
         local callingFunction = debug.getinfo(2)
-        print(result, " in : ", callingFunction.short_src,
-            ":", callingFunction.currentline)
-
+        print(string.format("%s in %s : %s", result, callingFunction.short_src,
+            callingFunction.currentline))
         mockaStats.noNOK = mockaStats.noNOK + 1;
         si.noNOK = si.noNOK + 1
     else
