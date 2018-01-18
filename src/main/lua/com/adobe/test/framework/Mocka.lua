@@ -5,9 +5,17 @@
 -- Time: 11:30
 -- To change this template use File | Settings | File Templates.
 --
+
+-- save original require in order to alter it
 oldRequire = require
+
+-- object to that keeps the track of mocks for testing
 local mocks = {}
+
+-- before each function rememberer
 local beforeFn;
+
+-- stats for the framework needed for outputing results
 mockaStats = {
     suites = {},
     no = 0,
@@ -17,6 +25,13 @@ mockaStats = {
     time = 0
 }
 
+---
+-- @param t1 {object}
+-- @param t2 {object}
+-- This function compares two objects that can be dictionaries , arrays, strings anything. For dictionaries
+-- it goes in depth making a recursive call. The most important thing is that the two parameters of the functions
+-- are identical in type
+---
 local function _compare(t1, t2)
     local ty1 = type(t1)
     local ty2 = type(t2)
@@ -37,7 +52,10 @@ local function _compare(t1, t2)
     return true
 end
 
-
+---
+-- Retrieves current run information
+-- @return {currentSuiteNumber, currentSuiteInfo, currentTestNumber, currentTestInfo}
+---
 function getCurrentRunInfo()
     local currentSuiteNumber = #mockaStats.suites;
     local currentSuiteInfo = mockaStats.suites[currentSuiteNumber];
@@ -46,6 +64,12 @@ function getCurrentRunInfo()
     return currentSuiteNumber, currentSuiteInfo, currentTestNumber, currentTestInfo
 end
 
+---
+-- @param path {string} - path to require
+-- Alters the real require to server either mock or real lua file - has same signature like lua require
+-- we force the reload of the package due to the beforeEach and the nature of mocking which gives us
+-- the possibility to make a function do something else for each test
+---
 require = function(path)
     --wanna force reload the package
     package.loaded[path] = nil
@@ -56,10 +80,19 @@ require = function(path)
     end
 end
 
+---
+-- @param fn {function} - the function to be ran beforeEach Test
+-- Saves the function in a variable in order to call it before each test for a suite
+---
 function beforeEach(fn)
     beforeFn = fn
 end
 
+---
+-- @param description  {string}
+-- @param ... {optional}
+-- This method is used to ignore a test and records that a test has been ignored for the final report
+---
 function xtest(description, ...)
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
@@ -78,6 +111,14 @@ function xtest(description, ...)
     print("\t\t " .. description .. " -- IGNORED")
 end
 
+---
+-- @param description {string} - description of the test
+-- @param fn {function} - actual function that describes the test (logic of the test)
+-- @param assertFail {boolean} - specifing that I expect this test to fail - ussualy used for methods that throw errors
+-- This is the method used to specify to the framework that we want to run a test. Resets
+-- the mocks to the original state - no calls no return no latestCall, executes the beforeEach function if any
+-- than runs the test logic and counts if the test has failed or succeeded + duration.
+---
 function test(description, fn, assertFail)
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
@@ -127,7 +168,19 @@ function test(description, fn, assertFail)
     si.no = si.no + 1
 end
 
-
+---
+-- @param class {string} name of the path to mock - this is the actual string that you give to require
+-- @param model {array} - an array of strings specifying which are the methods that we want to mock
+-- This function creates a mock class with the functions you provide in the model. Each of the functions have an
+-- internal representation like so: doSomething is mapped to __doSomething. By default a function does not do anything
+-- it just records the calls and the latest call arguments.
+-- The internal representation contain info about the number of calls the real name of the function, latestCallArguments
+-- and has a doReturn function. The doReturn function is normally used if you want a mocked function to do something.
+-- Example:
+-- local classToMock = mock("class", {"doSomething"})
+-- classToMock.__doSomething.doReturn = function()
+--      return 23
+-- end
 function mock(class, model)
     local newThing = {}
     for i, method in ipairs(model or {}) do
@@ -143,6 +196,13 @@ function mock(class, model)
     return newThing
 end
 
+---
+-- @param name {string} - name of the function that we want to make
+-- @param classToMock {string} - name of the class we are making the function for
+-- Internal function - not to be used. This function creates a function with all the needed internals: calls, latestCallWith
+-- it also creates a real new function if specified. On call the function increments it's internals (calls) and saves
+-- the latestCallWithArguments. Also if present and a doReturn has been declared by a user than that function will be called
+-- with those parameters.
 function _makeFunction(name, classToMock)
     return function(self, ...)
         classToMock["__" .. name]['calls'] = classToMock["__" .. name]['calls'] + 1
@@ -160,10 +220,19 @@ function _makeFunction(name, classToMock)
     end
 end
 
+---
+-- @param method {function} - the actual internal representation class.__internalMethod
+-- @param times {number} - the number of times a function was invoked
+-- @param ... {array} [optional] - array of arguments. There is a numbering problem always start with the second argument,
+-- for example if we call a function with a, b, c than the arguments would be b, c, a (always the first argument becomes
+-- last.
+-- This method verifies that a method has been called a number of times with some arguments if present
+--
 function calls(method, times, ...)
     local errorMessage
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
+
     if (method.calls ~= times) then
         errorMessage = method.name .. " wanted " .. times .. " but invoked " .. method.calls
         ti.failureMessage = errorMessage
