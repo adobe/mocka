@@ -6,10 +6,11 @@
 -- To change this template use File | Settings | File Templates.
 --
 -- array of tests to run - the exact require relative to run_tests.lua
-local testSuites = '<testsuites disabled="0" errors="0" failures="%s" name="" tests="%s" time="%s">\n'
-local testSuite = '\t<testsuite name="%s" tests="%s" disabled="0" errors="" failures="%s" id="%s" time="%s" timestamp="">\n'
+local testSuites = '<testsuites disabled="%s" errors="0" failures="%s" name="" tests="%s" time="%s">\n'
+local testSuite = '\t<testsuite name="%s" tests="%s" disabled="%s" errors="" failures="%s" id="%s" time="%s" timestamp="">\n'
 local testCase = '\t\t<testcase name="%s" assertions="%s" classname="%s" status="" time="%s">\n'
 local failureMessage = '\t\t\t<failure message="%s"> </failure>\n'
+local skippedMessage = '\t\t\t<skipped/>\n'
 
 local junitOut = {}
 require("mocka")
@@ -19,14 +20,17 @@ mockNgx();
 
 local xmlOutput = function()
     table.insert(junitOut, '<?xml version="1.0" encoding="UTF-8"?>\n')
-    table.insert(junitOut, string.format(testSuites, tostring(mockaStats.noNOK), tostring(mockaStats.no), tostring(mockaStats.time)))
+    table.insert(junitOut, string.format(testSuites, tostring(mockaStats.noIgnored), tostring(mockaStats.noNOK),
+        tostring(mockaStats.no), tostring(mockaStats.time)))
     for i, suiteData in ipairs(mockaStats.suites) do
-        table.insert(junitOut, string.format(testSuite, suiteData.name, tostring(suiteData.no), tostring(suiteData.noNOK),
-            tostring(i - 1), tostring(suiteData.time)))
+        table.insert(junitOut, string.format(testSuite, suiteData.name, tostring(suiteData.no), tostring(suiteData.noIgnored),
+            tostring(suiteData.noNOK), tostring(i - 1), tostring(suiteData.time)))
         for j, testData in ipairs(suiteData.tests) do
             table.insert(junitOut, string.format(testCase, testData.name, tostring(testData.assertions), testData.className, tostring(testData.time)))
             if testData.failureMessage then
                 table.insert(junitOut, string.format(failureMessage, testData.failureMessage))
+            elseif testData.skipped then
+                table.insert(junitOut, skippedMessage)
             end
             table.insert(junitOut, "\t\t</testcase>\n")
         end

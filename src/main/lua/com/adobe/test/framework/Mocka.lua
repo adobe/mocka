@@ -67,6 +67,7 @@ function xtest(description, ...)
         className = mockaStats.suites[#mockaStats.suites].name,
         time = 0,
         failureMessage = nil,
+        skipped = true,
         failureTrace = nil
     });
     local sn, si, tn, ti = getCurrentRunInfo()
@@ -84,6 +85,7 @@ function test(description, fn, assertFail)
         className = mockaStats.suites[#mockaStats.suites].name,
         time = 0,
         failureMessage = nil,
+        skipped = false,
         failureTrace = nil
     });
 
