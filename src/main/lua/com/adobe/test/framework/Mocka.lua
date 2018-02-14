@@ -109,11 +109,6 @@ function test(description, fn, assertFail)
     si.no = si.no + 1
 end
 
-function clearMocks()
-    mocks = {}
-    ngx = default_mocks.makeNgxMock()
-end
-
 function mock(class, model)
     local newThing = {}
     for i,method in ipairs(model or {}) do
@@ -219,4 +214,9 @@ function mockNgx(conf)
     else
         ngx =  conf
     end
+end
+
+function clearMocks()
+    mocks = {}
+    ngx = default_mocks.makeNgxMock()
 end
