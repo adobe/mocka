@@ -4,7 +4,7 @@
 ---
 
 function makeNgxMock()
-    local ngxMock = mock("ngx", {"log", "time", "decode_base64", "print", "say", "exit"})
+    local ngxMock = mock("ngx", {"log", "time", "decode_base64", "print", "say", "exit", "now", "md5"})
     ngxMock.apiGateway = mock("ngx.apiGateway", {"validateRequest"})
     ngxMock.var = {}
     ngxMock.ctx = {}
