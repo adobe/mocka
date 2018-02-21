@@ -55,6 +55,15 @@ __GitHub Pull Request Coverage Status__ and __Cobertura Plugin__
 
 #### Alter mock behaviour
 
+``` 
+    local classToMock = mock("path.to.class", {"method1", "method2"})
+    when(classToMock).method1.fakeCall(function(arg1, arg2)
+        return arg1
+    end)
+```
+
+or
+
 ```
     local classToMock = mock("path.to.class", {"method1", "method2"})
     classToMock.__method1.doReturn = function(arg1, arg2)

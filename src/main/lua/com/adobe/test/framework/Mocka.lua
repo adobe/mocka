@@ -197,6 +197,28 @@ function mock(class, model)
 end
 
 ---
+-- @param mockClass - the mock object
+-- Public function that decorates mock objects with the call that is needed
+--
+function when(mockClass)
+    local mapObj = {}
+    for k, v in pairs(mockClass) do
+        if string.find(k, "__") then
+            local replacement, number = string.gsub(k, "_", "")
+            mapObj[replacement] = v
+            mapObj[replacement]["fakeCall"] = _makeDoReturnFunction(mockClass[k])
+        end
+    end
+    return mapObj
+end
+
+function _makeDoReturnFunction(obj)
+    return function(fn)
+        obj.doReturn = fn
+    end
+end
+
+---
 -- @param name {string} - name of the function that we want to make
 -- @param classToMock {string} - name of the class we are making the function for
 -- Internal function - not to be used. This function creates a function with all the needed internals: calls, latestCallWith
