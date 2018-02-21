@@ -27,7 +27,7 @@ RUN /scripts/lua_rocks.sh \
 RUN git config --global url."https://".insteadOf git://
 
 RUN sudo luarocks install jsonpath \
-    && sudo luarocks install lua-cjson 1.0.1-1\
+    && sudo luarocks install lua-cjson 2.1.0-1\
     && sudo luarocks install luabitop \
     && sudo luarocks install lua-resty-iputils
 
