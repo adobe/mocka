@@ -8,6 +8,8 @@ ENV LUA_ROCKS_VERSION $luarocks
 ENV LUA_VERSION $lua
 ENV CGO_ENABLED=0
 ENV LUA_LIBRARIES=
+ENV DEP_INSTALL=
+ENV LUAROCKS_FILE=
 
 ADD ./docker /scripts
 RUN chmod -R +x /scripts
