@@ -22,7 +22,8 @@ RUN  apk update \
 RUN ln -s /usr/bin/lua5.1 /usr/bin/lua
 
 RUN /scripts/lua_rocks.sh \
-    && /scripts/mocka.sh
+    && /scripts/mocka.sh \
+    && /scripts/luacheck.sh
 
 RUN git config --global url."https://".insteadOf git://
 

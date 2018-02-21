@@ -7,3 +7,5 @@ fi
 lua -lluacov run_tests.lua \
     && luacov \
     && luacov-cobertura -o coverage_report.xml
+
+luacheck "${LUA_LIBRARIES}" --globals=ngx --no-self
