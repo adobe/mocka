@@ -1,21 +1,51 @@
-`sudo luarocks make mocka-1.0-1.rockspec`
+LuaMock
+------
 
-`sudo luarocks install luacov`
+The one lua testing framework that mocks classes, runs with real classes from
+your project, has nginx embeded methods for openresty individual testing. Has a suite
+of libraries preinstalled and you can specify libraries to install.
 
-Optional:
-`sudo luarocks install luacov-coveralls`
-
-`lua -lluacov run_tests.lua`
-
-`luacov`
-
-`luacov-cobertura -o coverage_report.xml`
-
-Sugest using 
-GitHub Pull Request Coverage Status and Cobertura Plugin
+LuaMock runs better in docker than in standalone - all you need to do is pull
+the image and run it like so
 
 
-## Usage inside testClasses
+Table of contents
+----
+1. [Installing](#installing)
+2. [Usage inside test classes](#ussage-inside-test-classes)
+    1. [Mocking](#mock)
+        - [Alter mock behaviour](#alter-mock-behaviour)
+    2. [Running and skipping tests](#test)
+        - [Running a test](#running-a-test)
+        - [Running a test with exception](#running-a-test-that-throws-exception-or-you-know-it-will-fail)
+        - [Skipping a test](#skipping-a-test)
+    3. [Assertions](#assertions)
+        - [assertEquals](#assertequals)
+        - [assertNotEquals](#assertnotequals)
+        - [assertNil](#assertnil)
+        - [assertNotNil](#assertnotnil)
+        - [Verify a mock has been called](#calls)
+        
+        
+
+
+
+##Installing
+- `sudo luarocks make mocka-1.0-1.rockspec`
+- `sudo luarocks install luacov`
+
+__Optional__:
+- `sudo luarocks install luacov-coveralls`
+- `lua -lluacov run_tests.lua`
+- `luacov`
+- `luacov-cobertura -o coverage_report.xml`
+
+Sugest using:
+ 
+__GitHub Pull Request Coverage Status__ and __Cobertura Plugin__
+
+
+## Usage inside test classes
 
 ### mock(...) - Mocking
 
@@ -58,7 +88,9 @@ The only method that you don't want to alter if you mock is the __new__ function
     end)
 ```
 
-### assertEquals 
+### Assertions
+
+#### assertEquals 
 
 
 ```
@@ -92,7 +124,7 @@ The only method that you don't want to alter if you mock is the __new__ function
     assertEquals(first_array, second_array)
 ```
 
-### assertNotEquals
+#### assertNotEquals
 
 ```
     local first_array = {1, 2, 3}
@@ -100,20 +132,20 @@ The only method that you don't want to alter if you mock is the __new__ function
     assertNotEquals(first_array, second_array)
 ```
 
-### assertNil
+#### assertNil
 
 ```
     assertNil(x)
 ```
 
-### assertNotNil
+#### assertNotNil
 
 ```
     local x = "string"
     assertNotNil(x)
 ```
 
-### calls(...) - verify a mock has been called
+#### calls(...) - verify a mock has been called
 
 ```
     local classToMock = mock("class", {"method"})
@@ -124,5 +156,3 @@ The only method that you don't want to alter if you mock is the __new__ function
     local classToMock = mock("class", {"method"})
     calls(classToMock.__method, 1, arg2, arg1)
 ```
-
-In order to ignore a test use `xtest(...)` instead of `test(...)`
