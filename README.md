@@ -57,9 +57,18 @@ __GitHub Pull Request Coverage Status__ and __Cobertura Plugin__
 
 ``` 
     local classToMock = mock("path.to.class", {"method1", "method2"})
-    when(classToMock).method1.fakeCall(function(arg1, arg2)
+    when(classToMock).method1.fake(function(arg1, arg2)
         return arg1
     end)
+```
+
+or
+
+```
+    local classToMock = mock("path.to.class", {"method1", "method2"})
+    when(classToMock).method1.doReturn = function(arg1, arg2)
+            return arg1
+    end
 ```
 
 or

@@ -206,7 +206,7 @@ function when(mockClass)
         if string.find(k, "__") then
             local replacement, number = string.gsub(k, "_", "")
             mapObj[replacement] = v
-            mapObj[replacement]["fakeCall"] = _makeDoReturnFunction(mockClass[k])
+            mapObj[replacement]["fake"] = _makeDoReturnFunction(mockClass[k])
         end
     end
     return mapObj
