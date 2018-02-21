@@ -49,8 +49,16 @@ __GitHub Pull Request Coverage Status__ and __Cobertura Plugin__
 
 ### mock(...) - Mocking
 
+Mock whatever methods you want
+
 ``` 
     local classToMock = mock("path.to.class", {"method1", "method2"})
+```
+
+or mock all the methods dynamic
+
+```
+    local classToMock = mock("path.to.class")
 ```
 
 #### Alter mock behaviour
