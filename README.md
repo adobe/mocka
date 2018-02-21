@@ -13,9 +13,9 @@ Table of contents
 ----
 1. [Installing](#installing)
 2. [Usage inside test classes](#ussage-inside-test-classes)
-    1. [Mocking](#mock)
+    1. [Mocking](#mock---mocking)
         - [Alter mock behaviour](#alter-mock-behaviour)
-    2. [Running and skipping tests](#test)
+    2. [Running and skipping tests](#test-and-xtest---running-and-skipping)
         - [Running a test](#running-a-test)
         - [Running a test with exception](#running-a-test-that-throws-exception-or-you-know-it-will-fail)
         - [Skipping a test](#skipping-a-test)
@@ -24,7 +24,7 @@ Table of contents
         - [assertNotEquals](#assertnotequals)
         - [assertNil](#assertnil)
         - [assertNotNil](#assertnotnil)
-        - [Verify a mock has been called](#calls)
+        - [Verify a mock has been called](#calls---verify-a-mock-has-been-called)
         
         
 
