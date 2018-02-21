@@ -30,7 +30,7 @@ Table of contents
 
 
 
-##Installing
+## Installing
 - `sudo luarocks make mocka-1.0-1.rockspec`
 - `sudo luarocks install luacov`
 
