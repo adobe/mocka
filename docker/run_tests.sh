@@ -9,3 +9,7 @@ lua -lluacov run_tests.lua \
     && luacov-cobertura -o coverage_report.xml
 
 luacheck "${LUA_LIBRARIES}" --globals=ngx --no-self
+
+echo " Running lcheck for ${LUA_LIBRARIES} "
+
+ldoc -B "${LUA_LIBRARIES}"
