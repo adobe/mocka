@@ -191,7 +191,7 @@ function mock(class, model)
 --        end
 --    end
 
-    for i, method in ipairs(model) do
+    for i, method in ipairs(model or {}) do
         newThing["__" .. method] = {
             calls = 0,
             name = class .. "." .. method,
