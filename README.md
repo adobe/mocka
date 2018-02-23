@@ -13,9 +13,9 @@ Table of contents
 ----
 1. [Installing](#installing)
 2. [Usage inside test classes](#ussage-inside-test-classes)
-    1. [Mocking](#mock)
+    1. [Mocking](#mock---mocking)
         - [Alter mock behaviour](#alter-mock-behaviour)
-    2. [Running and skipping tests](#test)
+    2. [Running and skipping tests](#test-and-xtest---running-and-skipping)
         - [Running a test](#running-a-test)
         - [Running a test with exception](#running-a-test-that-throws-exception-or-you-know-it-will-fail)
         - [Skipping a test](#skipping-a-test)
@@ -24,13 +24,13 @@ Table of contents
         - [assertNotEquals](#assertnotequals)
         - [assertNil](#assertnil)
         - [assertNotNil](#assertnotnil)
-        - [Verify a mock has been called](#calls)
+        - [Verify a mock has been called](#calls---verify-a-mock-has-been-called)
         
         
 
 
 
-##Installing
+## Installing
 - `sudo luarocks make mocka-1.0-1.rockspec`
 - `sudo luarocks install luacov`
 
@@ -49,11 +49,37 @@ __GitHub Pull Request Coverage Status__ and __Cobertura Plugin__
 
 ### mock(...) - Mocking
 
+Mock whatever methods you want
+
 ``` 
     local classToMock = mock("path.to.class", {"method1", "method2"})
 ```
 
+or mock all the methods dynamic
+
+```
+    local classToMock = mock("path.to.class")
+```
+
 #### Alter mock behaviour
+
+``` 
+    local classToMock = mock("path.to.class", {"method1", "method2"})
+    when(classToMock).method1.fake(function(arg1, arg2)
+        return arg1
+    end)
+```
+
+or
+
+```
+    local classToMock = mock("path.to.class", {"method1", "method2"})
+    when(classToMock).method1.doReturn = function(arg1, arg2)
+            return arg1
+    end
+```
+
+or
 
 ```
     local classToMock = mock("path.to.class", {"method1", "method2"})
