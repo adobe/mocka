@@ -183,8 +183,8 @@ end
 -- end
 function mock(class, model)
     local newThing = {}
-    model = model or {}
-    if table.maxn(model) == 0 then
+    if model == nil then
+        model = {}
         local clsToMock = oldRequire(class)
         for k, v in pairs(clsToMock) do
             table.insert(model, k)
@@ -202,6 +202,7 @@ function mock(class, model)
     end
 
 
+    mocks[class] = newThing
     return newThing
 end
 
