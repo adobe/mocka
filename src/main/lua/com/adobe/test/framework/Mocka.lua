@@ -183,13 +183,15 @@ end
 -- end
 function mock(class, model)
     local newThing = {}
---    if model == nil then
---        model = {}
---        local clsToMock = oldRequire(class)
---        for k, v in pairs(clsToMock) do
---            table.insert(model, k)
---        end
---    end
+    model = model or {}
+    if table.maxn(model) == 0 then
+        local status, clsToMock = pcall(oldRequire, class)
+        if status then
+            for k, v in pairs(clsToMock) do
+                table.insert(model, k)
+            end
+        end
+    end
 
     for i, method in ipairs(model or {}) do
         newThing["__" .. method] = {
