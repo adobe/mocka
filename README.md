@@ -25,7 +25,7 @@ Table of contents
         - [assertNil](#assertnil)
         - [assertNotNil](#assertnotnil)
         - [Verify a mock has been called](#calls---verify-a-mock-has-been-called)
-    4. [Dependencies](#dependencies)
+3. [Dependencies](#dependencies)
         
         
 
