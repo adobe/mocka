@@ -27,4 +27,4 @@ luacheck "${LUA_LIBRARIES}" --globals=ngx --no-self
 
 echo " Running lcheck for ${LUA_LIBRARIES} "
 
-ldoc -B "${LUA_LIBRARIES}" -d "docs"
+ldoc -B "${LUA_LIBRARIES}" -d "docs" -s "docs/style"
