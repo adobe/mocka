@@ -27,9 +27,6 @@ Table of contents
         - [Verify a mock has been called](#calls---verify-a-mock-has-been-called)
 3. [Dependencies](#dependencies)
         
-        
-
-
 
 ## Installing
 - `sudo luarocks make mocka-1.0-1.rockspec`
