@@ -25,6 +25,7 @@ Table of contents
         - [assertNil](#assertnil)
         - [assertNotNil](#assertnotnil)
         - [Verify a mock has been called](#calls---verify-a-mock-has-been-called)
+    4. [Dependencies](#dependencies)
         
         
 
@@ -182,3 +183,15 @@ The only method that you don't want to alter if you mock is the __new__ function
     local classToMock = mock("class", {"method"})
     calls(classToMock.__method, 1, arg2, arg1)
 ```
+
+## Dependencies
+
+This dependencies apply for docker
+
+- [luacov-cobertura](https://github.com/britzl/luacov-cobertura) - MIT
+- [luacheck](https://github.com/mpeterv/luacheck) - MIT
+- [ldoc](https://stevedonovan.github.io/ldoc/)
+- [jsonpath](https://github.com/mrpace2/lua-jsonpath) - MIT
+- [lua-cjson](https://github.com/mpx/lua-cjson) - MIT
+- [luabitop](http://bitop.luajit.org/index.html) - MIT
+- [lua-resty-iputils](https://github.com/hamishforbes/lua-resty-iputils) - MIT
