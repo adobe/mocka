@@ -1,5 +1,5 @@
 package = "mocka"
-version = "1.0-1"
+version = "1.0.0-1"
 local function make_plat(plat)
     return { modules = {
         mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
