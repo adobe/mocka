@@ -18,9 +18,6 @@ description = {
                "of libraries preinstalled and you can specify libraries to install.",
     license = "MIT"
 }
-dependencies = {
-    "lua > 5.1"
-}
 build = {
 	type = "builtin",
 	platforms = {
