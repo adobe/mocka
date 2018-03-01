@@ -60,7 +60,7 @@ local run_tests = function(tests)
         })
         clearMocks(true)
         local startTime = os.clock()
-        require(module)
+        require(module):run_tests()
         local elapsed = os.clock() - startTime
 
         mockaStats.suites[i].time = elapsed
