@@ -386,7 +386,9 @@ function mockNgx(conf)
     end
 end
 
-function clearMocks()
+function clearMocks(inNgx)
     mocks = {}
-    ngx = default_mocks.makeNgxMock()
+    if not inNgx then
+        ngx = default_mocks.makeNgxMock()
+    end
 end

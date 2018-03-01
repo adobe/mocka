@@ -5,6 +5,7 @@ local function make_plat(plat)
         mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
         ["mocka.default_mocks"] = "src/main/lua/com/adobe/test/framework/default_mocks.lua",
         ["mocka.suite"] = "src/main/lua/com/adobe/test/suites/run_tests.lua",
+        ["mocka.ngx_suite"] = "src/main/lua/com/adobe/test/suites/run_ngx_tests.lua",
         ["luacov.cobertura.luatoxml"] = "luacov-cobertura/luacov/cobertura/luatoxml.lua",
         ["luacov.reporter.cobertura"] = "luacov-cobertura/luacov/reporter/cobertura.lua"
     } }
