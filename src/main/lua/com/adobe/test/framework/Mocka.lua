@@ -87,17 +87,11 @@ require = function(path)
     end
 end
 
-function _clone (t) -- deep-copy a table
+function _clone (t) -- shallow-copy
     if type(t) ~= "table" then return t end
     local meta = getmetatable(t)
     local target = {}
-    for k, v in pairs(t) do
-        if type(v) == "table" then
-            target[k] = _clone(v)
-        else
-            target[k] = v
-        end
-    end
+    for k, v in pairs(t) do target[k] = v end
     setmetatable(target, meta)
     return target
 end
