@@ -12,6 +12,11 @@ oldRequire = require
 -- object to that keeps the track of mocks for testing
 local mocks = {}
 
+-- spy objects
+local spies = {}
+
+local mirror = {}
+
 -- before each function rememberer
 local beforeFn;
 
@@ -76,7 +81,11 @@ require = function(path)
     if (mocks[path] ~= nil) then
         return mocks[path]
     else
-        return oldRequire(path)
+        spies[path] = oldRequire(path)
+        --- don't preload it (give it to nice and clean)
+        package.loaded[path] = nil
+        mirror[path] = oldRequire(path)
+        return spies[path]
     end
 end
 
@@ -136,6 +145,20 @@ function test(description, fn, assertFail)
                 impl.calls = 0
                 impl.latestCallWith = nil
                 impl.doReturn = nil
+            end
+        end
+    end
+
+    for k, v in pairs(spies) do
+        if type(v) == 'table' then
+            for method, impl in pairs(v) do
+                if impl ~= nil and type(impl) == 'table' and impl.calls then
+                    local replacement, number = string.gsub(method, "_", "")
+                    impl.calls = 0
+                    impl.latestCallWith = nil
+                    --- put the old one back
+                    impl.doReturn = mirror[k][replacement]
+                end
             end
         end
     end
@@ -221,6 +244,33 @@ function when(mockClass)
             mapObj[replacement]["fake"] = _makeDoReturnFunction(mockClass[k])
         end
     end
+    return mapObj
+end
+
+---
+-- @param class - full fledged class as you see it in the require
+-- Public function used only in before each - to spy on an object - (stub the replacement)
+--
+function spy(class)
+    if not mirror[class] then
+        return
+    end
+
+    local mapObj = {}
+
+    for method, method_real in pairs(mirror[class]) do
+        spies[class]["__" .. method] = {
+            calls = 0,
+            name = class .. "." .. method,
+            latestCallWith = nil,
+            doReturn = method_real
+        }
+        spies[class][method] = _makeFunction(method, spies[class])
+
+        mapObj[method] = spies[class]["__" .. method]
+        mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
+    end
+
     return mapObj
 end
 
