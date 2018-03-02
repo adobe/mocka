@@ -13,8 +13,6 @@ local failureMessage = '\t\t\t<failure message="%s"> </failure>\n'
 local skippedMessage = '\t\t\t<skipped/>\n'
 
 local junitOut = {}
-require("mocka")
-
 
 local xmlOutput = function()
     table.insert(junitOut, '<?xml version="1.0" encoding="UTF-8"?>\n')
