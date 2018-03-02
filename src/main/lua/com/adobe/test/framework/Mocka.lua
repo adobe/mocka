@@ -93,7 +93,7 @@ function _clone (t) -- deep-copy a table
     local target = {}
     for k, v in pairs(t) do
         if type(v) == "table" then
-            target[k] = clone(v)
+            target[k] = _clone(v)
         else
             target[k] = v
         end
