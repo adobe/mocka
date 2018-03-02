@@ -149,15 +149,17 @@ function test(description, fn, assertFail)
         end
     end
 
-    for k, v in pairs(spies) do
+    for k, v in pairs(mirror) do
         if type(v) == 'table' then
             for method, impl in pairs(v) do
-                if impl ~= nil and type(impl) == 'table' and impl.calls then
-                    local replacement, number = string.gsub(method, "_", "")
-                    impl.calls = 0
-                    impl.latestCallWith = nil
-                    --- put the old one back
-                    impl.doReturn = mirror[k][replacement]
+                if impl ~= nil and type(impl) == 'function' then
+                    spies[k]["__" .. method] = {
+                        calls = 0,
+                        name = k .. "." .. method,
+                        latestCallWith = nil,
+                        doReturn = impl
+                    }
+                    spies[k][method] = _makeFunction(method, spies[k])
                 end
             end
         end
@@ -259,19 +261,22 @@ function spy(class)
     local mapObj = {}
 
     for method, method_real in pairs(mirror[class]) do
-        spies[class]["__" .. method] = {
-            calls = 0,
-            name = class .. "." .. method,
-            latestCallWith = nil,
-            doReturn = method_real
-        }
-        spies[class][method] = _makeFunction(method, spies[class])
-
         mapObj[method] = spies[class]["__" .. method]
         mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
     end
 
     return mapObj
+end
+
+---
+-- @param class - gets a spy instance for the test
+--
+function getSpy(class)
+    if not mirror[class] then
+        return
+    end
+
+    return spies[class]
 end
 
 function _makeDoReturnFunction(obj)
@@ -335,6 +340,7 @@ function calls(method, times, ...)
         end
     end
 end
+
 
 -- utility functions
 -- http://lua-users.org/wiki/TableUtils

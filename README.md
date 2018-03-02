@@ -45,6 +45,25 @@ __GitHub Pull Request Coverage Status__ and __Cobertura Plugin__
 
 ## Usage inside test classes
 
+### spy(...) - spying and stubbing
+
+Spy whatever classes you want. Spies are reset after each test. And loose
+whatever stubbing you did. That is why if any stub is needed than it should be
+declared at beforeEach level. T2 is a global required field in this example - required
+somewhere else.
+
+```
+    beforeEach(function()
+        spy("test2").run.stub(function()
+            print "Ok"
+        end)
+    end)
+    test('it is', function()
+        t2:run()
+        calls(spy("test2").run, 1)
+    end)
+```
+
 ### mock(...) - Mocking
 
 Mock whatever methods you want
