@@ -82,11 +82,24 @@ require = function(path)
         return mocks[path]
     else
         spies[path] = oldRequire(path)
-        --- don't preload it (give it to nice and clean)
-        package.loaded[path] = nil
-        mirror[path] = oldRequire(path)
+        mirror[path] = _clone(spies[path])
         return spies[path]
     end
+end
+
+function _clone (t) -- deep-copy a table
+    if type(t) ~= "table" then return t end
+    local meta = getmetatable(t)
+    local target = {}
+    for k, v in pairs(t) do
+        if type(v) == "table" then
+            target[k] = clone(v)
+        else
+            target[k] = v
+        end
+    end
+    setmetatable(target, meta)
+    return target
 end
 
 ---

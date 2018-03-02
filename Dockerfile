@@ -16,7 +16,7 @@ RUN chmod -R +x /scripts
 
 ADD ./luacov-cobertura /tmp/mocka/luacov-cobertura
 ADD ./src /tmp/mocka/src
-ADD ./mocka-1.0-1.rockspec /tmp/mocka/
+ADD ./dist/luarocks/mocka-1.0.0-1.rockspec /tmp/mocka/
 
 RUN  apk update \
         && apk add sudo curl make gcc g++ readline-dev lua5.1 lua5.1-dev git ncurses-libs libc-dev build-base git bash unzip
