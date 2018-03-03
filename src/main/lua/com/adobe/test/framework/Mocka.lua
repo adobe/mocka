@@ -76,6 +76,15 @@ end
 -- the possibility to make a function do something else for each test
 ---
 require = function(path)
+    --some people require os | string | table  -> natural functions(globals)
+    if path == 'os' then
+        return os
+    elseif path == 'string' then
+        return string
+    elseif path == 'table' then
+        return table
+    end
+
     --wanna force reload the package
     package.loaded[path] = nil
     if (mocks[path] ~= nil) then
