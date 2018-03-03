@@ -168,7 +168,7 @@ function test(description, fn, assertFail)
     for k, v in pairs(mirror) do
         if type(v) == 'table' then
             for method, impl in pairs(v) do
-                --- put all but not privates
+                --- put all but not privates line __index
                 if impl ~= nil and type(impl) == 'function'
                         and not string.find(method, "__") then
                     spies[k]["__" .. method] = {
