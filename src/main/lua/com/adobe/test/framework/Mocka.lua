@@ -311,7 +311,7 @@ function _makeFunction(name, classToMock)
             self.__index = self
             return o
         elseif classToMock["__" .. name].doReturn ~= nil then
-            return classToMock["__" .. name].doReturn(unpack(callingArguments))
+            return classToMock["__" .. name].doReturn(self, ...)
         end
     end
 end
