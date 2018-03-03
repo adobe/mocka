@@ -159,7 +159,9 @@ function test(description, fn, assertFail)
     for k, v in pairs(mirror) do
         if type(v) == 'table' then
             for method, impl in pairs(v) do
-                if impl ~= nil and type(impl) == 'function' then
+                --- put all but not privates
+                if impl ~= nil and type(impl) == 'function'
+                        and not string.find(method, "__") then
                     spies[k]["__" .. method] = {
                         calls = 0,
                         name = k .. "." .. method,
@@ -268,22 +270,14 @@ function spy(class)
     local mapObj = {}
 
     for method, method_real in pairs(mirror[class]) do
-        mapObj[method] = spies[class]["__" .. method]
-        mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
+        -- don't index private methods
+        if not string.find(method, "__") and type(method_real) == 'function' then
+            mapObj[method] = spies[class]["__" .. method]
+            mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
+        end
     end
 
     return mapObj
-end
-
----
--- @param class - gets a spy instance for the test
---
-function getSpy(class)
-    if not mirror[class] then
-        return
-    end
-
-    return spies[class]
 end
 
 function _makeDoReturnFunction(obj)
