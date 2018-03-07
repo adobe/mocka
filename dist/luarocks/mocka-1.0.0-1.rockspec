@@ -19,6 +19,9 @@ description = {
                "of libraries preinstalled and you can specify libraries to install.",
     license = "MIT"
 }
+dependencies = {
+    "luafilesystem"
+}
 build = {
 	type = "builtin",
 	platforms = {
