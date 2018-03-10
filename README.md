@@ -52,9 +52,11 @@ whatever stubbing you did. That is why if any stub is needed than it should be
 declared at beforeEach level. T2 is a global required field in this example - required
 somewhere else.
 
+Stubs treat even the async nature of nginx - ran on demand
+
 ```
     beforeEach(function()
-        spy("test2").run.stub(function()
+        spy("test2", "run", function()
             print "Ok"
         end)
     end)

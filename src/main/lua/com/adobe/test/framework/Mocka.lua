@@ -71,7 +71,14 @@ function getCurrentRunInfo()
     return currentSuiteNumber, currentSuiteInfo, currentTestNumber, currentTestInfo
 end
 
+---
+-- Spy utility method that creates a spy. Also returns the spy object when available
+-- @param class - the path as passed to require
+-- @param method - the method for stub
+-- @param fn - the callback to execute - the actual stub
+--
 function spy(class, method, fn)
+    -- if it isn't alredy required and not yet set for lazy
     if not mirror[class] and not lazy_spies[class] then
         lazy_spies[class] = {
             ["class"] = class,
@@ -161,10 +168,15 @@ require = function(path)
     if (mocks[path] ~= nil) then
         return mocks[path]
     else
+        -- use the preloaded spies
+        if spies[path] then
+            return spies[path]
+        end
+
         spies[path] = oldRequire(path)
         mirror[path] = _clone(spies[path])
+        -- this means that the require has been done and now it's the time to init any lazy spy
         if lazy_spies[path] then
-            ngx.log(ngx.ERR, " --- ", lazy_spies[path].class, lazy_spies[path].method)
             __makeSpy(path)
             spy(lazy_spies[path].class, lazy_spies[path].method, lazy_spies[path].fn)
             lazy_spies[path] = nil
