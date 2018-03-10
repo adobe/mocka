@@ -15,6 +15,8 @@ local mocks = {}
 -- spy objects
 local spies = {}
 
+local lazy_spies = {}
+
 local mirror = {}
 
 -- before each function rememberer
@@ -69,6 +71,75 @@ function getCurrentRunInfo()
     return currentSuiteNumber, currentSuiteInfo, currentTestNumber, currentTestInfo
 end
 
+function spy(class, method, fn)
+    if not mirror[class] and not lazy_spies[class] then
+        lazy_spies[class] = {
+            ["class"] = class,
+            ["method"] = method,
+            ["fn"] = fn
+        }
+        return
+    end
+
+    local mapObj = {}
+
+    for method, method_real in pairs(mirror[class]) do
+        -- don't index private methods
+        if not string.find(method, "__") and type(method_real) == 'function' then
+            mapObj[method] = spies[class]["__" .. method]
+            mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
+        end
+    end
+
+    if method and fn then
+        mapObj[method].doReturn = fn
+    end
+
+    return mapObj
+end
+
+function __makeSpy(path)
+    if path and not mirror[path] then
+        return
+    end
+
+    if path then
+        for method, impl in pairs(mirror[path]) do
+            --- put all but not privates line __index
+            if impl ~= nil and type(impl) == 'function'
+                    and not string.find(method, "__") then
+                spies[path]["__" .. method] = {
+                    calls = 0,
+                    name = path .. "." .. method,
+                    latestCallWith = nil,
+                    doReturn = impl
+                }
+                spies[path][method] = _makeFunction(method, spies[path])
+            end
+        end
+    end
+
+    if not path then
+        for k, v in pairs(mirror) do
+            if type(v) == 'table' then
+                for method, impl in pairs(v) do
+                    --- put all but not privates line __index
+                    if impl ~= nil and type(impl) == 'function'
+                            and not string.find(method, "__") then
+                        spies[k]["__" .. method] = {
+                            calls = 0,
+                            name = k .. "." .. method,
+                            latestCallWith = nil,
+                            doReturn = impl
+                        }
+                        spies[k][method] = _makeFunction(method, spies[k])
+                    end
+                end
+            end
+        end
+    end
+end
+
 ---
 -- @param path {string} - path to require
 -- Alters the real require to server either mock or real lua file - has same signature like lua require
@@ -92,6 +163,12 @@ require = function(path)
     else
         spies[path] = oldRequire(path)
         mirror[path] = _clone(spies[path])
+        if lazy_spies[path] then
+            ngx.log(ngx.ERR, " --- ", lazy_spies[path].class, lazy_spies[path].method)
+            __makeSpy(path)
+            spy(lazy_spies[path].class, lazy_spies[path].method, lazy_spies[path].fn)
+            lazy_spies[path] = nil
+        end
         return spies[path]
     end
 end
@@ -165,23 +242,7 @@ function test(description, fn, assertFail)
         end
     end
 
-    for k, v in pairs(mirror) do
-        if type(v) == 'table' then
-            for method, impl in pairs(v) do
-                --- put all but not privates line __index
-                if impl ~= nil and type(impl) == 'function'
-                        and not string.find(method, "__") then
-                    spies[k]["__" .. method] = {
-                        calls = 0,
-                        name = k .. "." .. method,
-                        latestCallWith = nil,
-                        doReturn = impl
-                    }
-                    spies[k][method] = _makeFunction(method, spies[k])
-                end
-            end
-        end
-    end
+    __makeSpy()
 
     if (beforeFn ~= nil) then
         pcall(beforeFn)
@@ -271,23 +332,7 @@ end
 -- @param class - full fledged class as you see it in the require
 -- Public function used only in before each - to spy on an object - (stub the replacement)
 --
-function spy(class)
-    if not mirror[class] then
-        return
-    end
 
-    local mapObj = {}
-
-    for method, method_real in pairs(mirror[class]) do
-        -- don't index private methods
-        if not string.find(method, "__") and type(method_real) == 'function' then
-            mapObj[method] = spies[class]["__" .. method]
-            mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
-        end
-    end
-
-    return mapObj
-end
 
 function _makeDoReturnFunction(obj)
     return function(fn)
