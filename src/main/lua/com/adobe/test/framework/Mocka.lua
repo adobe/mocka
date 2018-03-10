@@ -406,7 +406,7 @@ function assertEquals(t1, t2)
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
     if not _compare(t1, t2) then
-        ti.failureMessage = string.format(errorMessage, valToString(t1), valToString(t2))
+        ti.failureMessage = string.format(errorMessage, valToString(t2), valToString(t1))
         error(ti.failureMessage)
     end
 end
