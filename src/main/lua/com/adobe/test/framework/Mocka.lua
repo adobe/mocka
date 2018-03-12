@@ -161,6 +161,8 @@ require = function(path)
         return string
     elseif path == 'table' then
         return table
+    elseif path == "ffi" then
+        return oldRequire("ffi")
     end
 
     --wanna force reload the package
