@@ -79,14 +79,17 @@ end
 --
 function spy(class, method, fn)
     -- if it isn't alredy required and not yet set for lazy
-    if not mirror[class] and not lazy_spies[class] then
-        lazy_spies[class] = {
-            ["class"] = class,
-            ["method"] = method,
-            ["fn"] = fn
-        }
+    if not mirror[class] then
+        if not lazy_spies[class] then
+            lazy_spies[class] = {
+                ["class"] = class,
+                ["method"] = method,
+                ["fn"] = fn
+            }
+        end
         return
     end
+
 
     local mapObj = {}
 
@@ -170,7 +173,6 @@ require = function(path)
     if (mocks[path] ~= nil) then
         return mocks[path]
     else
-        -- use the preloaded spies
         if spies[path] then
             return spies[path]
         end
