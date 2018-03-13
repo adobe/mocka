@@ -15,6 +15,7 @@ local skippedMessage = '\t\t\t<skipped/>\n'
 local junitOut = {}
 
 local xmlOutput = function()
+    junitOut = {}
     table.insert(junitOut, '<?xml version="1.0" encoding="UTF-8"?>\n')
     table.insert(junitOut, string.format(testSuites, tostring(mockaStats.noIgnored), tostring(mockaStats.noNOK),
         tostring(mockaStats.no), tostring(mockaStats.time)))
