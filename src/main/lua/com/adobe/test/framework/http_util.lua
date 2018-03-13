@@ -4,26 +4,26 @@ local HttpRequest = {}
 
 function HttpRequest:request(host, port, ssl)
     self.req_object = {
-        host = 'localhost',
         headers = {},
         path = '/',
         query = {},
         method = 'GET',
         ssl_verify = false
     }
+    self.host = 'localhost'
     self.timeout = 10000
 
     host = host or "localhost"
     ssl = ssl or false
 
     if not ssl then
-        self.req_object.host = 'http://' .. host
+        self.host = 'http://' .. host
     else
-        self.req_object.host = 'https://' .. host
+        self.host = 'https://' .. host
     end
 
     if port then
-        self.req_object.host = self.req_object.host .. ":" .. port
+        self.host = self.host .. ":" .. port
     end
 
     return self
@@ -63,6 +63,7 @@ end
 
 function HttpRequest:get()
     self.req_object.method = "GET"
+    return self:_makeRequest()
 end
 
 function HttpRequest:post(body)
@@ -102,17 +103,18 @@ function HttpRequest:options()
 end
 
 function HttpRequest:_makeRequest()
+    print("making request ", self.host)
     local httpc = resty_http.new()
     httpc:set_timeout(self.timeout)
-    local res, err = httpc:request_uri(self.req_object)
+    local res, err = httpc:request_uri(self.host, self.req_object)
     if res then
         print(string.format("req to host=%s method=%s path=%s responded with status=%s",
-            self.req_object.host, self.req_object.path, self.req_object.method, res.status))
+            self.host, self.req_object.method, self.req_object.path, res.status))
     end
 
     if err then
         print(string.format("req to host=%s method=%s path=%s responded with err=%s",
-            self.req_object.host, self.req_object.path, self.req_object.method, err))
+            self.host, self.req_object.method, self.req_object.path, err))
     end
 
     return res, err
