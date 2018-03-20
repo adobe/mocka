@@ -12,6 +12,13 @@ oldRequire = require
 -- object to that keeps the track of mocks for testing
 local mocks = {}
 
+-- spy objects
+local spies = {}
+
+local lazy_spies = {}
+
+local mirror = {}
+
 -- before each function rememberer
 local beforeFn;
 
@@ -65,19 +72,130 @@ function getCurrentRunInfo()
 end
 
 ---
+-- Spy utility method that creates a spy. Also returns the spy object when available
+-- @param class - the path as passed to require
+-- @param method - the method for stub
+-- @param fn - the callback to execute - the actual stub
+--
+function spy(class, method, fn)
+    -- if it isn't alredy required and not yet set for lazy
+    if not mirror[class] then
+        if not lazy_spies[class] then
+            lazy_spies[class] = {
+                ["class"] = class,
+                ["method"] = method,
+                ["fn"] = fn
+            }
+        end
+        return
+    end
+
+
+    local mapObj = {}
+
+    for method, method_real in pairs(mirror[class]) do
+        -- don't index private methods
+        if not string.find(method, "__") and type(method_real) == 'function' then
+            mapObj[method] = spies[class]["__" .. method]
+            mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
+        end
+    end
+
+    if method and fn then
+        mapObj[method].doReturn = fn
+    end
+
+    return mapObj
+end
+
+function __makeSpy(path)
+    if path and not mirror[path] then
+        return
+    end
+
+    if path then
+        for method, impl in pairs(mirror[path]) do
+            --- put all but not privates line __index
+            if impl ~= nil and type(impl) == 'function'
+                    and not string.find(method, "__") then
+                spies[path]["__" .. method] = {
+                    calls = 0,
+                    name = path .. "." .. method,
+                    latestCallWith = nil,
+                    doReturn = impl
+                }
+                spies[path][method] = _makeFunction(method, spies[path])
+            end
+        end
+    end
+
+    if not path then
+        for k, v in pairs(mirror) do
+            if type(v) == 'table' then
+                for method, impl in pairs(v) do
+                    --- put all but not privates line __index
+                    if impl ~= nil and type(impl) == 'function'
+                            and not string.find(method, "__") then
+                        spies[k]["__" .. method] = {
+                            calls = 0,
+                            name = k .. "." .. method,
+                            latestCallWith = nil,
+                            doReturn = impl
+                        }
+                        spies[k][method] = _makeFunction(method, spies[k])
+                    end
+                end
+            end
+        end
+    end
+end
+
+---
 -- @param path {string} - path to require
 -- Alters the real require to server either mock or real lua file - has same signature like lua require
 -- we force the reload of the package due to the beforeEach and the nature of mocking which gives us
 -- the possibility to make a function do something else for each test
 ---
 require = function(path)
+    --some people require os | string | table  -> natural functions(globals)
+    if path == 'os' then
+        return os
+    elseif path == 'string' then
+        return string
+    elseif path == 'table' then
+        return table
+    elseif path == "ffi" then
+        return oldRequire("ffi")
+    end
+
     --wanna force reload the package
     package.loaded[path] = nil
     if (mocks[path] ~= nil) then
         return mocks[path]
     else
-        return oldRequire(path)
+        if spies[path] then
+            return spies[path]
+        end
+
+        spies[path] = oldRequire(path)
+        mirror[path] = _clone(spies[path])
+        -- this means that the require has been done and now it's the time to init any lazy spy
+        if lazy_spies[path] then
+            __makeSpy(path)
+            spy(lazy_spies[path].class, lazy_spies[path].method, lazy_spies[path].fn)
+            lazy_spies[path] = nil
+        end
+        return spies[path]
     end
+end
+
+function _clone (t) -- shallow-copy
+    if type(t) ~= "table" then return t end
+    local meta = getmetatable(t)
+    local target = {}
+    for k, v in pairs(t) do target[k] = v end
+    setmetatable(target, meta)
+    return target
 end
 
 ---
@@ -139,6 +257,8 @@ function test(description, fn, assertFail)
             end
         end
     end
+
+    __makeSpy()
 
     if (beforeFn ~= nil) then
         pcall(beforeFn)
@@ -224,6 +344,12 @@ function when(mockClass)
     return mapObj
 end
 
+---
+-- @param class - full fledged class as you see it in the require
+-- Public function used only in before each - to spy on an object - (stub the replacement)
+--
+
+
 function _makeDoReturnFunction(obj)
     return function(fn)
         obj.doReturn = fn
@@ -249,7 +375,7 @@ function _makeFunction(name, classToMock)
             self.__index = self
             return o
         elseif classToMock["__" .. name].doReturn ~= nil then
-            return classToMock["__" .. name].doReturn(unpack(callingArguments))
+            return classToMock["__" .. name].doReturn(self, ...)
         end
     end
 end
@@ -285,6 +411,7 @@ function calls(method, times, ...)
         end
     end
 end
+
 
 -- utility functions
 -- http://lua-users.org/wiki/TableUtils
@@ -340,7 +467,7 @@ function assertEquals(t1, t2)
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
     if not _compare(t1, t2) then
-        ti.failureMessage = string.format(errorMessage, valToString(t1), valToString(t2))
+        ti.failureMessage = string.format(errorMessage, valToString(t2), valToString(t1))
         error(ti.failureMessage)
     end
 end
@@ -386,7 +513,9 @@ function mockNgx(conf)
     end
 end
 
-function clearMocks()
+function clearMocks(inNgx)
     mocks = {}
-    ngx = default_mocks.makeNgxMock()
+    if not inNgx then
+        ngx = default_mocks.makeNgxMock()
+    end
 end
