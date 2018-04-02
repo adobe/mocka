@@ -63,7 +63,7 @@ end
 -- Retrieves current run information
 -- @return {currentSuiteNumber, currentSuiteInfo, currentTestNumber, currentTestInfo}
 ---
-function getCurrentRunInfo()
+local function getCurrentRunInfo()
     local currentSuiteNumber = #mockaStats.suites;
     local currentSuiteInfo = mockaStats.suites[currentSuiteNumber];
     local currentTestNumber = #currentSuiteInfo.tests;
@@ -108,7 +108,7 @@ function spy(class, method, fn)
     return mapObj
 end
 
-function __makeSpy(path)
+local function __makeSpy(path)
     if path and not mirror[path] then
         return
     end
@@ -350,7 +350,7 @@ end
 --
 
 
-function _makeDoReturnFunction(obj)
+local function _makeDoReturnFunction(obj)
     return function(fn)
         obj.doReturn = fn
     end
@@ -363,7 +363,7 @@ end
 -- it also creates a real new function if specified. On call the function increments it's internals (calls) and saves
 -- the latestCallWithArguments. Also if present and a doReturn has been declared by a user than that function will be called
 -- with those parameters.
-function _makeFunction(name, classToMock)
+local function _makeFunction(name, classToMock)
     return function(self, ...)
         classToMock["__" .. name]['calls'] = classToMock["__" .. name]['calls'] + 1
         local callingArguments = { ... }
