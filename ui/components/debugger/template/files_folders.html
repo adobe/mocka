@@ -1,0 +1,16 @@
+<ul>{{#each fs}}
+    {{#if this.isDir}}
+    <li class="folder" data-path="{{this.path}}" data-name="{{this.name}}">
+        <span class="pull-left ui-icon ui-icon-folder-collapsed"></span>
+        <span>{{this.name}}</span>
+    </li>
+    {{component name="debugger" view="files_folders" fs=this.list parentId=parentId}}
+    {{else}}
+        <li class="file" data-path="{{this.path}}" data-name="{{this.name}}">
+            <span class="pull-left ui-icon icon-file">
+            </span>
+            <span><b>{{this.name}}</b></span>
+        </li>
+    {{/if}}
+{{/each}}
+</ul>

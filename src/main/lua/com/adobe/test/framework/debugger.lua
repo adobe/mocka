@@ -50,6 +50,7 @@ function Debugger:getFs(path)
                 fs[f] = {
                     type = "dir",
                     path = f,
+                    name = file,
                     list = self:getFs(f)
                 }
             else

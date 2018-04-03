@@ -1,0 +1,25 @@
+.debuggerWrapper {
+    padding: 10px;
+}
+
+.debuggerWrapper ul{
+    list-style-type: none;
+    padding: 2px;
+}
+
+.debuggerWrapper ul li {
+    cursor: pointer;
+}
+
+.debuggerWrapper li:hover {
+    background-color: #0b97c4;
+}
+.debuggerWrapper .left-container {
+    min-width: 240px;
+    min-height: 250px;
+    border: 1px solid;
+}
+
+.debuggerWrapper .files_folders {
+    background-color: #bce8f1;
+}

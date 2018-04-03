@@ -1,0 +1,208 @@
+body {
+    background-color: #f4f6f8 !important;
+    margin: 0px !important;
+    font-size: 14px;
+}
+
+.card-wrapper {
+    overflow: hidden;
+    border: 1px solid darkgrey;
+    margin-bottom: 20px;
+}
+.command {
+    cursor: pointer;
+}
+
+.card-title {
+    font-size: 20px;
+    padding: 13px 20px;
+    color: blue;
+    background: white;
+}
+
+.fTitle {
+    line-height: 50px;
+    font-size: 28px;
+}
+
+.right-container {
+    float: right;
+    overflow: hidden;
+    padding: 10px;
+}
+.left-container {
+    float: left;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.card-body {
+    padding: 13px 20px;
+    background: white !important;
+    border-top: 1px solid darkgrey;
+    color: blue;
+    clear: both;
+    overflow: hidden;
+}
+
+.card-body.no-title {
+    border-top: 0px !important;
+}
+
+.round {
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -ms-border-radius: 5px;
+}
+
+.form-key-value {
+    overflow: hidden;
+    width: 100%;
+    height: auto;
+    padding: 10px;
+}
+
+.form-key {
+    float: left;
+    text-align: right;
+    width: 26%;
+    line-height: 20px;
+}
+
+.form-value {
+    float: left;
+    text-align: left;
+    margin-left: 10px;
+    line-height: 20px;
+}
+
+.form-value select {
+    margin-left: 10px;
+}
+
+.loading {
+    overflow: hidden;
+    padding: 10px;
+    width: 45px;
+    height: 45px;
+}
+
+.loader {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    border-left: 3px solid #dde0e4;
+    border-right: 3px solid #0e87e3;
+    border-top: 3px solid #dde0e4;
+    border-bottom: 3px solid #0e87e3;
+
+    -webkit-animation: KEYFRAME-NAME 1s infinite;
+    -moz-animation: KEYFRAME-NAME 1s infinite;
+    -o-animation: KEYFRAME-NAME 1s infinite;
+    animation: KEYFRAME-NAME 1s infinite;
+    /* width and height can be anything, as long as they're equal */
+}
+
+.loader.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    margin-top: -40px;
+    margin-left: -40px;
+}
+
+@media screen and (max-width: 750px),
+screen and (min-device-width: 320px)
+and (max-device-width: 750px) {
+    .loader-center {
+        width: 120px;
+        height: 120px;
+        margin-top: -60px;
+        margin-left: -60px;
+    }
+}
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    position: absolute;
+    opacity: 0.8;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+    background: #ebebeb;
+}
+
+.overlay.nobg {
+    background: transparent !important;
+}
+
+@-webkit-keyframes KEYFRAME-NAME {
+    0% {
+        -ms-transform: rotate(0deg); /* IE 9 */
+        -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -ms-transform: rotate(360deg); /* IE 9 */
+        -webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+        transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes KEYFRAME-NAME {
+    0% {
+        -ms-transform: rotate(0deg); /* IE 9 */
+        -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -ms-transform: rotate(360deg); /* IE 9 */
+        -webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+        transform: rotate(360deg);
+    }
+}
+
+@-o-keyframes KEYFRAME-NAME {
+    0% {
+        -ms-transform: rotate(0deg); /* IE 9 */
+        -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -ms-transform: rotate(360deg); /* IE 9 */
+        -webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes KEYFRAME-NAME {
+    0% {
+        -ms-transform: rotate(0deg); /* IE 9 */
+        -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -ms-transform: rotate(360deg); /* IE 9 */
+        -webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+        transform: rotate(360deg);
+    }
+}
+
+.app-clifJs {
+    overflow: visible;
+    height: auto;
+    width: auto;
+}
+
+[type=x-handlebars-template] {
+    visibility: hidden;
+}

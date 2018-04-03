@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../resources/icon.png">
+
+    <title>Application</title>
+    <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+    <script src="../js/lib/jquery-1.9.0.min.js"></script>
+    <script src="../js/lib/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="../js/lib/es5-shim.min.js"></script>
+    <script src="../js/lib/require.js"></script>
+    <script src="../js/lib/handlebars.js"></script>
+    <script src="../js/register_handlebars.js"></script>
+    <script src="../js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        //modify this variable if you don't plan to use the express server
+        //var serverUsed = 'express';
+
+        //Register the component handlebars helper
+        registerComponent();
+
+        var provider,
+                provisioningStack = [];
+
+        /**
+         * Get all the x-handlebars-template save and replace the containers with empty html,
+         * compile the saved html with handlebars and then run it.
+         */
+        $(document).ready(function() {
+            var handlebarsTemplate = $('[type="x-handlebars-template"]'),
+                    templatesHTML = [];
+
+            handlebarsTemplate.each(function () {
+                var element = this;
+                templatesHTML.push({
+                    element: this,
+                    content: $(this).html()
+                });
+                $(this).html('');
+            });
+
+            for(var i = 0, len = handlebarsTemplate.length; i < len; i++) {
+                var aggregation = Handlebars.compile(templatesHTML[i].content);
+                $(templatesHTML[i].element).append(aggregation);
+            }
+        });
+
+        /**
+         * Provisioning method. Provides the requested components on the client side.
+         *
+         * @param {Object} configuration the configuration of the component representing guidelines
+         * for the provisioning method to provide the specified component.
+         */
+        function provide(configuration) {
+            if (typeof configuration === 'undefined') {
+                provide(provisioningStack);
+            }
+
+            if(!window.provider) {
+                provisioningStack.push(configuration);
+            } else if (configuration instanceof Array) {
+                for (var i = 0, len = configuration.length; i < len; i++) {
+                    provider.render(configuration[i]);
+                }
+            } else if (typeof configuration !== 'undefined'){
+                provider.render(configuration);
+            }
+
+        };
+
+        require(['../js/client_provider'], function (ClientProvider) {
+            provider = new ClientProvider();
+            provide();
+        });
+    </script>
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+</head>
+<body>
+
+
+<div class="header" type="x-handlebars-template">
+    {{component name="user" view="login" hasTitle="true" title="Login Form"}}
+</div>
+
+
+<div class="header" type="x-handlebars-template">
+    {{component name="user" view="logout"}}
+</div>
+
+</body>
+
+
+</html>

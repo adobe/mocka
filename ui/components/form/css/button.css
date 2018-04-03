@@ -1,0 +1,97 @@
+.secondary {
+    background-color: #ebebeb;
+}
+
+.secondary:hover {
+    background-color: #f2f2f2;
+}
+
+.primary {
+    background-color: #0040D0;
+}
+
+.primary .button-label{
+    color: #fff !important;
+    font-weight: bold !important;
+}
+
+.primary:hover {
+    background-color: #366097;
+}
+
+.link .button-label {
+    color: #ebebeb !important;
+    font-weight: bold;
+    background-color: transparent;
+}
+
+.link:hover .button-label{
+    color: darkgrey !important;
+}
+
+
+
+.navigation .button-label {
+    color: #7f8a94;
+    font-size: 24px !important;
+    font-weight: normal !important;
+}
+
+.navigation:hover .button-label {
+    color: #0081c2 !important;
+}
+
+.button-wrapper .button-label {
+    font-weight: bold;
+}
+
+.button-label a {
+    text-decoration: none;
+}
+
+.link:hover a{
+    text-decoration: none;
+    color: #d3d3d3;
+}
+
+.button-wrapper {
+    padding: 9px 12px;
+    line-height: 14px;
+    font-size: 14px;
+    font-family: Arial;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.button-wrapper .icon:before{
+    margin-right: 5px;
+    font-size: 14px;
+    line-height: 14px;
+}
+
+.HOME:before {
+    content: '\f015';
+}
+
+.LOCK:before {
+    content: '\f023';
+}
+
+.ALERT.active {
+    color: #FFFF00;
+}
+.ALERT:before {
+    content: '\f0f3';
+}
+
+.COLLAPSE:before {
+    content: '\f107';
+}
+
+.UP:before {
+    content: '\f106';
+}
+
+.MENU:before {
+    content: '\f0c9';
+}

@@ -1,0 +1,16 @@
+.textarea-wrapper {
+    width: 100%;
+    padding: 9px;
+    overflow: hidden;
+}
+
+.textarea-wrapper .label {
+    float: left;
+    padding: 9px;
+    color: #000000;
+}
+
+.textarea-wrapper .textarea {
+    float: left;
+    padding: 9px;
+}

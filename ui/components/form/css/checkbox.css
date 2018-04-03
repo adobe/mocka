@@ -1,0 +1,12 @@
+.checkbox-wrapper {
+    padding-left: 9px;
+    overflow: hidden;
+}
+.checkbox-wrapper input {
+    float: left;
+}
+.checkbox-label {
+    margin-left: 9px;
+    line-height: 20px;
+    float: left;
+}
