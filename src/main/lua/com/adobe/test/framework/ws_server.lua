@@ -36,7 +36,7 @@ end
 function WsServer:start()
     while true do
         local data, typ, err = self.wb:recv_frame()
-        if wb.fatal then
+        if self.wb.fatal then
             ngx.log(ngx.ERR, "failed to receive frame: ", err)
             return ngx.exit(444)
         end
@@ -55,27 +55,29 @@ function WsServer:start()
                 return ngx.exit(444)
             end
         elseif typ == "pong" then
-            ngx.log(ngx.INFO, "client ponged")
         elseif typ == "text" then
             self:handleMessage(data)
         end
-        self.wb:send_close()
     end
+    self.wb:send_close()
 end
 
 function WsServer:handleMessage(message)
     local decodedMessage = cjson.decode(message)
-    if self.wb.handlers[message.type] then
-        local status, data = pcall(self.wb.handlers[message.type], decodedMessage)
+    if self.wb.handlers[decodedMessage.type] then
+        local status, data = pcall(self.wb.handlers[decodedMessage.type], decodedMessage)
+        if not status then
+            ngx.log(ngx.ERR, "failed handler ", tostring(data))
+        end
     else
-        ngx.log(ngx.ERR, "no handler for message type ", message.type)
+        ngx.log(ngx.ERR, "no handler for message type ", decodedMessage.type)
     end
 end
 
 function WsServer:enhanceWsClient(websocket)
     websocket.handlers = {}
     function websocket:on(message, handler)
-        websocket.handlers[message] = handler
+        self.handlers[message] = handler
     end
 end
 

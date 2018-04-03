@@ -29,7 +29,7 @@ function Debugger:_registerHandlers(webSocketConnection)
     end)
 
     webSocketConnection:on("introspect", function(message)
-
+        ngx.log(ngx.ERR, "message", cjson.encode(message))
     end)
 end
 
@@ -54,7 +54,6 @@ function Debugger:_traceFunction(event, line)
         -- next time when a breakpoint comes to play will stop
         self.continueExecution = false
     end
-    print("OK")
 end
 
 function Debugger:breakPointReached(file, line)
@@ -74,7 +73,7 @@ end
 
 function Debugger:setHook(webSocketConnection)
     local parent = self
-    self._registerHandlers(webSocketConnection)
+    self:_registerHandlers(webSocketConnection)
     self.webSocketConnection = webSocketConnection
     debug.sethook(function(...)
         parent:_traceFunction(...)
