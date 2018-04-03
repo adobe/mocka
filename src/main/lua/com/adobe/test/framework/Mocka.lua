@@ -60,6 +60,30 @@ local function _compare(t1, t2)
 end
 
 ---
+-- @param name {string} - name of the function that we want to make
+-- @param classToMock {string} - name of the class we are making the function for
+-- Internal function - not to be used. This function creates a function with all the needed internals: calls, latestCallWith
+-- it also creates a real new function if specified. On call the function increments it's internals (calls) and saves
+-- the latestCallWithArguments. Also if present and a doReturn has been declared by a user than that function will be called
+-- with those parameters.
+local function _makeFunction(name, classToMock)
+    return function(self, ...)
+        classToMock["__" .. name]['calls'] = classToMock["__" .. name]['calls'] + 1
+        local callingArguments = { ... }
+        table.insert(callingArguments, self)
+        classToMock["__" .. name]['latestCallWith'] = callingArguments
+        if name == 'new' and classToMock["__" .. name].doReturn == nil then
+            local o = callingArguments or {}
+            setmetatable(o, self)
+            self.__index = self
+            return o
+        elseif classToMock["__" .. name].doReturn ~= nil then
+            return classToMock["__" .. name].doReturn(self, ...)
+        end
+    end
+end
+
+---
 -- Retrieves current run information
 -- @return {currentSuiteNumber, currentSuiteInfo, currentTestNumber, currentTestInfo}
 ---
@@ -71,41 +95,27 @@ local function getCurrentRunInfo()
     return currentSuiteNumber, currentSuiteInfo, currentTestNumber, currentTestInfo
 end
 
----
--- Spy utility method that creates a spy. Also returns the spy object when available
--- @param class - the path as passed to require
--- @param method - the method for stub
--- @param fn - the callback to execute - the actual stub
+
+--- Makes a shallow copy
+-- @param t object - the object to clone
 --
-function spy(class, method, fn)
-    -- if it isn't alredy required and not yet set for lazy
-    if not mirror[class] then
-        if not lazy_spies[class] then
-            lazy_spies[class] = {
-                ["class"] = class,
-                ["method"] = method,
-                ["fn"] = fn
-            }
-        end
-        return
+local function _clone (t) -- shallow-copy
+    if type(t) ~= "table" then return t end
+    local meta = getmetatable(t)
+    local target = {}
+    for k, v in pairs(t) do target[k] = v end
+    setmetatable(target, meta)
+    return target
+end
+
+---
+-- @param class - full fledged class as you see it in the require
+-- Public function used only in before each - to spy on an object - (stub the replacement)
+--
+local function _makeDoReturnFunction(obj)
+    return function(fn)
+        obj.doReturn = fn
     end
-
-
-    local mapObj = {}
-
-    for method, method_real in pairs(mirror[class]) do
-        -- don't index private methods
-        if not string.find(method, "__") and type(method_real) == 'function' then
-            mapObj[method] = spies[class]["__" .. method]
-            mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
-        end
-    end
-
-    if method and fn then
-        mapObj[method].doReturn = fn
-    end
-
-    return mapObj
 end
 
 local function __makeSpy(path)
@@ -150,6 +160,54 @@ local function __makeSpy(path)
     end
 end
 
+--- Converts a table to a string
+-- @param v table
+local function valToString(v)
+    local vType = type(v)
+    if vType == 'table' then
+        return table.tostring(v)
+    end
+    return tostring(v)
+end
+
+---
+-- Spy utility method that creates a spy. Also returns the spy object when available
+-- @param class - the path as passed to require
+-- @param method - the method for stub
+-- @param fn - the callback to execute - the actual stub
+--
+function spy(class, method, fn)
+    -- if it isn't alredy required and not yet set for lazy
+    if not mirror[class] then
+        if not lazy_spies[class] then
+            lazy_spies[class] = {
+                ["class"] = class,
+                ["method"] = method,
+                ["fn"] = fn
+            }
+        end
+        return
+    end
+
+
+    local mapObj = {}
+
+    for method, method_real in pairs(mirror[class]) do
+        -- don't index private methods
+        if not string.find(method, "__") and type(method_real) == 'function' then
+            mapObj[method] = spies[class]["__" .. method]
+            mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
+        end
+    end
+
+    if method and fn then
+        mapObj[method].doReturn = fn
+    end
+
+    return mapObj
+end
+
+
 ---
 -- @param path {string} - path to require
 -- Alters the real require to server either mock or real lua file - has same signature like lua require
@@ -189,14 +247,6 @@ require = function(path)
     end
 end
 
-function _clone (t) -- shallow-copy
-    if type(t) ~= "table" then return t end
-    local meta = getmetatable(t)
-    local target = {}
-    for k, v in pairs(t) do target[k] = v end
-    setmetatable(target, meta)
-    return target
-end
 
 ---
 -- @param fn {function} - the function to be ran beforeEach Test
@@ -344,41 +394,6 @@ function when(mockClass)
     return mapObj
 end
 
----
--- @param class - full fledged class as you see it in the require
--- Public function used only in before each - to spy on an object - (stub the replacement)
---
-
-
-local function _makeDoReturnFunction(obj)
-    return function(fn)
-        obj.doReturn = fn
-    end
-end
-
----
--- @param name {string} - name of the function that we want to make
--- @param classToMock {string} - name of the class we are making the function for
--- Internal function - not to be used. This function creates a function with all the needed internals: calls, latestCallWith
--- it also creates a real new function if specified. On call the function increments it's internals (calls) and saves
--- the latestCallWithArguments. Also if present and a doReturn has been declared by a user than that function will be called
--- with those parameters.
-local function _makeFunction(name, classToMock)
-    return function(self, ...)
-        classToMock["__" .. name]['calls'] = classToMock["__" .. name]['calls'] + 1
-        local callingArguments = { ... }
-        table.insert(callingArguments, self)
-        classToMock["__" .. name]['latestCallWith'] = callingArguments
-        if name == 'new' and classToMock["__" .. name].doReturn == nil then
-            local o = callingArguments or {}
-            setmetatable(o, self)
-            self.__index = self
-            return o
-        elseif classToMock["__" .. name].doReturn ~= nil then
-            return classToMock["__" .. name].doReturn(self, ...)
-        end
-    end
-end
 
 ---
 -- @param method {function} - the actual internal representation class.__internalMethod
@@ -452,13 +467,6 @@ function table.tostring(tbl)
     return "{" .. table.concat(result, ",") .. "}"
 end
 
-local function valToString(v)
-    local vType = type(v)
-    if vType == 'table' then
-        return table.tostring(v)
-    end
-    return tostring(v)
-end
 
 -- assertions
 
