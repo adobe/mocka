@@ -14,7 +14,10 @@ function Debugger:_traceFunction(event, line)
 end
 
 function Debugger:setHook()
-    debug.sethook(self._traceFunction, "l")
+    local this = self
+    debug.sethook(function(...)
+        self:_traceFunction(...)
+    end , "l")
 end
 
 function Debugger:removeHook()
