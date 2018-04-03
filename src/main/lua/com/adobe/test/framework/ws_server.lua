@@ -68,7 +68,7 @@ function WsServer:handleMessage(message)
     if self.wb.handlers[message.type] then
         local status, data = pcall(self.wb.handlers[message.type], decodedMessage)
     else
-        print ("no handler for message type ", message.type)
+        ngx.log(ngx.ERR, "no handler for message type ", message.type)
     end
 end
 
