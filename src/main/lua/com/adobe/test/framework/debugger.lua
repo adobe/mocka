@@ -1,4 +1,5 @@
 local cjson = require "cjson"
+local lfs = require "lfs"
 
 local instance
 
@@ -24,6 +25,11 @@ function Debugger:_registerHandlers(webSocketConnection)
         end
     end)
 
+    webSocketConnection:on("get_fs", function(message)
+        local fs = parent:getFs(message.path)
+        parent.webSocketConnection:send_text(cjson.encode(fs))
+    end)
+
     webSocketConnection:on("continue", function()
         parent.continueExecution = true
     end)
@@ -31,6 +37,31 @@ function Debugger:_registerHandlers(webSocketConnection)
     webSocketConnection:on("introspect", function(message)
         ngx.log(ngx.ERR, "message", cjson.encode(message))
     end)
+end
+
+function Debugger:getFs(path)
+    local fs = {}
+    for file in lfs.dir(path) do
+        if file ~= "." and file ~= ".." then
+            local f = path ..'/'..file
+            local attr = lfs.attributes (f)
+            assert (type(attr) == "table")
+            if attr.mode == "directory" then
+                fs[f] = {
+                    type = "dir",
+                    path = f,
+                    list = self:getFs(f)
+                }
+            else
+                table.insert(fs, {
+                    type = "file",
+                    path = f,
+                    name = file
+                })
+            end
+        end
+    end
+    return fs
 end
 
 function Debugger:registerBreakPoint(file, line)
