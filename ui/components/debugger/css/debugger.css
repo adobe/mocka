@@ -18,8 +18,32 @@
     min-width: 240px;
     min-height: 250px;
     border: 1px solid;
+    background-color: #f0f0f0;
 }
 
 .debuggerWrapper .files_folders {
-    background-color: #bce8f1;
+    padding: 2px;
+    overflow-y: auto;
+    overflow-x: auto;
 }
+
+.right-container .code pre code{
+    font-family: monospace;
+    height:95%;
+}
+
+.debuggerWrapper .right-container {
+    float: none;
+    padding: 0px;
+    border: 0px solid
+}
+
+.right-container .code pre{
+    border: 1px solid;
+    width: 700px;
+    min-width: 300px;
+}
+
+code ul{counter-reset: line;}
+code li{counter-increment: line;}
+code li:before{content: counter(line);width: 30px;display: inline-block;}

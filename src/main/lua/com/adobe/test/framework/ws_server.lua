@@ -35,6 +35,14 @@ end
 
 function WsServer:start()
     while true do
+        local message_to_send = ngx.shared.ws_message["message"]
+
+        if message_to_send then
+            self.wb.send_text(message_to_send)
+            ngx.shared.ws_message["message"] = nil
+            ngx.log(ngx.ERR, "sent the message")
+        end
+
         local data, typ, err = self.wb:recv_frame()
         if self.wb.fatal then
             ngx.log(ngx.ERR, "failed to receive frame: ", err)
@@ -64,13 +72,13 @@ end
 
 function WsServer:handleMessage(message)
     local decodedMessage = cjson.decode(message)
-    if self.wb.handlers[decodedMessage.type] then
-        local status, data = pcall(self.wb.handlers[decodedMessage.type], decodedMessage)
+    if self.wb.handlers[decodedMessage.event] then
+        local status, data = pcall(self.wb.handlers[decodedMessage.event], decodedMessage.data)
         if not status then
             ngx.log(ngx.ERR, "failed handler ", tostring(data))
         end
     else
-        ngx.log(ngx.ERR, "no handler for message type ", decodedMessage.type)
+        ngx.log(ngx.ERR, "no handler for message type ", decodedMessage.event)
     end
 end
 

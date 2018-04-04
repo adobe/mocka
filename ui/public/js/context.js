@@ -1,8 +1,9 @@
 define(['componentMap',
         'promise',
         'componentRequester',
-        'sockets'
-        ], function (ComponentMap, Promise, ComponentRequester, Socket) {
+        'sockets',
+        'eventEmitter'
+        ], function (ComponentMap, Promise, ComponentRequester, Socket, EventEmitter) {
 
     /**
      * The component's controller execution context this module is being injected in the controller
@@ -49,8 +50,6 @@ define(['componentMap',
 
 
     }
-
-    
 
     /**
      * Retrieves the container of the component.

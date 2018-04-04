@@ -16,9 +16,7 @@ define(['eventEmitter'], function (EventEmitter) {
         //this._jqEmulated = jQuery();
     }
 
-    //inherit from the EventEmitter
-    jQuery.extend(Messaging.prototype, EventEmitter.prototype);
-
+    jQuery.extend(Messaging.prototype, EventEmitter.eventEmitter);
     /**
      * Instance of the Messaging module.
      *

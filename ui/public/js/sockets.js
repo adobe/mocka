@@ -1,7 +1,7 @@
 /**
  * Created by atrifan on 10/28/2015.
  */
-define([], function () {
+define(['promise'], function (Promise) {
     function SocketRegistry() {
 
         var protocol = 'ws://',
@@ -42,7 +42,9 @@ define([], function () {
             socket._listeners[event] = fn;
         }
 
+        var deferred = Promise.defer();
         socket.onopen = function(ev) {
+            deferred.resolve(socket);
             socket.onmessage = function(message) {
                 try {
                     message = JSON.parse(message.data);
@@ -50,9 +52,15 @@ define([], function () {
                         socket._listeners[message.event](message.data);
                     }
                 } catch (ex) {
-                    console.log("RECEIVED MESSAGE: ", message);
+                    if (socket._listeners[message.event]) {
+                        socket._listeners[message.event](message.data);
+                    }
                 }
             }
+        }
+
+        socket.getClient = function() {
+            return deferred.promise;
         }
 
         return socket;

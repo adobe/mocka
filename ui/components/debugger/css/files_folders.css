@@ -1,0 +1,14 @@
+.icon{
+    margin-right: 5px;
+    font-size: 14px;
+    line-height: 14px;
+    color: #fff;
+}
+
+
+.FOLDER.close:before {
+    content: '\f07b';
+}
+.FOLDER.open:before {
+    content: '\f07c';
+}

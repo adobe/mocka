@@ -1,0 +1,18 @@
+{{#template id="file_folder"}}
+<ul>{{#each this}}
+    {{#if this.isDir}}
+    <li class="folder" data-path="{{this.path}}" data-name="{{this.name}}">
+        <span class="pull-left icon FOLDER close"></span>
+        <span>{{this.name}}</span>
+    </li>
+    {{{template_insert id="file_folder" data=this.list}}}
+    {{else}}
+    <li class="file" data-path="{{this.path}}" data-name="{{this.name}}">
+            <span class="pull-left ui-icon icon-file">
+            </span>
+        <span><b>{{this.name}}</b></span>
+    </li>
+    {{/if}}
+    {{/each}}
+</ul>
+{{/template}}

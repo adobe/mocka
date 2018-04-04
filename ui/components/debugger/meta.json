@@ -10,5 +10,6 @@
       "controller": "FilesFolders",
       "view": "files_folders.html"
     }
-  }
+  },
+  "templates": ["file_folder.html"]
 }

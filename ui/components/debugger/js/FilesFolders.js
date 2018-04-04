@@ -3,9 +3,7 @@
  */
 define(['modal'], function (Modal) {
     function FilesFolders() {
-
     }
-
     FilesFolders.prototype.init = function () {
         // var self = this;
         // this._socket = this.context.getSocketToServer('wordGame');
@@ -44,9 +42,9 @@ define(['modal'], function (Modal) {
     FilesFolders.prototype._fileClick = function(e, context) {
         e.stopPropagation();
         e.preventDefault();
-        console.log($(context))
-        console.log("good-f", $(context).data('path'));
+        this.emit('get_file', $(context).data('path'))
     };
+
 
     return FilesFolders;
 });
