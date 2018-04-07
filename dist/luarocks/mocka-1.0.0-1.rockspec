@@ -3,6 +3,7 @@ version = "1.0.0-1"
 local function make_plat(plat)
     return { modules = {
         mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
+        ["mocka.messaging_queue"] = "src/main/lua/com/adobe/test/framework/messaging_queue.lua",
         ["mocka.debugger"] = "src/main/lua/com/adobe/test/framework/debugger.lua",
         ["mocka.ws_server"] = "src/main/lua/com/adobe/test/framework/ws_server.lua",
         ["mocka.http_util"] = "src/main/lua/com/adobe/test/framework/http_util.lua",

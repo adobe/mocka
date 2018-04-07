@@ -1,5 +1,6 @@
 local cjson = require "cjson"
 local lfs = require "lfs"
+local messaging_queue = require "mocka.messaging_queue":getInstance()
 
 local instance
 
@@ -46,6 +47,7 @@ function Debugger:_registerHandlers(webSocketConnection)
 
     webSocketConnection:on("continue", function()
         parent.continueExecution = true
+        parent.lock:unlock("break_point")
     end)
 
     webSocketConnection:on("introspect", function(message)
@@ -90,6 +92,8 @@ function Debugger:deRegisterBreakPoint(file, line)
     self.debugMap[file .. ":" .. line] = nil
 end
 
+
+
 function Debugger:_traceFunction(event, line)
     local debugInfo = debug.getinfo(3)
     local fileName, occurences = string.gsub(debugInfo.source, "@", "")
@@ -97,10 +101,7 @@ function Debugger:_traceFunction(event, line)
     if self.debugMap[fileName .. ":" .. line] then
         --- send message
         self:breakPointReached(fileName, line)
-        while not self.continueExecution do
-            ngx.log(ngx.ERR, " waiting to continue ")
-            ngx.sleep(1)
-        end
+        self.lock:lock("break_point")
 
         -- next time when a breakpoint comes to play will stop
         self.continueExecution = false
@@ -117,7 +118,14 @@ function Debugger:breakPointReached(file, line)
     }
 
     ngx.log(ngx.ERR, "try to send ", cjson.encode(message))
-    ngx.shared.ws_message["message"] = cjson.encode(message)
+    messaging_queue:emit("send_message", message, function(status, res)
+        if status then
+            ngx.log(ngx.ERR, "executed ok")
+        else
+            ngx.log(ngx.ERR, " failed ", res)
+        end
+    end)
+    self.lock:lock("break_point")
     --local bytes, err = self.webSocketConnection:send_text(cjson.encode(message))
     --if not bytes then
     --    ngx.log(ngx.ERR, "Failed to send data over websocket")
@@ -126,8 +134,9 @@ function Debugger:breakPointReached(file, line)
     --end
 end
 
-function Debugger:setHook(webSocketConnection)
+function Debugger:setHook(webSocketConnection, lock)
     local parent = self
+    self.lock = lock
     self:_registerHandlers(webSocketConnection)
     self.webSocketConnection = webSocketConnection
     debug.sethook(function(...)

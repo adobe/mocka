@@ -7,13 +7,15 @@
 
 local instance
 local cjson = require "cjson"
-
+local messaging_queue = require "mocka.messaging_queue":getInstance()
+local resty_lock = require "resty.lock"
 local WsServer = {}
 
 function WsServer:new(o)
     o = o or {}
     setmetatable(o, self)
     self.__index = self
+    self.lock = resty_lock:new("my_locks")
     return o
 end
 
@@ -30,18 +32,17 @@ function WsServer:createServer()
 
     self:enhanceWsClient(wb)
     self.wb = wb
-    return self.wb
+    messaging_queue:on("send_message", function(message)
+        ngx.log(ngx.ERR, "need to send message")
+        wb:send_text(cjson.encode(message))
+    end)
+    return self.wb, self.lock
 end
 
 function WsServer:start()
     while true do
-        local message_to_send = ngx.shared.ws_message["message"]
 
-        if message_to_send then
-            self.wb.send_text(message_to_send)
-            ngx.shared.ws_message["message"] = nil
-            ngx.log(ngx.ERR, "sent the message")
-        end
+        messaging_queue:checkEvents()
 
         local data, typ, err = self.wb:recv_frame()
         if self.wb.fatal then
