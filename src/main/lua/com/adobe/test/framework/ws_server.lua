@@ -32,43 +32,58 @@ function WsServer:createServer()
 
     self:enhanceWsClient(wb)
     self.wb = wb
-    messaging_queue:on("send_message", function(message)
-        ngx.log(ngx.ERR, "need to send message")
-        wb:send_text(cjson.encode(message))
+
+    self.wb:on("check_for_messages", function(message)
+        messaging_queue:checkEvents()
     end)
+
+    local parent = self
+
+    messaging_queue:on("send_message", function(message)
+        ngx.log(ngx.ERR, "need to send message ", cjson.encode(message))
+        local bytes, err = parent.wb:send_text(cjson.encode(message))
+    end)
+
     return self.wb, self.lock
 end
 
 function WsServer:start()
+    self.wb:set_timeout(1000)
     while true do
 
-        messaging_queue:checkEvents()
-
         local data, typ, err = self.wb:recv_frame()
-        if self.wb.fatal then
-            ngx.log(ngx.ERR, "failed to receive frame: ", err)
-            return ngx.exit(444)
-        end
+--        if self.wb.fatal then
+--            ngx.log(ngx.ERR, "failed to receive frame: ", err)
+--            return ngx.exit(444)
+--        end
+
+--        local ngx_exit = ngx.worker.exiting()
+--        if ngx_exit then
+--            ngx.log(ngx.ERR, "closing open websockets - nginx worker exiting")
+--            break
+--        end
 
         if not data then
             local bytes, err = self.wb:send_ping()
             if not bytes then
                 ngx.log(ngx.ERR, "failed to send ping: ", err)
-                return ngx.exit(444)
+--                return ngx.exit(444)
             end
-        elseif typ == "close" then break
+        elseif typ == "close" then
+            ngx.log(ngx.ERR, "closing open websockets - nginx worker exiting")
+            break
         elseif typ == "ping" then
             local bytes, err = self.wb:send_pong()
             if not bytes then
                 ngx.log(ngx.ERR, "failed to send pong: ", err)
-                return ngx.exit(444)
+--                return ngx.exit(444)
             end
         elseif typ == "pong" then
         elseif typ == "text" then
             self:handleMessage(data)
         end
     end
-    self.wb:send_close()
+--    self.wb:send_close()
 end
 
 function WsServer:handleMessage(message)

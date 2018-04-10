@@ -11,7 +11,6 @@ function Debugger:new(o)
     setmetatable(o, self)
     self.__index = self
     self.debugMap = {}
-    self.continueExecution = false
     return o
 end
 
@@ -46,7 +45,6 @@ function Debugger:_registerHandlers(webSocketConnection)
     end)
 
     webSocketConnection:on("continue", function()
-        parent.continueExecution = true
         parent.lock:unlock("break_point")
     end)
 
@@ -86,6 +84,7 @@ end
 function Debugger:registerBreakPoint(file, line)
     ngx.log(ngx.ERR, "registering break point ", file, ":", line)
     self.debugMap[file .. ":" .. line] = true
+    self.lock:lock("break_point")
 end
 
 function Debugger:deRegisterBreakPoint(file, line)
@@ -104,7 +103,7 @@ function Debugger:_traceFunction(event, line)
         self.lock:lock("break_point")
 
         -- next time when a breakpoint comes to play will stop
-        self.continueExecution = false
+        self.lock:unlock()
     end
 end
 

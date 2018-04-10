@@ -42,6 +42,13 @@ define(['modal'], function (Modal) {
             console.log(message);
         })
 
+        setInterval(function() {
+            self._socket.getClient().then(function(socket) {
+              socket.emit('check_for_messages')
+            })
+        }, 6000);
+        this._socket
+
         this._socket.getClient().then(function(socket) {
             socket.emit('get_fs', {
                     path: '/usr/local/api-gateway/lualib'

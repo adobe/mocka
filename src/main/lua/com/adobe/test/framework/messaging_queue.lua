@@ -7,7 +7,6 @@ function MessagingQueue:new(o)
     self.__index = self
     self.handlers = {}
     self.messages = {}
-    self.executed = true
     return o
 end
 
@@ -28,27 +27,22 @@ function MessagingQueue:emit(message, data, cb)
     ngx.log(ngx.ERR, "emiting message ", message)
 end
 
-local function _resolveMessages(premature, context)
+function MessagingQueue:_resolveMessages()
     ngx.log(ngx.ERR, "checking for messages")
-    context.executed = true
-    for k, v in pairs(context.messages) do
-        if v and context.handlers[k] then
+    for k, v in pairs(self.messages) do
+        if v and self.handlers[k] then
             for i, j in ipairs(v) do
-                local status, res = pcall(context.handlers[k], j.data)
+                local status, res = pcall(self.handlers[k], j.data)
                 pcall(j.cb, status, res)
             end
         end
-        v = nil
+        self.messages[k] = {}
     end
 
 end
 
 function MessagingQueue:checkEvents()
-    ngx.log(ngx.ERR, " check events ", self.executed)
-    if self.executed then
-        self.executed = false
-        ngx.timer.at(2, _resolveMessages, self)
-    end
+    self:_resolveMessages()
 end
 
 local function getInstance()
