@@ -126,6 +126,7 @@ local function __makeSpy(path)
     if path then
         for method, impl in pairs(mirror[path]) do
             --- put all but not privates line __index
+            -- TODO: maybe in the future I can index private methods
             if impl ~= nil and type(impl) == 'function'
                     and not string.find(method, "__") then
                 spies[path]["__" .. method] = {
@@ -144,6 +145,7 @@ local function __makeSpy(path)
             if type(v) == 'table' then
                 for method, impl in pairs(v) do
                     --- put all but not privates line __index
+                    -- TODO: maybe in the future I can index private methods
                     if impl ~= nil and type(impl) == 'function'
                             and not string.find(method, "__") then
                         spies[k]["__" .. method] = {
@@ -194,6 +196,7 @@ function spy(class, method, fn)
 
     for method, method_real in pairs(mirror[class]) do
         -- don't index private methods
+        -- TODO: maybe in the future I can index prvate methods
         if not string.find(method, "__") and type(method_real) == 'function' then
             mapObj[method] = spies[class]["__" .. method]
             mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
@@ -385,8 +388,8 @@ end
 function when(mockClass)
     local mapObj = {}
     for k, v in pairs(mockClass) do
-        if string.find(k, "__") then
-            local replacement, number = string.gsub(k, "_", "")
+        if string.sub(k, 1, 2) == "__" then
+            local replacement, number = string.gsub(k, "__", "", 1)
             mapObj[replacement] = v
             mapObj[replacement]["fake"] = _makeDoReturnFunction(mockClass[k])
         end
