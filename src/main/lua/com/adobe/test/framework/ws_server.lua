@@ -8,14 +8,12 @@
 local instance
 local cjson = require "cjson"
 local messaging_queue = require "mocka.messaging_queue":getInstance()
-local resty_lock = require "resty.lock"
 local WsServer = {}
 
 function WsServer:new(o)
     o = o or {}
     setmetatable(o, self)
     self.__index = self
-    self.lock = resty_lock:new("my_locks")
     return o
 end
 
@@ -44,7 +42,7 @@ function WsServer:createServer()
         local bytes, err = parent.wb:send_text(cjson.encode(message))
     end)
 
-    return self.wb, self.lock
+    return self.wb
 end
 
 function WsServer:start()

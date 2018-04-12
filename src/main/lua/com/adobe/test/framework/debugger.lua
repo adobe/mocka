@@ -45,7 +45,7 @@ function Debugger:_registerHandlers(webSocketConnection)
     end)
 
     webSocketConnection:on("continue", function()
-        parent.lock:unlock("break_point")
+        parent.continueExecution = true
     end)
 
     webSocketConnection:on("introspect", function(message)
@@ -84,7 +84,6 @@ end
 function Debugger:registerBreakPoint(file, line)
     ngx.log(ngx.ERR, "registering break point ", file, ":", line)
     self.debugMap[file .. ":" .. line] = true
-    self.lock:lock("break_point")
 end
 
 function Debugger:deRegisterBreakPoint(file, line)
@@ -100,10 +99,6 @@ function Debugger:_traceFunction(event, line)
     if self.debugMap[fileName .. ":" .. line] then
         --- send message
         self:breakPointReached(fileName, line)
-        self.lock:lock("break_point")
-
-        -- next time when a breakpoint comes to play will stop
-        self.lock:unlock()
     end
 end
 
@@ -117,6 +112,7 @@ function Debugger:breakPointReached(file, line)
     }
 
     ngx.log(ngx.ERR, "try to send ", cjson.encode(message))
+    self.continueExecution = false
     messaging_queue:emit("send_message", message, function(status, res)
         if status then
             ngx.log(ngx.ERR, "executed ok")
@@ -124,7 +120,7 @@ function Debugger:breakPointReached(file, line)
             ngx.log(ngx.ERR, " failed ", res)
         end
     end)
-    self.lock:lock("break_point")
+
     --local bytes, err = self.webSocketConnection:send_text(cjson.encode(message))
     --if not bytes then
     --    ngx.log(ngx.ERR, "Failed to send data over websocket")
@@ -133,9 +129,8 @@ function Debugger:breakPointReached(file, line)
     --end
 end
 
-function Debugger:setHook(webSocketConnection, lock)
+function Debugger:setHook(webSocketConnection)
     local parent = self
-    self.lock = lock
     self:_registerHandlers(webSocketConnection)
     self.webSocketConnection = webSocketConnection
     debug.sethook(function(...)
