@@ -1,6 +1,7 @@
 local cjson = require "cjson"
 local lfs = require "lfs"
 local messaging_queue = require "mocka.messaging_queue":getInstance()
+local http_util = require "mocka.http_util"
 
 local instance
 
@@ -120,6 +121,13 @@ function Debugger:breakPointReached(file, line)
             ngx.log(ngx.ERR, " failed ", res)
         end
     end)
+
+    local res, err = http_util:request("localhost", 9191)
+        :path("/test-api-key")
+        :header("Host", "test1.api.key.adobe.io")
+        :header("X-Api-Key", "invalid")
+        :get()
+    ngx.log(ngx.ERR, "shhhit ", tostring(res.status), " --- ", tostring(err))
 
     --local bytes, err = self.webSocketConnection:send_text(cjson.encode(message))
     --if not bytes then
