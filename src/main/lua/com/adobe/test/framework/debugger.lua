@@ -1,7 +1,6 @@
 local cjson = require "cjson"
 local lfs = require "lfs"
 local messaging_queue = require "mocka.messaging_queue":getInstance()
-local http_util = require "mocka.http_util"
 
 local instance
 
@@ -108,9 +107,11 @@ function Debugger:breakPointReached(file, line)
         event = "break_point_reached",
         data = {
             file = file,
-            line = line
+            line = line,
+            retrieved_variables = self:retrieveLocalVariables()
         }
     }
+
 
     ngx.log(ngx.ERR, "try to send ", cjson.encode(message))
     self.continueExecution = false
@@ -122,28 +123,58 @@ function Debugger:breakPointReached(file, line)
         end
     end)
 
-    local res, err = http_util:request("localhost", 9191)
-        :path("/test-api-key")
-        :header("Host", "test1.api.key.adobe.io")
-        :header("X-Api-Key", "invalid")
-        :get()
-    ngx.log(ngx.ERR, "shhhit ", tostring(res.status), " --- ", tostring(err))
+--    while not self.continueExecution do
+--        ngx.sleep(2)
+--    end
 
-    --local bytes, err = self.webSocketConnection:send_text(cjson.encode(message))
-    --if not bytes then
-    --    ngx.log(ngx.ERR, "Failed to send data over websocket")
-    --    -- I should continue execution if client is gone - means that debugger session ended
-    --    self.continueExecution = true
-    --end
+end
+
+function Debugger:retrievel
+
+function Debugger:retrieveLocalVariables()
+    local i = 1
+    local local_vars = {}
+
+    while true do
+        -- the exact point where I am injected
+        local n, v = debug.getlocal(5, i)
+        if not n then break end
+        local_vars[n] = self:getVars(v)
+        i = i + 1
+    end
+
+    return local_vars
+end
+
+function Debugger:getVars(entry)
+    local vars = {}
+    local dont = false
+    if type(entry) == "table" then
+        for k, v in ipairs(entry) do
+            vars[k] = self:getVars(v)
+            dont = true
+        end
+        if not dont then
+            for i, j in pairs(entry) do
+                vars[i] = self:getVars(j)
+            end
+        end
+        return vars
+    end
+
+    return tostring(entry)
+end
+
+function Debugger:setWS(webSocketConnection)
+    self:_registerHandlers(webSocketConnection)
+    self.webSocketConnection = webSocketConnection
 end
 
 function Debugger:setHook(webSocketConnection)
     local parent = self
-    self:_registerHandlers(webSocketConnection)
-    self.webSocketConnection = webSocketConnection
     debug.sethook(function(...)
         parent:_traceFunction(...)
-    end , "l")
+    end, "l")
 end
 
 function Debugger:removeHook()

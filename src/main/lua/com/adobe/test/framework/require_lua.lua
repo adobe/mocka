@@ -1,168 +1,128 @@
--- Copyright (c) 2012 Rob Hoelz <rob@hoelz.ro>
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy of
--- this software and associated documentation files (the "Software"), to deal in
--- the Software without restriction, including without limitation the rights to
--- use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
--- the Software, and to permit persons to whom the Software is furnished to do so,
--- subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
--- FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
--- COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
--- IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
--- CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+--- usage:
+-- require = require"require".require
+-- :o)
 
-local sformat      = string.format
-local sgmatch      = string.gmatch
-local sgsub        = string.gsub
-local smatch       = string.match
-local tconcat      = table.concat
-local tinsert      = table.insert
-local setmetatable = setmetatable
-local ploadlib     = package.loadlib
+local error, ipairs, newproxy, tostring, type
+= error, ipairs, newproxy, tostring, type
 
-local meta = {}
-local _M   = setmetatable({}, meta)
+local t_concat = table.concat
 
-_M.VERSION = '0.01'
+--- Helpers
 
--- XXX assert(type(package.preload[name]) == 'function')?
-local function preload_loader(name)
-    if package.preload[name] then
-        return package.preload[name]
+
+local function checkstring(s)
+    local t = type(s)
+    if t == "string" then
+        return s
+    elseif t == "number" then
+        return tostring(s)
     else
-        return sformat("no field package.preload['%s']\n", name)
+        error("bad argument #1 to 'require' (string expected, got "..t..")", 3)
     end
 end
 
-local function path_loader(name, paths, loader_func)
-    local errors = {}
+--- for Lua 5.1
+
+local package, p_loaded, setmetatable = package, package.loaded, setmetatable
+
+local sentinel do
+    local function errhandler() error("the require() sentinel can't be indexed or updated", 2) end
+    sentinel = newproxy and newproxy() or setmetatable({}, {__index = errhandler, __newindex = errhandler, __metatable = false})
+end
+
+local function require51 (name)
+    name = checkstring(name)
+    if p_loaded[name] == sentinel then
+        error("loop or previous error loading module '"..name.."'", 2)
+    end
+
+    local module = p_loaded[name]
+    if module then return module end
+
+    local msg = {}
     local loader
-
-    name = sgsub(name, '%.', '/')
-
-    for path in sgmatch(paths, '[^;]+') do
-        path = sgsub(path, '%?', name)
-
-        local errmsg
-
-        loader, errmsg = loader_func(path)
-
-        if loader then
-            break
-        else
-            -- XXX error for when file isn't readable?
-            -- XXX error for when file isn't valid Lua (or loadable?)
-            tinsert(errors, sformat("no file '%s'", path))
+    for _, searcher in ipairs(package.loaders) do
+        loader = searcher(name)
+        if type(loader) == "function" then break end
+        if type(loader) == "string" then
+            -- `loader` is actually an error message
+            msg[#msg + 1] = loader
         end
+        loader = nil
     end
-
-    if loader then
-        return loader
+    if loader == nil then
+        error("module '" .. name .. "' not found: "..t_concat(msg), 2)
+    end
+    p_loaded[name] = sentinel
+    local res = loader(name)
+    if res ~= nil then
+        module = res
+    elseif p_loaded[name] == sentinel or not p_loaded[name] then
+        module = true
     else
-        return tconcat(errors, '\n') .. '\n'
-    end
-end
-
-local function lua_loader(name)
-    return path_loader(name, package.path, loadfile)
-end
-
-local function get_init_function_name(name)
-    name = sgsub(name, '^.*%-', '', 1)
-    name = sgsub(name, '%.', '_')
-
-    return 'luaopen_' .. name
-end
-
-local function c_loader(name)
-    local init_func_name = get_init_function_name(name)
-
-    return path_loader(name, package.cpath, function(path)
-        return ploadlib(path, init_func_name)
-    end)
-end
-
-local function all_in_one_loader(name)
-    local init_func_name = get_init_function_name(name)
-    local base_name      = smatch(name, '^[^.]+')
-
-    return path_loader(base_name, package.cpath, function(path)
-        return ploadlib(path, init_func_name)
-    end)
-end
-
-local function findchunk(name)
-    local errors = { string.format("module '%s' not found\n", name) }
-    local found
-
-    for _, loader in ipairs(_M.loaders) do
-        local chunk = loader(name)
-
-        if type(chunk) == 'function' then
-            return chunk
-        elseif type(chunk) == 'string' then
-            errors[#errors + 1] = chunk
-        end
+        module = p_loaded[name]
     end
 
-    return nil, table.concat(errors, '')
+    p_loaded[name] = module
+    return module
 end
 
-local function require(name)
-    if package.loaded[name] == nil then
-        local chunk, errors = findchunk(name)
+--- for Lua 5.2
 
-        if not chunk then
-            error(errors, 2)
+local function require52 (name)
+    name = checkstring(name)
+    local module = p_loaded[name]
+    if module then return module end
+
+    local msg = {}
+    local loader, param
+    for _, searcher in ipairs(package.searchers) do
+        loader, param = searcher(name)
+        if type(loader) == "function" then break end
+        if type(loader) == "string" then
+            -- `loader` is actually an error message
+            msg[#msg + 1] = loader
         end
-
-        local result = chunk(name)
-
-        if result ~= nil then
-            package.loaded[name] = result
-        elseif package.loaded[name] == nil then
-            package.loaded[name] = true
-        end
+        loader = nil
+    end
+    if loader == nil then
+        error("module '" .. name .. "' not found: "..t_concat(msg), 2)
+    end
+    local res = loader(name, param)
+    if res ~= nil then
+        module = res
+    elseif not p_loaded[name] then
+        module = true
+    else
+        module = p_loaded[name]
     end
 
-    return package.loaded[name]
+    p_loaded[name] = module
+    return module
 end
 
-local loadermeta = {}
-
-function loadermeta:__call(...)
-    return self.impl(...)
-end
-
-local function makeloader(loader_func, name)
-    return setmetatable({ impl = loader_func, name = name }, loadermeta)
-end
-
--- XXX make sure that any added loaders are preserved (esp. luarocks)
-_M.loaders = {
-    makeloader(preload_loader, 'preload'),
-    makeloader(lua_loader, 'lua'),
-    makeloader(c_loader, 'c'),
-    makeloader(all_in_one_loader, 'all_in_one'),
+local module = {
+    VERSION = "0.1.8",
+    require51 = require51,
+    require52 = require52
 }
 
-if package.loaded['luarocks.require'] then
-    local luarocks_loader = require('luarocks.require').luarocks_loader
+if _VERSION == "Lua 5.1" then module.require = require51 end
+if _VERSION == "Lua 5.2" then module.require = require52 end
 
-    table.insert(_M.loaders, 1, makeloader(luarocks_loader, 'luarocks'))
+--- rerequire :o)
+
+for _, o in ipairs{
+    {"rerequiredefault", require},
+    {"rerequire", module.require},
+    {"rerequire51", require51},
+    {"rerequire52", require52}
+} do
+    local rereq, req = o[1], o[2]
+    module[rereq] = function(name)
+        p_loaded[name] = nil
+        return req(name)
+    end
 end
 
--- XXX sugar for adding/removing loaders
-
-function meta:__call(name)
-    return require(name)
-end
-
-_M.findchunk = findchunk
-
-return _M
+return module
