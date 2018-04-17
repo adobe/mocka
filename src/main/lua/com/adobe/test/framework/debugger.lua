@@ -129,8 +129,6 @@ function Debugger:breakPointReached(file, line)
 
 end
 
-function Debugger:retrievel
-
 function Debugger:retrieveLocalVariables()
     local i = 1
     local local_vars = {}
