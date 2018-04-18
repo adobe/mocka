@@ -123,32 +123,45 @@ function Debugger:breakPointReached(file, line)
         end
     end)
 
-    local sleep = function()
-        local ffi = require("ffi")
-        ffi.cdef[[
-            void Sleep(int ms);
-            int poll(struct pollfd *fds, unsigned long nfds, int timeout);
-            ]]
+    --local sleep = function()
+    --    local ffi = require("ffi")
+    --    ffi.cdef[[
+    --        void Sleep(int ms);
+    --        int poll(struct pollfd *fds, unsigned long nfds, int timeout);
+    --        ]]
+    --
+    --    local sleep
+    --    if ffi.os == "Windows" then
+    --        function sleep(s)
+    --            ffi.C.Sleep(s*1000)
+    --        end
+    --    else
+    --        function sleep(s)
+    --            ffi.C.poll(nil, 0, s*1000)
+    --        end
+    --    end
+    --
+    --    for i=1,160 do
+    --        io.write("."); io.flush()
+    --        sleep(2)
+    --    end
+    --    io.write("\n")
+    --end
+    --
+    --sleep()
+    local co = coroutine.create(function()
+        while true do
 
-        local sleep
-        if ffi.os == "Windows" then
-            function sleep(s)
-                ffi.C.Sleep(s*1000)
-            end
-        else
-            function sleep(s)
-                ffi.C.poll(nil, 0, s*1000)
-            end
         end
+    end)
 
-        for i=1,160 do
-            io.write("."); io.flush()
-            sleep(2)
-        end
-        io.write("\n")
-    end
+    debug.sethook(co, function()
+        ngx.log(ngx.ERR, "I AM HEEEERE")
+    end, "l")
 
-    sleep()
+    coroutine.resume(co)
+    ngx.thread.wait(co)
+
 
 
 --    while not self.continueExecution do
