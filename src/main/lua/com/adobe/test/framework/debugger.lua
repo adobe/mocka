@@ -123,6 +123,32 @@ function Debugger:breakPointReached(file, line)
         end
     end)
 
+    local sleep = function()
+        local ffi = require'ffi'
+
+        --- The libc functions used by this process.
+        ffi.cdef[[
+      int open(const char* pathname, int flags);
+      int close(int fd);
+      int read(int fd, void* buf, size_t count);
+ ]]
+        local O_NONBLOCK = 2048
+        local chunk_size = 4096
+        local buffer = ffi.new('uint8_t[?]',chunk_size)
+        local fd = ffi.C.open('/etc/api-gateway/mypipe',O_NONBLOCK)
+        local nbytes = ffi.C.read(fd,buffer,chunk_size)
+        ffi.C.close(fd)
+
+        while (nbytes == -1) do
+            fd = ffi.C.open('/etc/api-gateway/mypipe',O_NONBLOCK)
+            nbytes = ffi.C.read(fd,buffer,chunk_size)
+            ffi.C.close(fd)
+        end
+
+    end
+
+    sleep()
+
     --local sleep = function()
     --    local ffi = require("ffi")
     --    ffi.cdef[[
@@ -149,20 +175,6 @@ function Debugger:breakPointReached(file, line)
     --end
     --
     --sleep()
-    local co = coroutine.create(function()
-        while true do
-
-        end
-    end)
-
-    debug.sethook(co, function()
-        ngx.log(ngx.ERR, "I AM HEEEERE")
-    end, "l")
-
-    coroutine.resume(co)
-    ngx.thread.wait(co)
-
-
 
 --    while not self.continueExecution do
 --        ngx.sleep(2)
