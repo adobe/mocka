@@ -123,6 +123,8 @@ function Debugger:breakPointReached(file, line)
         end
     end)
 
+    ngx.sleep(20)
+
 --    while not self.continueExecution do
 --        ngx.sleep(2)
 --    end
@@ -168,7 +170,7 @@ function Debugger:setWS(webSocketConnection)
     self.webSocketConnection = webSocketConnection
 end
 
-function Debugger:setHook(webSocketConnection)
+function Debugger:setHook()
     local parent = self
     debug.sethook(function(...)
         parent:_traceFunction(...)
