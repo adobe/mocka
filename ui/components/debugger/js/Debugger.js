@@ -9,6 +9,7 @@ define(['modal'], function (Modal) {
     Debugger.prototype.init = function () {
         var self = this;
         this._socket = this.context.getSocketToServer("connect");
+        this._socketSide = this.context.getSocketToServer("", "ws://mocka.tests.io:9333")
 
 
         // var self = this;
@@ -38,16 +39,16 @@ define(['modal'], function (Modal) {
             self.injectCode(data.content);
         });
 
-        this._socket.on('break_point_reached', function(message) {
+        this._socketSide.on('break_point_reached', function(message) {
             console.log(message);
         })
 
         setInterval(function() {
-            self._socket.getClient().then(function(socket) {
-              socket.emit('check_for_messages')
+            self._socketSide.getClient().then(function(socket) {
+              socket.emit('introspect')
             })
         }, 6000);
-        this._socket
+
 
         this._socket.getClient().then(function(socket) {
             socket.emit('get_fs', {
@@ -59,11 +60,13 @@ define(['modal'], function (Modal) {
         })
 
 
-
-
-
         this._root.find('.left-container').resizable();
         this._root.find('.right-container .code pre').resizable();
+        this._root.find('.button').on('click', function() {
+            self._socketSide.getClient().then(function(socket) {
+                socket.emit('continue')
+            })
+        })
 
     }
 

@@ -31,17 +31,6 @@ function WsServer:createServer()
     self:enhanceWsClient(wb)
     self.wb = wb
 
-    self.wb:on("check_for_messages", function(message)
-        messaging_queue:checkEvents()
-    end)
-
-    local parent = self
-
-    messaging_queue:on("send_message", function(message)
-        ngx.log(ngx.ERR, "need to send message ", cjson.encode(message))
-        local bytes, err = parent.wb:send_text(cjson.encode(message))
-    end)
-
     return self.wb
 end
 

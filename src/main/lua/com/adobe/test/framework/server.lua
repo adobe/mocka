@@ -34,7 +34,7 @@ local function handler(ws)
         if message then
             local decodedMessage = cjson.decode(message)
             if ws.handlers[decodedMessage.event] then
-                local status, data = pcall(ws.handlers[decodedMessage.event], decodedMessage.data)
+                local status, data = pcall(ws.handlers[decodedMessage.event], ws, decodedMessage.data)
                 if not status then
                     print("failed handler ", tostring(data))
                 end
@@ -84,7 +84,7 @@ local function handler(ws)
         if message then
             local decodedMessage = cjson.decode(message)
             if ws.handlers[decodedMessage.event] then
-                local status, data = pcall(ws.handlers[decodedMessage.event], decodedMessage.data)
+                local status, response = pcall(ws.handlers[decodedMessage.event], ws, decodedMessage.data)
                 if not status then
                     print("failed handler ", tostring(data))
                 end
@@ -101,14 +101,16 @@ end
 function Server:_registerHandlers(webSocketConnection)
     local parent = self
 
-    webSocketConnection:on("continue", function()
-        parent:writeFile("/etc/api-gateway/continue", "continue")
+    webSocketConnection:on("continue", function(ws, data)
+        parent:writeFile("/etc/continue", "continue")
     end)
 
-    webSocketConnection:on("introspect", function(message)
-        local content = parent:readFile("/etc/api-gateway/introspection")
-        webSocketConnection:send(content)
-        parent:writeFile("/etc/api-gateway/introspection", "")
+    webSocketConnection:on("introspect", function(ws, data)
+        local content = parent:readFile("/etc/introspection")
+        if content and #content > 0 then
+            ws:send(content)
+            parent:writeFile("/etc/introspection", "")
+        end
     end)
 end
 

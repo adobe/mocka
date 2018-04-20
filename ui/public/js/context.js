@@ -66,8 +66,8 @@ define(['componentMap',
      * @param channel
      * @returns {*}
      */
-    Context.prototype.getSocketToServer = function (channel) {
-        return Socket.get().registerSocket(channel)
+    Context.prototype.getSocketToServer = function (channel, baseUrl) {
+        return Socket.get().registerSocket(channel, baseUrl)
     };
 
     /**

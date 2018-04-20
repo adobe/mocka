@@ -18,8 +18,11 @@ define(['promise'], function (Promise) {
             (SocketRegistry._instance = new SocketRegistry());
     };
 
-    SocketRegistry.prototype.registerSocket = function (channel) {
+    SocketRegistry.prototype.registerSocket = function (channel, baseUrl) {
         var self = this;
+        if(baseUrl) {
+            this._baseUrl = baseUrl
+        }
         if(channel.charAt(0) != "/") {
             channel = "/" + channel;
         }

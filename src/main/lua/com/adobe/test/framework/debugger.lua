@@ -44,13 +44,6 @@ function Debugger:_registerHandlers(webSocketConnection)
         }))
     end)
 
-    webSocketConnection:on("continue", function()
-        parent.continueExecution = true
-    end)
-
-    webSocketConnection:on("introspect", function(message)
-        ngx.log(ngx.ERR, "message", cjson.encode(message))
-    end)
 end
 
 function Debugger:getFs(path)
@@ -113,13 +106,13 @@ function Debugger:breakPointReached(file, line)
     }
 
     ngx.log(ngx.ERR, "try to send ", cjson.encode(message))
-    self:writeFile("/etc/api-gateway/introspection", message)
+    self:writeFile("/etc/introspection", cjson.encode(message))
 
-    local continue = self:readFile("/etc/api-gateway/continue")
-    while (continue ~= "continue") do
-        continue = self:readFile("/etc/api-gateway/continue")
+    local continue = self:readFile("/etc/continue")
+    while (not continue or continue ~= "continue") do
+        continue = self:readFile("/etc/continue")
     end
-    self:writeFile("/etc/api-gateway/continue", "")
+    self:writeFile("/etc/continue", "")
 
 
     --local sleep = function()
