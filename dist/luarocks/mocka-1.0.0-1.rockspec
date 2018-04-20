@@ -24,7 +24,8 @@ description = {
     license = "MIT"
 }
 dependencies = {
-    "luafilesystem"
+    "luafilesystem",
+    "lua-websockets"
 }
 build = {
 	type = "builtin",

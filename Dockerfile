@@ -24,7 +24,6 @@ RUN  apk update \
 RUN ln -s /usr/bin/lua5.1 /usr/bin/lua
 
 RUN /scripts/lua_rocks.sh \
-    && /scripts/mocka.sh \
     && /scripts/luacheck.sh \
     && /scripts/ldoc.sh
 
@@ -34,6 +33,8 @@ RUN sudo luarocks install jsonpath \
     && sudo luarocks install lua-cjson 2.1.0-1\
     && sudo luarocks install luabitop \
     && sudo luarocks install lua-resty-iputils
+
+RUN /scripts/mocka.sh
 
 RUN rm -rf /tmp/mocka
 
