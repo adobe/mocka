@@ -3,7 +3,8 @@
 --- Created by trifan.
 --- DateTime: 20/04/2018 10:49
 ---
-local ev = require'ev'
+local copas = require'copas'
+
 local cjson = require 'cjson'
 
 local Server = {}
@@ -18,7 +19,7 @@ end
 
 function Server:start()
     -- create a copas webserver and start listening
-    self.server = require'websocket'.server.ev.listen
+    self.server = require'websocket'.server.copas.listen
     {
         -- listen on port 8080
         port = 9333,
@@ -32,7 +33,7 @@ function Server:start()
     }
 
     -- use the lua-ev loop
-    ev.Loop.default:loop()
+    copas.loop()
 end
 
 function Server:enhanceClient(ws)
@@ -45,18 +46,23 @@ end
 function Server:handler(ws)
     self:enhanceClient(ws)
     self:_registerHandlers(ws)
-
-    ws:on_message(function(ws,message)
-        local decodedMessage = cjson.decode(message)
-        if ws.handlers[decodedMessage.event] then
-            local status, data = pcall(ws.handlers[decodedMessage.event], decodedMessage.data)
-            if not status then
-                print("failed handler ", tostring(data))
+    while true do
+        local message = ws:receive()
+        if message then
+            local decodedMessage = cjson.decode(message)
+            if ws.handlers[decodedMessage.event] then
+                local status, data = pcall(ws.handlers[decodedMessage.event], decodedMessage.data)
+                if not status then
+                    print("failed handler ", tostring(data))
+                end
+            else
+                print( "no handler for message type ", decodedMessage.event)
             end
         else
-            print( "no handler for message type ", decodedMessage.event)
+            ws:close()
+            return
         end
-    end)
+    end
 end
 
 function Server:_registerHandlers(webSocketConnection)
@@ -69,6 +75,25 @@ function Server:_registerHandlers(webSocketConnection)
     webSocketConnection:on("introspect", function(message)
         local content = parent:readFile("/etc/api-gateway/introspection")
         webSocketConnection:send(content)
+        parent:writeFile("/etc/api-gateway/introspection", "")
     end)
 end
 
+
+function Server:writeFile(path, content)
+    local file = io.open(path, "w") -- r read mode and b binary mode
+    if not file then return nil end
+    file:write(content)
+    file:close()
+end
+
+function Server:readFile(path)
+    local file = io.open(path, "rb")
+    if not file then return nil end
+    local content = file:read "*a"
+    file:close()
+    return content
+end
+
+local server = Server:new()
+server:start()
