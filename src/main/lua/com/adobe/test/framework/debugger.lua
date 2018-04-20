@@ -112,42 +112,15 @@ function Debugger:breakPointReached(file, line)
         }
     }
 
-
     ngx.log(ngx.ERR, "try to send ", cjson.encode(message))
-    self.continueExecution = false
-    messaging_queue:emit("send_message", message, function(status, res)
-        if status then
-            ngx.log(ngx.ERR, "executed ok")
-        else
-            ngx.log(ngx.ERR, " failed ", res)
-        end
-    end)
+    self:writeFile("/etc/api-gateway/introspection", message)
 
-    local sleep = function()
-        local ffi = require'ffi'
-
-        --- The libc functions used by this process.
-        ffi.cdef[[
-      int open(const char* pathname, int flags);
-      int close(int fd);
-      int read(int fd, void* buf, size_t count);
- ]]
-        local O_NONBLOCK = 2048
-        local chunk_size = 4096
-        local buffer = ffi.new('uint8_t[?]',chunk_size)
-        local fd = ffi.C.open('/etc/api-gateway/mypipe',O_NONBLOCK)
-        local nbytes = ffi.C.read(fd,buffer,chunk_size)
-        ffi.C.close(fd)
-
-        while (nbytes == -1) do
-            fd = ffi.C.open('/etc/api-gateway/mypipe',O_NONBLOCK)
-            nbytes = ffi.C.read(fd,buffer,chunk_size)
-            ffi.C.close(fd)
-        end
-
+    local continue = self:readFile("/etc/api-gateway/continue")
+    while (continue ~= "continue") do
+        continue = self:readFile("/etc/api-gateway/continue")
     end
+    self:writeFile("/etc/api-gateway/continue", "")
 
-    sleep()
 
     --local sleep = function()
     --    local ffi = require("ffi")
@@ -176,9 +149,9 @@ function Debugger:breakPointReached(file, line)
     --
     --sleep()
 
---    while not self.continueExecution do
---        ngx.sleep(2)
---    end
+    --    while not self.continueExecution do
+    --        ngx.sleep(2)
+    --    end
 
 end
 
@@ -233,14 +206,12 @@ function Debugger:removeHook()
     self.webSocketConnection = nil
 end
 
-local open = io.open
 
-local function read_file(path)
-    local file = open(path, "rb") -- r read mode and b binary mode
+function Debugger:writeFile(path, content)
+    local file = io.open(path, "w") -- r read mode and b binary mode
     if not file then return nil end
-    local content = file:read "*a" -- *a or *all reads the whole file
+    file:write(content)
     file:close()
-    return content
 end
 
 function Debugger:readFile(path)

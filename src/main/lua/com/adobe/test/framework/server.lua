@@ -63,11 +63,12 @@ function Server:_registerHandlers(webSocketConnection)
     local parent = self
 
     webSocketConnection:on("continue", function()
-        parent.continueExecution = true
+        parent:writeFile("/etc/api-gateway/continue", "continue")
     end)
 
     webSocketConnection:on("introspect", function(message)
-        print( "message", cjson.encode(message))
+        local content = parent:readFile("/etc/api-gateway/introspection")
+        webSocketConnection:send(content)
     end)
 end
 
