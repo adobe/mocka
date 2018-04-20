@@ -44,8 +44,6 @@ define([], function () {
     ButtonController.prototype.click = function (event) {
         if(this._enabled) {
             this.emit('click');
-            this.context.messaging.messagePublish(this._button.attr('type'),
-                this._button.attr('value'));
         }
 
         return;

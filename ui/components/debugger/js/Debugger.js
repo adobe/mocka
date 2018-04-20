@@ -47,7 +47,7 @@ define(['modal'], function (Modal) {
             self._socketSide.getClient().then(function(socket) {
               socket.emit('introspect')
             })
-        }, 6000);
+        }, 500);
 
 
         this._socket.getClient().then(function(socket) {
@@ -62,9 +62,12 @@ define(['modal'], function (Modal) {
 
         this._root.find('.left-container').resizable();
         this._root.find('.right-container .code pre').resizable();
-        this._root.find('.button').on('click', function() {
-            self._socketSide.getClient().then(function(socket) {
-                socket.emit('continue')
+
+        this.context.getComponent("myButton").then(function(button) {
+            button.on('click', function() {
+                self._socketSide.getClient().then(function(socket) {
+                    socket.emit('continue')
+                })
             })
         })
 
