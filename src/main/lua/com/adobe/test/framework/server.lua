@@ -3,6 +3,7 @@
 --- Created by trifan.
 --- DateTime: 20/04/2018 10:49
 ---
+local instance
 local copas = require'copas'
 
 local cjson = require 'cjson'
@@ -17,6 +18,37 @@ function Server:new(o)
 end
 
 
+local function getInstance()
+    if not instance then
+        instance = Server:new()
+    end
+    return instance
+end
+
+local function handler(ws)
+    local server = getInstance()
+    server:enhanceClient(ws)
+    server:_registerHandlers(ws)
+    while true do
+        local message = ws:receive()
+        if message then
+            local decodedMessage = cjson.decode(message)
+            if ws.handlers[decodedMessage.event] then
+                local status, data = pcall(ws.handlers[decodedMessage.event], decodedMessage.data)
+                if not status then
+                    print("failed handler ", tostring(data))
+                end
+            else
+                print( "no handler for message type ", decodedMessage.event)
+            end
+        else
+            ws:close()
+            return
+        end
+    end
+end
+
+
 function Server:start()
     -- create a copas webserver and start listening
     self.server = require'websocket'.server.copas.listen
@@ -27,9 +59,9 @@ function Server:start()
         --   key: protocol name
         --   value: callback on new connection
         protocols = {
-            echo = self.handler
+            echo = handler
         },
-        default = self.handler
+        default = handler
     }
 
     -- use the lua-ev loop
@@ -43,9 +75,10 @@ function Server:enhanceClient(ws)
     end
 end
 
-function Server:handler(ws)
-    self:enhanceClient(ws)
-    self:_registerHandlers(ws)
+local function handler(ws)
+    local server = getInstance()
+    server:enhanceClient(ws)
+    server:_registerHandlers(ws)
     while true do
         local message = ws:receive()
         if message then
@@ -95,5 +128,7 @@ function Server:readFile(path)
     return content
 end
 
-local server = Server:new()
+
+
+local server = getInstance()
 server:start()
