@@ -24,6 +24,11 @@
       "view": "dropdownlist.html",
       "controller": "DropDownController",
       "css": ["dropdownlist.css"]
+    },
+    "grid": {
+      "controller": "Grid",
+      "css": [],
+      "view": "grid.html"
     }
   }
 }

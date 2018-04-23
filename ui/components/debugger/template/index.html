@@ -8,7 +8,16 @@
             </code></pre>
         </div>
     </div>
+    <div class="right-container round">
+        <div class="round card-wrapper">
+            <div class="file-name"></div>
+        </div>
+        <div id="special-grid" class="grid">
+            {{component name="form" view="grid" parentId=parentId sid="grider"}}
+        </div>
+    </div>
 </div>
-<div class="button-wrapper pull-left">
+
+<div class="button-wrapper pull-left navbar-fixed-bottom" style="width:300px">
     {{component name="form" view="button" type="secondary" label="Continue execution" sid="myButton" parentId=parentId }}
 </div>

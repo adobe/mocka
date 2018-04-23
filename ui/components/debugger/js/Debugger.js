@@ -71,6 +71,23 @@ define(['modal'], function (Modal) {
             })
         })
 
+        this.context.getComponent("grider").then(function(grid) {
+            var gridConfiguration = {
+                loadingIndicator: self.context.loadingIndicator,
+                columns :[
+                    {id: "name", name: "App", field: "name", width: 80, resizable: true, sortable: true},
+                    {id: "location", name: "Host", field: "location", minWidth: 60},
+                    {id: "port", name: "Port", field: "port", minWidth: 60}
+                ],
+                remoteAddress: '/craft/controller/oauth',
+                gridContainer: self._root.find('.grid'),
+                deleteIconLocation: false
+            }
+
+            grid.configure(gridConfiguration);
+            grid.render();
+        })
+
     }
 
     Debugger.prototype.injectCode = function(code) {
