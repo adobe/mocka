@@ -40,7 +40,10 @@ define(['modal'], function (Modal) {
         });
 
         this._socketSide.on('break_point_reached', function(message) {
+            self._root.find(".file-name").text(message.file + ":" + message.line);
+            self._grid.setContent(self.getVariables(message.retrieved_variables));
             console.log(message);
+            Modal.success('Break Point Reached',message.file + ":" + message.line)
         })
 
         setInterval(function() {
@@ -75,19 +78,47 @@ define(['modal'], function (Modal) {
             var gridConfiguration = {
                 loadingIndicator: self.context.loadingIndicator,
                 columns :[
-                    {id: "name", name: "App", field: "name", width: 80, resizable: true, sortable: true},
-                    {id: "location", name: "Host", field: "location", minWidth: 60},
-                    {id: "port", name: "Port", field: "port", minWidth: 60}
+                    {id: "var", name: "Var", field: "var", width: 80, resizable: true, sortable: true},
+                    {id: "type", name: "Type", field: "type", minWidth: 60},
+                    {id: "value", name: "Val", field: "value", minWidth: 60}
                 ],
-                remoteAddress: '/craft/controller/oauth',
                 gridContainer: self._root.find('.grid'),
                 deleteIconLocation: false
             }
 
             grid.configure(gridConfiguration);
             grid.render();
+            self._grid = grid;
         })
 
+    }
+
+    Debugger.prototype.getVariables = function(vars) {
+        var result = [];
+        console.log(vars);
+        for(var key in vars) {
+            var data = {
+                "var": key,
+                "type": null,
+                "value": null
+            }
+            if (vars[key] instanceof Object) {
+                data["type"] = "object"
+                data["value"] = "--->"
+                result.push(data);
+                result = result.concat(this.getVariables(vars[key]))
+                result.push({
+                    "var": key,
+                    "type": "object",
+                    "value": "<---"
+                });
+            } else {
+                data["type"] = "value"
+                data["value"] = vars[key]
+                result.push(data);
+            }
+        }
+        return result;
     }
 
     Debugger.prototype.injectCode = function(code) {
@@ -115,9 +146,18 @@ define(['modal'], function (Modal) {
 
             self._root.find('code li').on('click', function(ev) {
                 var lineNumber = $(this).data('nr');
+                var me = this;
+                var enable = true;
+                if($(me).hasClass('selected')) {
+                    enable = false;
+                    $(me).removeClass('selected');
+                } else {
+                    $(me).addClass('selected')
+                }
+
                 self._socket.getClient().then(function(socket) {
                     socket.emit('break_point', {
-                        enable: true,
+                        enable: enable,
                         file: self._runningCode,
                         line: lineNumber
                     })

@@ -14,6 +14,11 @@
 .debuggerWrapper li:hover {
     background-color: #0b97c4;
 }
+
+.debuggerWrapper li.selected {
+    background-color: #953b39;
+}
+
 .debuggerWrapper .left-container {
     min-width: 240px;
     min-height: 250px;
@@ -27,23 +32,44 @@
     overflow-x: auto;
 }
 
-.right-container .code pre code{
+.coder .code pre code{
     font-family: monospace;
     height:95%;
 }
 
-.debuggerWrapper .right-container {
-    float: none;
+.debuggerWrapper .coder {
+    float: left;
     padding: 0px;
     border: 0px solid
 }
 
-.right-container .code pre{
+.coder .code pre{
     border: 1px solid;
     width: 700px;
     min-width: 300px;
 }
 
+.grid-major {
+    width: 450px;
+    overflow: auto;
+    position: relative;
+    height: 300px;
+    margin-left: 10px;
+    padding: 3px;
+}
+
+.grid-major .slick-viewport {
+    height: auto !important;
+}
+
+.grid-major .slick-cell {
+    background-color: #292A35;
+    color: #fff;
+}
 code ul{counter-reset: line;}
 code li{counter-increment: line;}
 code li:before{content: counter(line);width: 30px;display: inline-block;}
+
+.navbar-fixed-bottom {
+    left: auto !important;
+}

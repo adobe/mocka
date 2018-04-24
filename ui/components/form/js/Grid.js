@@ -18,6 +18,7 @@ define([], function () {
         this._remoteAddress = configuration.remoteAddress;
         this._gridContainer = configuration.gridContainer;
         this._columns = configuration.columns;
+        this._data = configuration.data;
         this._iconLocation = configuration.iconLocation || '/core/resources/grid/icon.png';
         this._tickLocation = configuration.tickLocation || '/core/resources/grid/tick.png';
         this._editIconLocation = typeof configuration.editIconLocation == 'undefined' ? '/core/resources/grid/edit.png' : configuration.editIconLocation;
@@ -78,7 +79,8 @@ define([], function () {
     Grid.prototype.render = function () {
         this._initCommands();
         var data = [];
-        this._grid = new Slick.Grid('#' + this._gridContainer.attr('id'), data, this._columns, this._options);
+        console.log(this._data)
+        this._grid = new Slick.Grid('#' + this._gridContainer.attr('id'), this._data || data, this._columns, this._options);
         var self = this;
         $(window).resize(function () {
             self._grid.resizeCanvas();
@@ -110,10 +112,26 @@ define([], function () {
         });
     }
 
+    Grid.prototype.setContent = function(data) {
+        console.log(data);
+        this._loadingIndicator.show();
+        this._grid.invalidateAllRows();
+        this._grid.setData(data, true);
+        this._grid.invalidateAllRows();
+        this._loadingIndicator.fadeOut();
+        this._grid.render();
+        this._makeGridSortable(data);
+        this._grid.resizeCanvas();
+    }
+
     Grid.prototype._initData = function() {
         var self = this;
         var isAsc = true;
         var data = {};
+        if (!this._remoteAddress) {
+            this._loadingIndicator.fadeOut();
+            return;
+        }
         $.ajax({
             url: this._remoteAddress,
             type: 'GET',
