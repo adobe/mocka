@@ -1,0 +1,18 @@
+.input-wrapper {
+    width: 100%;
+    /*padding: 9px;*/
+    padding-left: 9px;
+    overflow: hidden;
+}
+
+.input-wrapper .label {
+    float: left;
+    padding: 9px;
+    color: #000000;
+}
+
+.input-wrapper .input {
+    float: left;
+    margin-bottom: 0px !important;
+    /*padding: 9px;*/
+}

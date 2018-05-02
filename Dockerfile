@@ -19,12 +19,11 @@ ADD ./src /tmp/mocka/src
 ADD ./dist/luarocks/mocka-1.0.0-1.rockspec /tmp/mocka/
 
 RUN  apk update \
-        && apk add sudo curl make gcc g++ readline-dev lua5.1 lua5.1-dev git ncurses-libs libc-dev build-base git bash unzip
+        && apk add sudo curl make gcc g++ readline-dev lua5.1 lua5.1-dev git ncurses-libs libc-dev build-base git bash unzip libev libev-dev
 
 RUN ln -s /usr/bin/lua5.1 /usr/bin/lua
 
 RUN /scripts/lua_rocks.sh \
-    && /scripts/mocka.sh \
     && /scripts/luacheck.sh \
     && /scripts/ldoc.sh
 
@@ -32,8 +31,11 @@ RUN git config --global url."https://".insteadOf git://
 
 RUN sudo luarocks install jsonpath \
     && sudo luarocks install lua-cjson 2.1.0-1\
+    && sudo luarocks install lua-ev \
     && sudo luarocks install luabitop \
     && sudo luarocks install lua-resty-iputils
+
+RUN /scripts/mocka.sh
 
 RUN rm -rf /tmp/mocka
 

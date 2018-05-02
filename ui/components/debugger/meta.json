@@ -1,0 +1,15 @@
+{
+  "views": {
+    "index": {
+      "css": ["debugger.css"],
+      "controller": "Debugger",
+      "view": "index.html"
+    },
+    "files_folders": {
+      "css": ["files_folders.css"],
+      "controller": "FilesFolders",
+      "view": "files_folders.html"
+    }
+  },
+  "templates": ["file_folder.html"]
+}

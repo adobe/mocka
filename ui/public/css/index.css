@@ -1,0 +1,43 @@
+.control-panel {
+    overflow: hidden;
+    border: 1px solid;
+    padding: 4px;
+    float: left;
+    width: 460px;
+}
+.app-button {
+    width: 100px;
+    min-height: 40px;
+    margin: 4px 4px 4px 4px;
+}
+
+
+.app-heat {
+    width: 200px;
+    min-height: 40px;
+    margin: 4px 4px 4px 4px;
+}
+
+.reactive-components {
+    float: left;
+    width: 400px;
+    overflow: hidden;
+    margin-left: 20px;
+    padding: 9px 9px;
+    border: 1px solid;
+}
+
+.heat-display {
+    overflow: hidden;
+    padding: 4px 4px;
+    width: 170px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.light-display {
+    overflow: hidden;
+    display: inline-block;
+    width: 90px;
+    height: 90px;
+}

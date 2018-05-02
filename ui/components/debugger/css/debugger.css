@@ -1,0 +1,75 @@
+.debuggerWrapper {
+    padding: 10px;
+}
+
+.debuggerWrapper ul{
+    list-style-type: none;
+    padding: 2px;
+}
+
+.debuggerWrapper ul li {
+    cursor: pointer;
+}
+
+.debuggerWrapper li:hover {
+    background-color: #0b97c4;
+}
+
+.debuggerWrapper li.selected {
+    background-color: #953b39;
+}
+
+.debuggerWrapper .left-container {
+    min-width: 240px;
+    min-height: 250px;
+    border: 1px solid;
+    background-color: #f0f0f0;
+}
+
+.debuggerWrapper .files_folders {
+    padding: 2px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.coder .code pre code{
+    font-family: monospace;
+    height:95%;
+}
+
+.debuggerWrapper .coder {
+    float: left;
+    padding: 0px;
+    border: 0px solid
+}
+
+.coder .code pre{
+    border: 1px solid;
+    width: 700px;
+    min-width: 300px;
+}
+
+.grid-major {
+    width: 450px;
+    overflow: auto;
+    position: relative;
+    height: 300px;
+    margin-left: 10px;
+    padding: 3px;
+}
+
+.grid-major .slick-viewport {
+    height: auto !important;
+}
+
+.grid-major .slick-cell {
+    background-color: #292A35;
+    color: #fff;
+}
+code ul{counter-reset: line;}
+code li{counter-increment: line;}
+code li:before{content: counter(line);width: 30px;display: inline-block;}
+
+.navbar-fixed-bottom {
+    left: auto !important;
+}

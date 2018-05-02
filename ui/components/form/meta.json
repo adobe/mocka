@@ -1,0 +1,34 @@
+{
+  "views": {
+    "input": {
+      "view": "input.html",
+      "controller": "InputController",
+      "css": ["input.css"]
+    },
+    "textarea": {
+      "view": "textarea.html",
+      "controller": "TextAreaController",
+      "css": ["textarea.css"]
+    },
+    "button": {
+      "view": "button.html",
+      "controller": "ButtonController",
+      "css": ["button.css"]
+    },
+    "checkbox": {
+      "view": "checkbox.html",
+      "controller": "CheckboxController",
+      "css": ["checkbox.css"]
+    },
+    "dropdownlist": {
+      "view": "dropdownlist.html",
+      "controller": "DropDownController",
+      "css": ["dropdownlist.css"]
+    },
+    "grid": {
+      "controller": "Grid",
+      "css": [],
+      "view": "grid.html"
+    }
+  }
+}
