@@ -1,4 +1,4 @@
-LuaMock
+Testing Framework for Lua - LuaMock
 ------
 
 The one lua testing framework that mocks classes, runs with real classes from
