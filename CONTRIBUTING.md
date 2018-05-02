@@ -82,3 +82,5 @@ to the TC and the TC uses its standard consensus seeking process to evaluate whe
 not to add this new member. Members who do not participate consistently at the level of
 a majority of the other members are expected to resign.
 
+**Read more at [http://adobe.github.io/cla.html](http://adobe.github.io/cla.html)**
+
