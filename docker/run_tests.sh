@@ -23,8 +23,17 @@ if [ ! -z run_tests.lua ]; then
         && luacov-cobertura -o coverage_report.xml
 fi
 
-luacheck "${LUA_LIBRARIES}" --globals=ngx --no-self
+if [ ! -z "$LUA_LUBRARIES" ]; then
+    luacheck "${LUA_LIBRARIES}" --globals=ngx --no-self
 
-echo " Running lcheck for ${LUA_LIBRARIES} "
+    echo " Running lcheck for ${LUA_LIBRARIES} "
 
-ldoc -B "${LUA_LIBRARIES}" -d "docs" -s "docs/style" -a
+    if [ ! -d "docs/style" ]; then
+        ldoc -B "${LUA_LIBRARIES}" -d "docs" -s "docs/style" -a
+    else
+         ldoc -B "${LUA_LIBRARIES}" -d "docs" -a
+    fi
+
+fi
+
+
