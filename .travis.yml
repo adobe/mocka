@@ -11,13 +11,17 @@ script:
   - ./run_unit_tests.sh
 
 deploy:
-  skip_cleanup: true
-  provider: deploy
-    deploy: bash deploy.sh snapshot
-    except:
-      branch: master
-  provider: deploy
-    deploy: bash deploy.sh production
+  # deploy develop to the staging environment
+  - provider: script
+    script: bash ./deploy.sh snapshot
+    on:
+      tags: false
+      all_branches: true
+      condition: "$TRAVIS_BRANCH != master"
+  # deploy master to production
+  - provider: script
+    script: bash ./deploy.sh production
     on:
       branch: master
+
 
