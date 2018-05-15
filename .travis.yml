@@ -1,5 +1,6 @@
 sudo: required
 
+
 services:
   - docker
 
@@ -13,8 +14,9 @@ deploy:
   skip_cleanup: true
   - provider: script
     script: bash deploy.sh snapshot
-    on:
-      branch: develop
+    branches:
+      except:
+        - master
   - provider: script
     script: bash deploy.sh production
     on:
