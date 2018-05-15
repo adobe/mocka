@@ -23,5 +23,6 @@ deploy:
     script: bash ./deploy.sh production
     on:
       branch: master
-
+after_deploy:
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then ./tag.sh ; fi
 
