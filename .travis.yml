@@ -15,7 +15,7 @@ deploy:
   provider: script
     script: bash deploy.sh snapshot
     except:
-      master
+      branch: master
   provider: script
     script: bash deploy.sh production
     on:
