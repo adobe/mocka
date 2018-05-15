@@ -12,12 +12,12 @@ script:
 
 deploy:
   skip_cleanup: true
-  provider: script
-    script: bash deploy.sh snapshot
+  provider: deploy
+    deploy: bash deploy.sh snapshot
     except:
       branch: master
-  provider: script
-    script: bash deploy.sh production
+  provider: deploy
+    deploy: bash deploy.sh production
     on:
       branch: master
 
