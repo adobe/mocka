@@ -12,14 +12,12 @@ script:
 
 deploy:
   skip_cleanup: true
-  - provider: script
+  provider: script
     script: bash deploy.sh snapshot
     except:
-      - master
-  - provider: script
+      master
+  provider: script
     script: bash deploy.sh production
     on:
       branch: master
-after_deploy:
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then bash tag.sh ; fi
 
