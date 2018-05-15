@@ -8,3 +8,17 @@ before_install:
 
 script:
   - ./run_unit_tests.sh
+
+deploy:
+  skip_cleanup: true
+  - provider: script
+    script: bash deploy.sh snapshot
+    on:
+      branch: develop
+  - provider: script
+    script: bash deploy.sh production
+    on:
+      branch: master
+after_deploy:
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then bash tag.sh ; fi
+
