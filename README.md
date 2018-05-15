@@ -1,4 +1,4 @@
-Testing Framework for Lua - LuaMock
+Testing Framework for Lua - LuaMock [![Build Status](https://travis-ci.org/adobe/luaMock.svg?branch=master)](https://travis-ci.org/adobe/luaMock)
 ------
 
 The one lua testing framework that mocks classes, runs with real classes from
@@ -26,6 +26,7 @@ Table of contents
         - [assertNotNil](#assertnotnil)
         - [Verify a mock has been called](#calls---verify-a-mock-has-been-called)
 3. [Dependencies](#dependencies)
+4. [Contributing](https://github.com/adobe/luaMock/blob/master/CONTRIBUTING.md)
         
 
 ## Installing
