@@ -6,7 +6,7 @@ if [ ! -f ./dist/luarocks/mocka-$version.rockspec ]; then
 fi
 
 if [ "$ENV" == "snapshot" ]; then
-    luarocks upload ./dist/luarocks/mocka-$version.rockspec --api-key=${API_KEY} --server=https://luarocks.org/dev --force
+    luarocks upload ./dist/luarocks/mocka-$version.rockspec --api-key=${API_KEY} --skip-pack --force
 else
-    luarocks upload ./dist/luarocks/mocka-$version.rockspec --api-key=${API_KEY}
+    luarocks upload ./dist/luarocks/mocka-$version.rockspec --skip-pack --api-key=${API_KEY} --force
 fi
