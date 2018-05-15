@@ -10,6 +10,7 @@ ENV CGO_ENABLED=0
 ENV LUA_LIBRARIES=
 ENV DEP_INSTALL=
 ENV LUAROCKS_FILE=
+ENV API_KEY=
 
 ADD ./docker /scripts
 RUN chmod -R +x /scripts

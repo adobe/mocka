@@ -15,13 +15,14 @@ local function make_plat(plat)
     } }
 end
 source = {
-    url = "..."
+    url = "git+https://github.com/adobe/luaMock.git",
+    tag = "v1.0.0"
 }
 description = {
     summary = "The one lua testing framework that mocks classes, runs with real classes from "..
                "your project, has nginx embeded methods for openresty individual testing. Has a suite "..
                "of libraries preinstalled and you can specify libraries to install.",
-    license = "MIT"
+    license = "Apache2"
 }
 dependencies = {
     "luafilesystem",

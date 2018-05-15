@@ -1,0 +1,28 @@
+sudo: required
+
+
+services:
+  - docker
+
+before_install:
+  - docker build . -t adobeio/luamock
+
+script:
+  - ./run_unit_tests.sh
+
+deploy:
+  # deploy develop to the staging environment
+  - provider: script
+    script: bash ./deploy.sh snapshot
+    on:
+      tags: false
+      all_branches: true
+      condition: "$TRAVIS_BRANCH != master"
+  # deploy master to production
+  - provider: script
+    script: bash ./deploy.sh production
+    on:
+      branch: master
+after_deploy:
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then ./tag.sh ; fi
+
