@@ -26,7 +26,15 @@ description = {
 }
 dependencies = {
     "luafilesystem",
-    "lua-websockets"
+    "lua-websockets",
+    "lua-cjson = 2.1.0",
+    "lua-ev",
+    "luabitop",
+    "lua-resty-iputils",
+    "penlight",
+    "ldoc",
+    "luacheck",
+    "jsonpath"
 }
 build = {
 	type = "builtin",
