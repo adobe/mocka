@@ -1,0 +1,14 @@
+{
+  "views": {
+    "index": {
+      "css": ["dashboard.css"],
+      "controller": "Dashboard",
+      "view": "dashboard.html"
+    },
+    "leftPanel": {
+      "css": ["leftPanel.css"],
+      "controller": "LeftPanel",
+      "view": "leftPanel.html"
+    }
+  }
+}
