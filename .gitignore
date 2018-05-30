@@ -1,3 +1,5 @@
 .idea/
 *.iml
 devops
+test-results.xml
+*.src.rock
