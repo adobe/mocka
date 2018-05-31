@@ -109,6 +109,7 @@
 
 .category:hover {
     background-color: #D2EEF3;
+    transition: .5s ease;
 }
 
 .category:hover .element:hover{
