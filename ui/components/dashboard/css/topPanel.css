@@ -12,6 +12,7 @@
 .user-wrapper {
     overflow:hidden;
     float: right;
+    cursor: pointer;
 }
 .user-wrapper .user-icon {
     border-radius: 30px;
@@ -29,6 +30,17 @@
     float: left;
 }
 
+.user-wrapper:hover .user-icon {
+    width: 35px;
+    height: 35px;
+    transition: .5s ease;
+}
+
+.user-wrapper:hover .user-data {
+    transition: .5s ease;
+    font-size: 18px;
+}
+
 .user-icon img {
     height: 100%;
 }
@@ -39,6 +51,11 @@
 
 .command {
     float: left;
+}
+
+.command:hover .icon:before {
+    font-size: 25px;
+    transition: .5s ease;
 }
 
 .top-panel-wrapper .icon:before {
