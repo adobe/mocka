@@ -107,6 +107,10 @@
     font-size: 14px;
 }
 
+.element .icon:before {
+    line-height: 45px;
+}
+
 
 
 .category:hover {
