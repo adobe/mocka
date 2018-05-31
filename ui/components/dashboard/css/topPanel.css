@@ -1,0 +1,62 @@
+.top-panel-wrapper {
+    height: 30px;
+    background-color: #A3D3DD;
+    padding: 9px;
+}
+
+.right-side {
+    float: right;
+    width: 78%;
+}
+
+.user-wrapper {
+    overflow:hidden;
+    float: right;
+}
+.user-wrapper .user-icon {
+    border-radius: 30px;
+    height: 30px;
+    width: 30px;
+    overflow:hidden;
+    float: left;
+    margin-right: 14px;
+}
+
+
+.user-wrapper .user-data {
+    line-height: 28px;
+    font-weight: bold;
+    float: left;
+}
+
+.user-icon img {
+    height: 100%;
+}
+
+.commands {
+    float: right;
+}
+
+.command {
+    float: left;
+}
+
+.top-panel-wrapper .icon:before {
+    line-height: 28px;
+}
+
+.home:before {
+    content: '\f015';
+    color: #fd7e14;
+}
+
+.notifications:before {
+    content: '\f0f3';
+    color: #82c91e;
+}
+
+.keys:before {
+    content: '\f084';
+    color: purple;
+
+}

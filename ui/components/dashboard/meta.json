@@ -9,6 +9,11 @@
       "css": ["leftPanel.css"],
       "controller": "LeftPanel",
       "view": "leftPanel.html"
+    },
+    "topPanel": {
+      "css": ["topPanel.css"],
+      "controller": "TopPanel",
+      "view": "topPanel.html"
     }
   }
 }
