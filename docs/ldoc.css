@@ -1,73 +1,14 @@
-/* BEGIN RESET
+/* https://github.com/aloisdeniel/ldoc-styles */
 
-Copyright (c) 2010, Yahoo! Inc. All rights reserved.
-Code licensed under the BSD License:
-http://developer.yahoo.com/yui/license.html
-version: 2.8.2r1
-*/
-html {
-    color: #000;
-    background: #FFF;
-}
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td {
-    margin: 0;
-    padding: 0;
-}
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-fieldset,img {
-    border: 0;
-}
-address,caption,cite,code,dfn,em,strong,th,var,optgroup {
-    font-style: inherit;
-    font-weight: inherit;
-}
-del,ins {
-    text-decoration: none;
-}
-li {
-    margin-left: 20px;
-}
-caption,th {
-    text-align: left;
-}
-h1,h2,h3,h4,h5,h6 {
-    font-size: 100%;
-    font-weight: bold;
-}
-q:before,q:after {
-    content: '';
-}
-abbr,acronym {
-    border: 0;
-    font-variant: normal;
-}
-sup {
-    vertical-align: baseline;
-}
-sub {
-    vertical-align: baseline;
-}
-legend {
-    color: #000;
-}
-input,button,textarea,select,optgroup,option {
-    font-family: inherit;
-    font-size: inherit;
-    font-style: inherit;
-    font-weight: inherit;
-}
-input,button,textarea,select {*font-size:100%;
-}
-/* END RESET */
+@import url(https://fonts.googleapis.com/css?family=Quicksand:300,700);
+@import url(https://fonts.googleapis.com/css?family=Lato);
 
 body {
     margin-left: 1em;
     margin-right: 1em;
-    font-family: arial, helvetica, geneva, sans-serif;
+    font-family: "Lato", arial, helvetica, geneva, sans-serif;
     background-color: #ffffff; margin: 0px;
+    color: #1c4e68;
 }
 
 code, tt { font-family: monospace; font-size: 1.1em; }
@@ -86,20 +27,26 @@ strong { font-weight: bold;}
 em { font-style: italic;}
 
 h1 {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    color: #ea316e;
     font-size: 1.5em;
     margin: 20px 0 20px 0;
 }
-h2, h3, h4 { margin: 15px 0 10px 0; }
-h2 { font-size: 1.25em; }
+h2, h3, h4 {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    margin: 15px 0 10px 0; }
+h2 { font-size: 1.25em; color: #ea316e; }
 h3 { font-size: 1.15em; }
 h4 { font-size: 1.06em; }
 
-a:link { font-weight: bold; color: #004080; text-decoration: none; }
-a:visited { font-weight: bold; color: #006699; text-decoration: none; }
+a:link { font-weight: bold; color: #1c4e68; text-decoration: none; }
+a:visited { font-weight: bold; color: #1e86be; text-decoration: none; }
 a:link:hover { text-decoration: underline; }
 
 hr {
-    color:#cccccc;
+    color:#b1e3fa;
     background: #00007f;
     height: 1px;
 }
@@ -126,18 +73,18 @@ pre.example {
     font-size: .85em;
 }
 
-table.index { border: 1px #00007f; }
+table.index { border: 1px #b1e3fa; }
 table.index td { text-align: left; vertical-align: top; }
 
 #container {
     margin-left: 1em;
     margin-right: 1em;
-    background-color: #f0f0f0;
+    background-color: #e0f4fc;
 }
 
 #product {
     text-align: center;
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid #b1e3fa;
     background-color: #ffffff;
 }
 
@@ -146,39 +93,49 @@ table.index td { text-align: left; vertical-align: top; }
 }
 
 #main {
-    background-color: #f0f0f0;
-    border-left: 2px solid #cccccc;
+    background-color: #e0f4fc;
+    border-left: 2px solid #b1e3fa;
 }
+
 
 #navigation {
     float: left;
     width: 14em;
     vertical-align: top;
-    background-color: #f0f0f0;
+    background-color: #e0f4fc;
     overflow: visible;
 }
 
 #navigation h2 {
-    background-color:#e7e7e7;
+    background-color:#aee7ff;
     font-size:1.1em;
-    color:#000000;
+    color:#25aae1;
     text-align: left;
     padding:0.2em;
-    border-top:1px solid #dddddd;
-    border-bottom:1px solid #dddddd;
+    border-top:1px solid #b1e3fa;
+    border-bottom:1px solid #b1e3fa;
 }
 
+#navigation h1 {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300;
+    font-size: 32px;
+    padding-left: 20px;
+    padding-bottom: 20px;
+}
 #navigation ul
 {
     font-size:1em;
     list-style-type: none;
     margin: 1px 1px 10px 1px;
+    padding-left: 0px;
 }
 
 #navigation li {
-    text-indent: -1em;
+    font-size: 12px;
     display: block;
     margin: 3px 0px 0px 22px;
+    padding-left: 0px;
 }
 
 #navigation li li a {
@@ -188,24 +145,24 @@ table.index td { text-align: left; vertical-align: top; }
 #content {
     margin-left: 14em;
     padding: 1em;
-    width: 700px;
-    border-left: 2px solid #cccccc;
-    border-right: 2px solid #cccccc;
+    border-left: 2px solid #b1e3fa;
+    border-right: 2px solid #b1e3fa;
     background-color: #ffffff;
 }
 
 #about {
     clear: both;
     padding: 5px;
-    border-top: 2px solid #cccccc;
+    border-top: 2px solid #b1e3fa;
     background-color: #ffffff;
+    font-size: 10px;
 }
 
 @media print {
     body {
         font: 12pt "Times New Roman", "TimeNR", Times, serif;
     }
-    a { font-weight: bold; color: #004080; text-decoration: underline; }
+    a { font-weight: bold; color: #1c4e68; text-decoration: underline; }
 
     #main {
         background-color: #ffffff;
@@ -236,32 +193,32 @@ table.index td { text-align: left; vertical-align: top; }
 table.module_list {
     border-width: 1px;
     border-style: solid;
-    border-color: #cccccc;
+    border-color: #b1e3fa;
     border-collapse: collapse;
 }
 table.module_list td {
     border-width: 1px;
     padding: 3px;
     border-style: solid;
-    border-color: #cccccc;
+    border-color: #b1e3fa;
 }
-table.module_list td.name { background-color: #f0f0f0; min-width: 200px; }
+table.module_list td.name { background-color: #e0f4fc; min-width: 200px; }
 table.module_list td.summary { width: 100%; }
 
 
 table.function_list {
     border-width: 1px;
     border-style: solid;
-    border-color: #cccccc;
+    border-color: #b1e3fa;
     border-collapse: collapse;
 }
 table.function_list td {
     border-width: 1px;
     padding: 3px;
     border-style: solid;
-    border-color: #cccccc;
+    border-color: #b1e3fa;
 }
-table.function_list td.name { background-color: #f0f0f0; min-width: 200px; }
+table.function_list td.name { background-color: #e0f4fc; min-width: 200px; }
 table.function_list td.summary { width: 100%; }
 
 ul.nowrap {
@@ -269,7 +226,7 @@ ul.nowrap {
     white-space:nowrap;
 }
 
-dl.table dt, dl.function dt {border-top: 1px solid #ccc; padding-top: 1em;}
+dl.table dt, dl.function dt {border-top: 1px solid #b1e3fa; padding-top: 1em;}
 dl.table dd, dl.function dd {padding-bottom: 1em; margin: 10px 0 0 20px;}
 dl.table h3, dl.function h3 {font-size: .95em;}
 
@@ -281,23 +238,5 @@ ul ol { margin-top: 0px; }
 
 /* make the target distinct; helps when we're navigating to a function */
 a:target + * {
-  background-color: #FF9;
+    background-color: #FF9;
 }
-
-
-/* styles for prettification of source */
-pre .comment { color: #558817; }
-pre .constant { color: #a8660d; }
-pre .escape { color: #844631; }
-pre .keyword { color: #aa5050; font-weight: bold; }
-pre .library { color: #0e7c6b; }
-pre .marker { color: #512b1e; background: #fedc56; font-weight: bold; }
-pre .string { color: #8080ff; }
-pre .number { color: #f8660d; }
-pre .operator { color: #2239a8; font-weight: bold; }
-pre .preprocessor, pre .prepro { color: #a33243; }
-pre .global { color: #800080; }
-pre .user-keyword { color: #800080; }
-pre .prompt { color: #558817; }
-pre .url { color: #272fc2; text-decoration: underline; }
-
