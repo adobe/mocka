@@ -38,7 +38,8 @@
 }
 .leftPanelWrapper .searchWrapper input{
     background-color: #73B2BE;
-    color: #2D4166;
+    color: #ffffff;
+    font-weight: bold;
 }
 
 .separator {
