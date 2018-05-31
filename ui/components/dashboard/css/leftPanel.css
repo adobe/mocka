@@ -85,13 +85,15 @@
 
 .selector {
     float: right;
-}
-.category.selected .selector {
     width: 0;
     height: 0;
     border-top: 20px solid transparent;
     border-bottom: 20px solid transparent;
     border-right:20px solid #f4f6f8;
+    display: none
+}
+.category.selected .selector {
+    display: none;
 }
 
 .element {
@@ -102,6 +104,16 @@
     overflow: hidden;
     margin-right: 20px;
     border-top: 1px solid #F8FDFE;
+}
+
+.element .selector {
+    position: absolute;
+    right: 0px;
+    z-index: 100;
+}
+
+.element.selected .selector {
+    display: inline;
 }
 
 .elements {
