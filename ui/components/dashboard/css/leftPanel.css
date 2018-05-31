@@ -69,7 +69,6 @@
     padding-left: 4px;
     cursor: pointer;
     overflow: hidden;
-    padding-bottom: 9px;
 }
 
 .category .category-name {
@@ -99,6 +98,7 @@
     padding-left: 9px;
     overflow: hidden;
     margin-right: 20px;
+    margin-bottom: 10px;
 }
 
 .element-name {
