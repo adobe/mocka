@@ -12,6 +12,7 @@
 .leftPanelWrapper .logo {
     margin-left: 80px;
     padding: 9px;
+    cursor: pointer;
 }
 
 .leftPanelWrapper .logo .imageOfLogo {
