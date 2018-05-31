@@ -14,6 +14,16 @@
       "css": ["topPanel.css"],
       "controller": "TopPanel",
       "view": "topPanel.html"
+    },
+    "card": {
+      "css": ["card.css"],
+      "controller": "TopPanel",
+      "view": "card.html"
+    },
+    "tests": {
+      "css": ["tests.css"],
+      "controller": "TopPanel",
+      "view": "tests.html"
     }
   }
 }

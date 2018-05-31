@@ -77,3 +77,8 @@
     color: purple;
 
 }
+
+.actual-content {
+    position: relative;
+    left: 350px;
+}

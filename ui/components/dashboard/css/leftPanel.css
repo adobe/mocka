@@ -71,6 +71,7 @@
     padding-left: 14px;
     cursor: pointer;
     overflow: hidden;
+    border-bottom: 1px solid #D2EEF3;
 }
 
 .category .category-name {
@@ -100,6 +101,10 @@
     padding-left: 9px;
     overflow: hidden;
     margin-right: 20px;
+    border-top: 1px solid #F8FDFE;
+}
+
+.elements {
     margin-bottom: 10px;
 }
 
