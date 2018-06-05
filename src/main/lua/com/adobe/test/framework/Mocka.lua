@@ -182,12 +182,13 @@ function spy(class, method, fn)
     -- if it isn't alredy required and not yet set for lazy
     if not mirror[class] then
         if not lazy_spies[class] then
-            lazy_spies[class] = {
-                ["class"] = class,
-                ["method"] = method,
-                ["fn"] = fn
-            }
+            lazy_spies[class] = {}
         end
+        lazy_spies[class][method] = {
+            ["class"] = class,
+            ["method"] = method,
+            ["fn"] = fn
+        }
         return
     end
 
@@ -196,7 +197,7 @@ function spy(class, method, fn)
 
     for method, method_real in pairs(mirror[class]) do
         -- don't index private methods
-        -- TODO: maybe in the future I can index prvate methods
+        -- TODO: maybe in the future I can index private methods
         if not string.find(method, "__") and type(method_real) == 'function' then
             mapObj[method] = spies[class]["__" .. method]
             mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
@@ -243,7 +244,9 @@ require = function(path)
         -- this means that the require has been done and now it's the time to init any lazy spy
         if lazy_spies[path] then
             __makeSpy(path)
-            spy(lazy_spies[path].class, lazy_spies[path].method, lazy_spies[path].fn)
+            for method, info in pairs(lazy_spies[path]) do
+                spy(info.class, info.method, info.fn)
+            end
             lazy_spies[path] = nil
         end
         return spies[path]
