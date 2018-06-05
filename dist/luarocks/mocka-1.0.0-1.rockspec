@@ -33,8 +33,7 @@ dependencies = {
     "lua-resty-iputils",
     "penlight",
     "ldoc",
-    "luacheck",
-    "jsonpath"
+    "luacheck"
 }
 build = {
 	type = "builtin",
