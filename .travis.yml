@@ -5,7 +5,7 @@ services:
   - docker
 
 before_install:
-  - docker build . -t adobeio/luamock
+  - docker build . -t adobeapiplatform/luamock
 
 script:
   - ./run_unit_tests.sh
