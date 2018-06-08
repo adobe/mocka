@@ -6,3 +6,4 @@ version=$(cat ./dist/luarocks/.version)
 docker login --username atrifan --password ${DOCKER_KEY}
 docker tag adobeapiplatform/luamock:latest adobeapiplatform/luamock:$version
 docker push adobeapiplatform/luamock:$version
+docker push adobeapiplatform/luamock:latest
