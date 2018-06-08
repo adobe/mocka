@@ -3,6 +3,6 @@ docker run -v $PWD:/mocka_space \
 
 version=$(cat ./dist/luarocks/.version)
 
-curl -u atrifan:${DOCKER_KEY} https://cloud.docker.com/api/app/v1/service/
+docker login --username atrifan --password ${DOCKER_KEY}
 docker tag adobeapiplatform/luamock:latest adobeapiplatform/luamock:$version
 docker push adobeapiplatform/luamock:$version
