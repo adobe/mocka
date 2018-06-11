@@ -11,6 +11,9 @@ ENV LUA_LIBRARIES=
 ENV DEP_INSTALL=
 ENV LUAROCKS_FILE=
 ENV API_KEY=
+ENV DIST_SOURCE=./dist/luarocks
+ENV PACKAGE=mocka
+
 
 ADD ./docker /scripts
 RUN chmod -R +x /scripts
