@@ -5,11 +5,11 @@ if [ -z "{$LUAROCKS_FILE}" ]; then
 fi
 
 if [ ! -z "{$DEP_INSTALL}" ]; then
-    for i in $(echo ${DEP_INSTALL} | sed "s/,/ /g")
+    (IFS=,; for i in "${DEP_INSTALL}"
     do
         # call your procedure/other scripts here below
-        sudo luarocks install $i
-    done
+        eval "$(echo "sudo luarocks install ${i}")"
+    done)
 fi
 
 if [ ! -z "{$LUA_LIBRARIES}" ]; then
