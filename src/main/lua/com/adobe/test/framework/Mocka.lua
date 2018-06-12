@@ -270,7 +270,7 @@ end
 function xtest(description, ...)
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
-        name = description,
+        name = description:gsub("\"", "&quot;"),
         className = mockaStats.suites[#mockaStats.suites].name,
         time = 0,
         failureMessage = nil,
@@ -296,7 +296,7 @@ end
 function test(description, fn, assertFail)
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
-        name = description,
+        name = description:gsub("\"", "&quot;"),
         className = mockaStats.suites[#mockaStats.suites].name,
         time = 0,
         failureMessage = nil,
