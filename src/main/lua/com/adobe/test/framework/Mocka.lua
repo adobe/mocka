@@ -32,7 +32,7 @@ mockaStats = {
     time = 0
 }
 
-local function resetStats()
+function resetStats()
     mockaStats = {
         suites = {},
         no = 0,
