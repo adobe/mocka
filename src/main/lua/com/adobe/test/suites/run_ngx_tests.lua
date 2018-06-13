@@ -45,6 +45,7 @@ local xmlOutput = function()
 end
 
 local run_tests = function(tests)
+    resetStats()
     local startFullTime = os.clock()
     for i, module in ipairs(tests) do
         print("\n\t Running " .. module .. '\n\t -----------------------------------------------------------------------\n')
