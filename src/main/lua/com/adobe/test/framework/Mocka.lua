@@ -32,6 +32,17 @@ mockaStats = {
     time = 0
 }
 
+local function resetStats()
+    mockaStats = {
+        suites = {},
+        no = 0,
+        noOK = 0,
+        noNOK = 0,
+        noIgnored = 0,
+        time = 0
+    }
+end
+
 ---
 -- @param t1 {object}
 -- @param t2 {object}
