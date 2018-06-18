@@ -84,3 +84,11 @@ test('xtest is always ignored', function()
 
     assertEquals(global, "notChanged")
 end)
+
+
+test('properties passed to mock constructor should be there', function()
+
+    mock("test.constructor", {"new"})
+    local mockedConstructor = require("test.constructor"):new({ foo = "bar"})
+    assertEquals(mockedConstructor.foo, "bar")
+end)
