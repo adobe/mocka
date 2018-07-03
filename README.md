@@ -1,4 +1,5 @@
-Testing Framework for Lua - LuaMock [![Build Status](https://travis-ci.org/adobe/luaMock.svg?branch=master)](https://travis-ci.org/adobe/luaMock)
+Testing Framework for Lua - LuaMock [![Build Status](https://travis-ci.org/adobe/luaMock.svg?branch=master)](https://travis-ci.org/adobe/luaMock) 
+[![Coverage Status](https://coveralls.io/repos/github/adobe/luaMock/badge.svg?branch=feature%2Ftravis_coveralls)](https://coveralls.io/github/adobe/luaMock?branch=feature%2Ftravis_coveralls) 
 ------
 
 The one lua testing framework that mocks classes, runs with real classes from

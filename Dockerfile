@@ -13,14 +13,13 @@ ENV LUAROCKS_FILE=
 ENV API_KEY=
 ENV DIST_SOURCE=./dist/luarocks
 ENV PACKAGE=mocka
+ENV COVERALLS_REPO_TOKEN=
 
 
 ADD ./docker /scripts
 RUN chmod -R +x /scripts
 
-ADD ./luacov-cobertura /tmp/mocka/luacov-cobertura
-ADD ./src /tmp/mocka/src
-ADD ./dist/luarocks/mocka-1.0.0-1.rockspec /tmp/mocka/
+ADD ./ /tmp/mocka/
 
 RUN  apk update \
         && apk add sudo curl make gcc g++ readline-dev lua5.1 lua5.1-dev git ncurses-libs libc-dev build-base git bash unzip libev libev-dev
