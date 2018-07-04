@@ -14,6 +14,7 @@ ENV API_KEY=
 ENV DIST_SOURCE=./dist/luarocks
 ENV PACKAGE=mocka
 ENV COVERALLS_REPO_TOKEN=
+ENV DOCS_FOLDER=
 
 
 ADD ./docker /scripts
