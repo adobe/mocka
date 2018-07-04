@@ -23,6 +23,9 @@ if [ ! -z run_tests.lua ]; then
 
     lua -lluacov run_tests.lua \
         && luacov \
-        && luacov-cobertura -o coverage_report.xml \
-        && luacov-coveralls -t ${COVERALLS_REPO_TOKEN:-none}
+        && luacov-cobertura -o coverage_report.xml
+
+    if [ ! -z "{$COVERALLS_REPO_TOKEN}" ]; then
+        luacov-coveralls -t ${COVERALLS_REPO_TOKEN}
+    fi
 fi
