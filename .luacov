@@ -1,0 +1,7 @@
+modules = {
+    ["mocka"] = "src/main/lua/com/adobe/test/framework/Mocka.lua"
+}
+
+exclude = {
+    "./tests/.*$"
+}
