@@ -47,5 +47,13 @@ build = {
 		win32 = make_plat("win32"),
 		mingw32 = make_plat("mingw32")
 	},
-	copy_directories = {}
+	copy_directories = {},
+	install = {
+      bin = {
+         ["mocka"] = "src/main/lua/com/adobe/test/framework/Mocka.lua",
+      }
+    }
+}
+hooks = {
+    post_install = "lua run_tests.lua",
 }
