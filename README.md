@@ -1,5 +1,5 @@
 Testing Framework for Lua - Mocka [![Build Status](https://travis-ci.org/adobe/mocka.svg?branch=master)](https://travis-ci.org/adobe/mocka) 
-[![Coverage Status](https://coveralls.io/repos/github/adobe/mocka/badge.svg?branch=feature%2Ftravis_coveralls)](https://coveralls.io/github/adobe/mocka?branch=feature%2Ftravis_coveralls) 
+[![Coverage Status](https://coveralls.io/repos/github/adobe/mocka/badge.svg?branch=HEAD)](https://coveralls.io/github/adobe/mocka?branch=HEAD) 
 ------
 
 The one lua testing framework that mocks classes, runs with real classes from
