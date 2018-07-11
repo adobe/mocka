@@ -5,7 +5,7 @@
 ---
 
 local tests = {
-    "src.test.adobe.luamock.HealthcheckTest"
+    "src.test.adobe.mocka.HealthcheckTest"
 
 }
 

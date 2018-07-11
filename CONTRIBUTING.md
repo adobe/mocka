@@ -1,4 +1,4 @@
-# LuaMock Community Contributing Guide 1.0
+# Mocka Community Contributing Guide 1.0
 
 The goal of this document is to create a contribution process that:
 
@@ -23,8 +23,8 @@ expected to uphold this code, be courteous and respectful. Please report unaccep
 
 # Logging Issues
 
-[Log an issue](https://github.com/adobe/luaMock/issues/new) for any question or problems
-you might have. When in doubt, [log an issue](https://github.com/adobe/luaMock/issues/new),
+[Log an issue](https://github.com/adobe/mocka/issues/new) for any question or problems
+you might have. When in doubt, [log an issue](https://github.com/adobe/mocka/issues/new),
 and any additional policies about what to include will be provided in our response.
 The only exception is security dislosures which should be sent privately (TODO: how?).
 
