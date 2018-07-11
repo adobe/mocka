@@ -15,7 +15,7 @@ local function make_plat(plat)
     } }
 end
 source = {
-    url = "git+https://github.com/adobe/luaMock.git",
+    url = "git+https://github.com/adobe/mocka.git",
     tag = "v1.0.0"
 }
 description = {

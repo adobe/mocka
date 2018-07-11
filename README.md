@@ -1,12 +1,12 @@
-Testing Framework for Lua - LuaMock [![Build Status](https://travis-ci.org/adobe/luaMock.svg?branch=master)](https://travis-ci.org/adobe/luaMock) 
-[![Coverage Status](https://coveralls.io/repos/github/adobe/luaMock/badge.svg?branch=feature%2Ftravis_coveralls)](https://coveralls.io/github/adobe/luaMock?branch=feature%2Ftravis_coveralls) 
+Testing Framework for Lua - Mocka [![Build Status](https://travis-ci.org/adobe/mocka.svg?branch=master)](https://travis-ci.org/adobe/mocka) 
+[![Coverage Status](https://coveralls.io/repos/github/adobe/mocka/badge.svg?branch=feature%2Ftravis_coveralls)](https://coveralls.io/github/adobe/mocka?branch=feature%2Ftravis_coveralls) 
 ------
 
 The one lua testing framework that mocks classes, runs with real classes from
 your project, has nginx embeded methods for openresty individual testing. Has a suite
 of libraries preinstalled and you can specify libraries to install.
 
-LuaMock runs better in docker than in standalone - all you need to do is pull
+Mocka runs better in docker than in standalone - all you need to do is pull
 the image and run it like so
 
 
@@ -27,7 +27,7 @@ Table of contents
         - [assertNotNil](#assertnotnil)
         - [Verify a mock has been called](#calls---verify-a-mock-has-been-called)
 3. [Dependencies](#dependencies)
-4. [Contributing](https://github.com/adobe/luaMock/blob/master/CONTRIBUTING.md)
+4. [Contributing](https://github.com/adobe/mocka/blob/master/CONTRIBUTING.md)
         
 
 ## Installing
