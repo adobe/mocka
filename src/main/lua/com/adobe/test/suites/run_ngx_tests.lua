@@ -58,7 +58,7 @@ local run_tests = function(tests)
             tests = {},
             time = 0
         })
-        clearMocks(true)
+
         local startTime = os.clock()
         require(module)()
         local elapsed = os.clock() - startTime

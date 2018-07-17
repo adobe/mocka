@@ -73,8 +73,10 @@ local function _compare(t1, t2)
     return true
 end
 
-local function clearTest()
+function clearTest()
     spies = {}
+    mirror = {}
+    mocks = {}
 end
 
 ---
@@ -180,7 +182,7 @@ local function __doSpy(path, class)
 end
 
 local function __makeSpy(path)
-    if path and not mirror[path] then
+    if path and (not mirror[path] or type(mirror[path]) ~= 'table')then
         return
     end
 
@@ -283,9 +285,9 @@ require = function(path)
 
         spies[path] = oldRequire(path)
         mirror[path] = _clone(spies[path])
+        __makeSpy(path)
         -- this means that the require has been done and now it's the time to init any lazy spy
         if lazy_spies[path] then
-            __makeSpy(path)
             for method, info in pairs(lazy_spies[path]) do
                 spy(info.class, info.method, info.fn)
             end
@@ -364,8 +366,6 @@ function test(description, fn, assertFail)
             end
         end
     end
-
-    __makeSpy()
 
     if (beforeFn ~= nil) then
         pcall(beforeFn)
@@ -584,10 +584,4 @@ function mockNgx(conf)
     end
 end
 
-function clearMocks(inNgx)
-    mocks = {}
-    if not inNgx then
-        ngx = default_mocks.makeNgxMock()
-    end
-end
 

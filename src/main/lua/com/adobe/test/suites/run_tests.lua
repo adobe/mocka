@@ -60,7 +60,7 @@ local run_tests = function(tests)
             tests = {},
             time = 0
         })
-        clearMocks()
+        mockNgx()
         local startTime = os.clock()
         require(module)
         local elapsed = os.clock() - startTime
