@@ -22,6 +22,9 @@ local mirror = {}
 -- before each function rememberer
 local beforeFn;
 
+-- after each function rememberer
+local afterFn;
+
 -- stats for the framework needed for outputing results
 mockaStats = {
     suites = {},
@@ -68,6 +71,10 @@ local function _compare(t1, t2)
         if v1 == nil or not _compare(v1, v2) then return false end
     end
     return true
+end
+
+local function clearTest()
+    spies = {}
 end
 
 ---
@@ -297,6 +304,15 @@ function beforeEach(fn)
     beforeFn = fn
 end
 
+
+---
+-- @param fn {function} - the function to be ran afterEach Test
+-- Saves the function in a variable in order to call it before each test for a suite
+---
+function afterEach(fn)
+    afterFn = fn
+end
+
 ---
 -- @param description  {string}
 -- @param ... {optional}
@@ -377,6 +393,12 @@ function test(description, fn, assertFail)
     end
     mockaStats.no = mockaStats.no + 1;
     si.no = si.no + 1
+
+    if (afterFn ~= nil) then
+        pcall(afterFn)
+    end
+
+    clearTest()
 end
 
 ---
@@ -568,3 +590,4 @@ function clearMocks(inNgx)
         ngx = default_mocks.makeNgxMock()
     end
 end
+
