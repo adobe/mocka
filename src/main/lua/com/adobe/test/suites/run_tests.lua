@@ -47,6 +47,7 @@ local xmlOutput = function()
 end
 
 local run_tests = function(tests)
+    mockaStats.isNgx = false
     resetStats()
     local startFullTime = os.clock()
     for i, module in ipairs(tests) do
@@ -60,7 +61,6 @@ local run_tests = function(tests)
             tests = {},
             time = 0
         })
-        mockNgx()
         local startTime = os.clock()
         require(module)
         local elapsed = os.clock() - startTime

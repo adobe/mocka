@@ -73,10 +73,24 @@ local function _compare(t1, t2)
     return true
 end
 
+--- should be here because of using global mocka definitions
+local default_mocks = require("mocka.default_mocks")
+
+function mockNgx(conf)
+    if not mockaStats.isNgx then
+        if not conf then
+            ngx = default_mocks.makeNgxMock()
+        else
+            ngx =  conf
+        end
+    end
+end
+
 function clearTest()
     spies = {}
     mirror = {}
     mocks = {}
+    mockNgx()
 end
 
 ---
@@ -573,15 +587,5 @@ function assertNotEquals(t1, t2)
     end
 end
 
---- should be here because of using global mocka definitions
-local default_mocks = require("mocka.default_mocks")
-
-function mockNgx(conf)
-    if not conf then
-        ngx = default_mocks.makeNgxMock()
-    else
-        ngx =  conf
-    end
-end
 
 

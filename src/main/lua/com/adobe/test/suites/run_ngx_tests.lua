@@ -45,6 +45,7 @@ local xmlOutput = function()
 end
 
 local run_tests = function(tests)
+    mockaStats.isNgx = true
     resetStats()
     local startFullTime = os.clock()
     for i, module in ipairs(tests) do
