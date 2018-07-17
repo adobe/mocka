@@ -92,3 +92,27 @@ test('properties passed to mock constructor should be there', function()
     local mockedConstructor = require("test.constructor"):new({ foo = "bar"})
     assertEquals(mockedConstructor.foo, "bar")
 end)
+
+test('ability to lazy mock auto generating classes singleton pattern', function()
+    spy("src.test.adobe.mocka.auto_running_class", "doSomething", function()
+        return false
+    end)
+
+    local original = oldRequire "src.test.adobe.mocka.auto_running_class"
+    local autoRunning = require "src.test.adobe.mocka.auto_running_class"
+
+    assertEquals(autoRunning:doSomething(), false)
+    assertEquals(original:doSomething(), true)
+
+end)
+
+test('ability to mock auto generating classes singleton pattern post require', function()
+    local autoRunning = require "src.test.adobe.mocka.auto_running_class"
+    assertEquals(autoRunning:doSomething(), true)
+
+    spy("src.test.adobe.mocka.auto_running_class", "doSomething", function()
+        return false
+    end)
+
+    assertEquals(autoRunning:doSomething(), false)
+end)
