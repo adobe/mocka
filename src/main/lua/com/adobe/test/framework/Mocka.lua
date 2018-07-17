@@ -111,10 +111,16 @@ end
 -- @param t object - the object to clone
 --
 local function _clone (t) -- shallow-copy
-    if type(t) ~= "table" then return t end
+    if type(t) ~= "table" then
+        return t
+    end
+
     local meta = getmetatable(t)
     local target = {}
-    for k, v in pairs(t) do target[k] = v end
+    for k, v in pairs(t) do
+        target[k] = v
+    end
+
     setmetatable(target, meta)
     return target
 end
@@ -129,44 +135,66 @@ local function _makeDoReturnFunction(obj)
     end
 end
 
+local function __prepareSpy(path, class)
+    local success = false
+
+    for method, impl in pairs(class) do
+        --- put all but not privates line __index
+        -- TODO: maybe in the future I can index private methods
+        success = true
+        if impl ~= nil and type(impl) == 'function'
+                and not string.find(method, "__") then
+            spies[path]["__" .. method] = {
+                calls = 0,
+                name = path .. "." .. method,
+                latestCallWith = nil,
+                doReturn = impl
+            }
+            spies[path][method] = _makeFunction(method, spies[path])
+        end
+    end
+    return success
+end
+
+local function __doSpy(path, class)
+    local mapObj = {}
+    local success = false
+    for method, method_real in pairs(class) do
+        -- don't index private methods
+        -- TODO: maybe in the future I can index private methods
+        success = true
+        if not string.find(method, "__") and type(method_real) == 'function' then
+            mapObj[method] = spies[path]["__" .. method]
+            mapObj[method]["stub"] = _makeDoReturnFunction(spies[path]["__" .. method])
+        end
+    end
+
+    return success, mapObj
+end
+
 local function __makeSpy(path)
     if path and not mirror[path] then
         return
     end
 
+
     if path then
-        for method, impl in pairs(mirror[path]) do
-            --- put all but not privates line __index
-            -- TODO: maybe in the future I can index private methods
-            if impl ~= nil and type(impl) == 'function'
-                    and not string.find(method, "__") then
-                spies[path]["__" .. method] = {
-                    calls = 0,
-                    name = path .. "." .. method,
-                    latestCallWith = nil,
-                    doReturn = impl
-                }
-                spies[path][method] = _makeFunction(method, spies[path])
-            end
+        local success = __prepareSpy(path, mirror[path])
+
+        -- maybe class is auto instantiated in require - singleton like
+        if not success then
+            __prepareSpy(path, getmetatable(mirror[path]))
         end
     end
 
     if not path then
         for k, v in pairs(mirror) do
             if type(v) == 'table' then
-                for method, impl in pairs(v) do
-                    --- put all but not privates line __index
-                    -- TODO: maybe in the future I can index private methods
-                    if impl ~= nil and type(impl) == 'function'
-                            and not string.find(method, "__") then
-                        spies[k]["__" .. method] = {
-                            calls = 0,
-                            name = k .. "." .. method,
-                            latestCallWith = nil,
-                            doReturn = impl
-                        }
-                        spies[k][method] = _makeFunction(method, spies[k])
-                    end
+                local success = __prepareSpy(k, v)
+
+                -- maybe class is auto instantiated in require - singleton like
+                if not success then
+                    __prepareSpy(k, getmetatable(v))
                 end
             end
         end
@@ -204,15 +232,11 @@ function spy(class, method, fn)
     end
 
 
-    local mapObj = {}
+    local success, mapObj = __doSpy(class, mirror[class])
 
-    for method, method_real in pairs(mirror[class]) do
-        -- don't index private methods
-        -- TODO: maybe in the future I can index private methods
-        if not string.find(method, "__") and type(method_real) == 'function' then
-            mapObj[method] = spies[class]["__" .. method]
-            mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
-        end
+    -- auto generated singleton class
+    if not success then
+        success, mapObj = __doSpy(class, getmetatable(mirror[class]))
     end
 
     if method and fn then
