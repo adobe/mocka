@@ -6,32 +6,10 @@
 -- To change this template use File | Settings | File Templates.
 --
 
---- Makes a shallow copy
--- @param t object - the object to clone
---
-
-local function _clone (t) -- shallow-copy
-    if type(t) ~= "table" then
-        return t
-    end
-
-    local meta = getmetatable(t)
-    local target = {}
-    for k, v in pairs(t) do
-        target[k] = v
-    end
-    setmetatable(target, meta)
-
-    return target
-end
-
-
-local originalRequire = _clone(require)
-
 -- save original require in order to alter it
-oldRequire = function(path)
-    return originalRequire(path)
-end
+oldRequire = require
+
+isNgx = false
 
 -- object to that keeps the track of mocks for testing
 local mocks = {}
@@ -48,8 +26,6 @@ local beforeFn;
 
 -- after each function rememberer
 local afterFn;
-
-isNgx = false;
 
 -- stats for the framework needed for outputing results
 mockaStats = {
@@ -103,7 +79,7 @@ end
 local default_mocks = require("mocka.default_mocks")
 
 function mockNgx(conf)
-    if not isNgx then
+    if not mockaStats.isNgx then
         if not conf then
             ngx = default_mocks.makeNgxMock()
         else
@@ -112,6 +88,17 @@ function mockNgx(conf)
     end
 end
 
+function clearTest()
+    spies = {}
+    mirror = {}
+    mocks = {}
+    mockNgx()
+end
+
+function clearSuite()
+    beforeFn = nil
+    afterFn = nil
+end
 ---
 -- @param name {string} - name of the function that we want to make
 -- @param classToMock {string} - name of the class we are making the function for
@@ -149,6 +136,24 @@ local function getCurrentRunInfo()
 end
 
 
+--- Makes a shallow copy
+-- @param t object - the object to clone
+--
+local function _clone (t) -- shallow-copy
+    if type(t) ~= "table" then
+        return t
+    end
+
+    local meta = getmetatable(t)
+    local target = {}
+    for k, v in pairs(t) do
+        target[k] = v
+    end
+
+    setmetatable(target, meta)
+    return target
+end
+
 ---
 -- @param class - full fledged class as you see it in the require
 -- Public function used only in before each - to spy on an object - (stub the replacement)
@@ -162,23 +167,19 @@ end
 local function __prepareSpy(path, class)
     local success = false
 
-    local newThing = {}
     for method, impl in pairs(class) do
         --- put all but not privates line __index
         -- TODO: maybe in the future I can index private methods
         success = true
         if impl ~= nil and type(impl) == 'function'
                 and not string.find(method, "__") then
-
-            newThing["__" .. method] = {
+            spies[path]["__" .. method] = {
                 calls = 0,
                 name = path .. "." .. method,
                 latestCallWith = nil,
                 doReturn = impl
             }
-            spies[path]["__" .. method] = newThing["__" .. method]
-            spies[path][method] = _makeFunction(method, newThing)
-
+            spies[path][method] = _makeFunction(method, spies[path])
         end
     end
     return success
@@ -228,19 +229,6 @@ local function __makeSpy(path)
         end
     end
 end
-
-function clearTest()
-    lazy_spies = {}
-    mocks = {}
-    __makeSpy()
-    mockNgx()
-end
-
-function clearSuite()
-    beforeFn = nil
-    afterFn = nil
-end
-
 
 --- Converts a table to a string
 -- @param v table
@@ -318,8 +306,6 @@ require = function(path)
         spies[path] = oldRequire(path)
         mirror[path] = _clone(spies[path])
         __makeSpy(path)
-
-
         -- this means that the require has been done and now it's the time to init any lazy spy
         if lazy_spies[path] then
             for method, info in pairs(lazy_spies[path]) do
@@ -327,7 +313,6 @@ require = function(path)
             end
             lazy_spies[path] = nil
         end
-
         return spies[path]
     end
 end
@@ -418,7 +403,7 @@ function test(description, fn, assertFail)
         print("\t\t " .. description .. " ----- FAIL : " .. tostring(elapsed) .. "s")
         local callingFunction = debug.getinfo(2)
         print(string.format("%s in %s : %s", result, callingFunction.short_src,
-            callingFunction.currentline))
+                callingFunction.currentline))
         mockaStats.noNOK = mockaStats.noNOK + 1;
         si.noNOK = si.noNOK + 1
     else
@@ -559,7 +544,7 @@ function table.tostring(tbl)
     for k, v in pairs(tbl) do
         if not done[k] then
             table.insert(result,
-                table.key_to_str(k) .. "=" .. table.val_to_str(v))
+                    table.key_to_str(k) .. "=" .. table.val_to_str(v))
         end
     end
     return "{" .. table.concat(result, ",") .. "}"
