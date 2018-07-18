@@ -89,9 +89,8 @@ function mockNgx(conf)
 end
 
 function clearTest()
-    spies = {}
-    mirror = {}
     mocks = {}
+    lazy_spies = {}
     mockNgx()
 end
 
