@@ -6,8 +6,30 @@
 -- To change this template use File | Settings | File Templates.
 --
 
+--- Makes a shallow copy
+-- @param t object - the object to clone
+--
+local function _clone (t) -- shallow-copy
+    if type(t) ~= "table" then
+        return t
+    end
+
+    local meta = getmetatable(t)
+    local target = {}
+    for k, v in pairs(t) do
+        target[k] = v
+    end
+
+    setmetatable(target, meta)
+    return target
+end
+
+local originalRequire = _clone(require)
+
 -- save original require in order to alter it
-oldRequire = require
+oldRequire = function(path)
+    return originalRequire(path)
+end
 
 -- object to that keeps the track of mocks for testing
 local mocks = {}
@@ -24,6 +46,8 @@ local beforeFn;
 
 -- after each function rememberer
 local afterFn;
+
+isNgx = false;
 
 -- stats for the framework needed for outputing results
 mockaStats = {
@@ -77,20 +101,13 @@ end
 local default_mocks = require("mocka.default_mocks")
 
 function mockNgx(conf)
-    if not mockaStats.isNgx then
+    if not isNgx then
         if not conf then
             ngx = default_mocks.makeNgxMock()
         else
             ngx =  conf
         end
     end
-end
-
-function clearTest()
-    spies = {}
-    mirror = {}
-    mocks = {}
-    mockNgx()
 end
 
 ---
@@ -129,24 +146,6 @@ local function getCurrentRunInfo()
     return currentSuiteNumber, currentSuiteInfo, currentTestNumber, currentTestInfo
 end
 
-
---- Makes a shallow copy
--- @param t object - the object to clone
---
-local function _clone (t) -- shallow-copy
-    if type(t) ~= "table" then
-        return t
-    end
-
-    local meta = getmetatable(t)
-    local target = {}
-    for k, v in pairs(t) do
-        target[k] = v
-    end
-
-    setmetatable(target, meta)
-    return target
-end
 
 ---
 -- @param class - full fledged class as you see it in the require
@@ -223,6 +222,13 @@ local function __makeSpy(path)
         end
     end
 end
+
+function clearTest()
+    __makeSpy()
+    mocks = {}
+    mockNgx()
+end
+
 
 --- Converts a table to a string
 -- @param v table
