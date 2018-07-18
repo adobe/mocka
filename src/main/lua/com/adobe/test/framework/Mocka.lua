@@ -230,9 +230,15 @@ local function __makeSpy(path)
 end
 
 function clearTest()
-    __makeSpy()
+    lazy_spies = {}
     mocks = {}
+    __makeSpy()
     mockNgx()
+end
+
+function clearSuite()
+    beforeFn = nil
+    afterFn = nil
 end
 
 

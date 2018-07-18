@@ -48,6 +48,7 @@ local run_tests = function(tests)
     resetStats()
     local startFullTime = os.clock()
     for i, module in ipairs(tests) do
+        clearSuite()
         print("\n\t Running " .. module .. '\n\t -----------------------------------------------------------------------\n')
         table.insert(mockaStats.suites, {
             name = module,

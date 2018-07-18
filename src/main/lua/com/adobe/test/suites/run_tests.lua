@@ -47,10 +47,10 @@ local xmlOutput = function()
 end
 
 local run_tests = function(tests)
-    mockaStats.isNgx = false
     resetStats()
     local startFullTime = os.clock()
     for i, module in ipairs(tests) do
+        clearSuite()
         print("\n\t Running " .. module .. '\n\t -----------------------------------------------------------------------\n')
         table.insert(mockaStats.suites, {
             name = module,
