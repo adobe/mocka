@@ -88,11 +88,6 @@ function mockNgx(conf)
     end
 end
 
-function clearTest()
-    mocks = {}
-    lazy_spies = {}
-    mockNgx()
-end
 
 function clearSuite()
     beforeFn = nil
@@ -227,6 +222,13 @@ local function __makeSpy(path)
             end
         end
     end
+end
+
+function clearTest()
+    mocks = {}
+    lazy_spies = {}
+    __makeSpy()
+    mockNgx()
 end
 
 --- Converts a table to a string
