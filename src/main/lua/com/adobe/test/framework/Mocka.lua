@@ -79,7 +79,7 @@ end
 local default_mocks = require("mocka.default_mocks")
 
 function mockNgx(conf)
-    if not mockaStats.isNgx then
+    if not isNgx then
         if not conf then
             ngx = default_mocks.makeNgxMock()
         else
