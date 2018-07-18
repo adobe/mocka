@@ -394,14 +394,14 @@ function test(description, fn, assertFail)
     ti.time = elapsed
 
     if not status and not assertFail then
-        print("\t\t " .. description .. " ----- FAIL ")
+        print("\t\t " .. description .. " ----- FAIL : " .. tostring(elapsed) .. "s")
         local callingFunction = debug.getinfo(2)
-        print(string.format("%s in %s : %s", result, callingFunction.short_src,
-            callingFunction.currentline))
+        print(string.format("%s in %s : %s - trace: %s", result, callingFunction.short_src,
+            callingFunction.currentline, debug.traceback()))
         mockaStats.noNOK = mockaStats.noNOK + 1;
         si.noNOK = si.noNOK + 1
     else
-        print("\t\t " .. description .. " ----- SUCCESS ")
+        print("\t\t " .. description .. " ----- SUCCESS : " .. tostring(elapsed) .. "s")
         mockaStats.noOK = mockaStats.noOK + 1;
         si.noOK = si.noOK + 1
     end

@@ -73,7 +73,7 @@ local run_tests = function(tests)
 
     mockaStats.time = elapsedFullTime
     print("\n Tests: " .. mockaStats.no .. " Pass: " .. mockaStats.noOK .. " Fail: " .. mockaStats.noNOK ..
-            " Ignored : " .. mockaStats.noIgnored .. " Duration: " .. tostring(mockaStats.time))
+            " Ignored : " .. mockaStats.noIgnored .. " Duration: " .. tostring(mockaStats.time) .. "s")
 
     local result = xmlOutput()
     return result
