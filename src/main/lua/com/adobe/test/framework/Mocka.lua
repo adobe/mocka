@@ -9,6 +9,7 @@
 --- Makes a shallow copy
 -- @param t object - the object to clone
 --
+
 local function _clone (t) -- shallow-copy
     if type(t) ~= "table" then
         return t
@@ -19,10 +20,11 @@ local function _clone (t) -- shallow-copy
     for k, v in pairs(t) do
         target[k] = v
     end
-
     setmetatable(target, meta)
+
     return target
 end
+
 
 local originalRequire = _clone(require)
 
@@ -160,19 +162,23 @@ end
 local function __prepareSpy(path, class)
     local success = false
 
+    local newThing = {}
     for method, impl in pairs(class) do
         --- put all but not privates line __index
         -- TODO: maybe in the future I can index private methods
         success = true
         if impl ~= nil and type(impl) == 'function'
                 and not string.find(method, "__") then
-            spies[path]["__" .. method] = {
+
+            newThing["__" .. method] = {
                 calls = 0,
                 name = path .. "." .. method,
                 latestCallWith = nil,
                 doReturn = impl
             }
-            spies[path][method] = _makeFunction(method, spies[path])
+            spies[path]["__" .. method] = newThing["__" .. method]
+            spies[path][method] = _makeFunction(method, newThing)
+
         end
     end
     return success
@@ -306,6 +312,8 @@ require = function(path)
         spies[path] = oldRequire(path)
         mirror[path] = _clone(spies[path])
         __makeSpy(path)
+
+
         -- this means that the require has been done and now it's the time to init any lazy spy
         if lazy_spies[path] then
             for method, info in pairs(lazy_spies[path]) do
@@ -313,6 +321,7 @@ require = function(path)
             end
             lazy_spies[path] = nil
         end
+
         return spies[path]
     end
 end
