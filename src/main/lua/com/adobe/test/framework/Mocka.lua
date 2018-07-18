@@ -226,8 +226,17 @@ end
 
 function clearTest()
     mocks = {}
-    lazy_spies = {}
-    __makeSpy()
+
+    if isNgx then
+        -- in ngx context spies must be preserved but reset (integration tests)
+        lazy_spies = {}
+        __makeSpy()
+    else
+        -- in non ngx context - unit tests spies and mirrors must be reset everything should be fresh
+        spies = {}
+        mirror = {}
+        lazy_spies = {}
+    end
     mockNgx()
 end
 
