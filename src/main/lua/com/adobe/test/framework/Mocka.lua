@@ -9,6 +9,8 @@
 -- save original require in order to alter it
 oldRequire = require
 
+isNgx = false
+
 -- object to that keeps the track of mocks for testing
 local mocks = {}
 
@@ -21,6 +23,9 @@ local mirror = {}
 
 -- before each function rememberer
 local beforeFn;
+
+-- after each function rememberer
+local afterFn;
 
 -- stats for the framework needed for outputing results
 mockaStats = {
@@ -70,6 +75,24 @@ local function _compare(t1, t2)
     return true
 end
 
+--- should be here because of using global mocka definitions
+local default_mocks = require("mocka.default_mocks")
+
+function mockNgx(conf)
+    if not isNgx then
+        if not conf then
+            ngx = default_mocks.makeNgxMock()
+        else
+            ngx =  conf
+        end
+    end
+end
+
+
+function clearSuite()
+    beforeFn = nil
+    afterFn = nil
+end
 ---
 -- @param name {string} - name of the function that we want to make
 -- @param classToMock {string} - name of the class we are making the function for
@@ -173,7 +196,7 @@ local function __doSpy(path, class)
 end
 
 local function __makeSpy(path)
-    if path and not mirror[path] then
+    if path and (not mirror[path] or type(mirror[path]) ~= 'table')then
         return
     end
 
@@ -199,6 +222,22 @@ local function __makeSpy(path)
             end
         end
     end
+end
+
+function clearTest()
+    mocks = {}
+
+    if isNgx then
+        -- in ngx context spies must be preserved but reset (integration tests)
+        lazy_spies = {}
+        __makeSpy()
+    else
+        -- in non ngx context - unit tests spies and mirrors must be reset everything should be fresh
+        spies = {}
+        mirror = {}
+        lazy_spies = {}
+    end
+    mockNgx()
 end
 
 --- Converts a table to a string
@@ -276,9 +315,9 @@ require = function(path)
 
         spies[path] = oldRequire(path)
         mirror[path] = _clone(spies[path])
+        __makeSpy(path)
         -- this means that the require has been done and now it's the time to init any lazy spy
         if lazy_spies[path] then
-            __makeSpy(path)
             for method, info in pairs(lazy_spies[path]) do
                 spy(info.class, info.method, info.fn)
             end
@@ -295,6 +334,15 @@ end
 ---
 function beforeEach(fn)
     beforeFn = fn
+end
+
+
+---
+-- @param fn {function} - the function to be ran afterEach Test
+-- Saves the function in a variable in order to call it before each test for a suite
+---
+function afterEach(fn)
+    afterFn = fn
 end
 
 ---
@@ -349,8 +397,6 @@ function test(description, fn, assertFail)
         end
     end
 
-    __makeSpy()
-
     if (beforeFn ~= nil) then
         pcall(beforeFn)
     end
@@ -364,19 +410,25 @@ function test(description, fn, assertFail)
     ti.time = elapsed
 
     if not status and not assertFail then
-        print("\t\t " .. description .. " ----- FAIL ")
+        print("\t\t " .. description .. " ----- FAIL : " .. tostring(elapsed) .. "s")
         local callingFunction = debug.getinfo(2)
         print(string.format("%s in %s : %s", result, callingFunction.short_src,
-            callingFunction.currentline))
+                callingFunction.currentline))
         mockaStats.noNOK = mockaStats.noNOK + 1;
         si.noNOK = si.noNOK + 1
     else
-        print("\t\t " .. description .. " ----- SUCCESS ")
+        print("\t\t " .. description .. " ----- SUCCESS : " .. tostring(elapsed) .. "s")
         mockaStats.noOK = mockaStats.noOK + 1;
         si.noOK = si.noOK + 1
     end
     mockaStats.no = mockaStats.no + 1;
     si.no = si.no + 1
+
+    if (afterFn ~= nil) then
+        pcall(afterFn)
+    end
+
+    clearTest()
 end
 
 ---
@@ -502,7 +554,7 @@ function table.tostring(tbl)
     for k, v in pairs(tbl) do
         if not done[k] then
             table.insert(result,
-                table.key_to_str(k) .. "=" .. table.val_to_str(v))
+                    table.key_to_str(k) .. "=" .. table.val_to_str(v))
         end
     end
     return "{" .. table.concat(result, ",") .. "}"
@@ -551,20 +603,5 @@ function assertNotEquals(t1, t2)
     end
 end
 
---- should be here because of using global mocka definitions
-local default_mocks = require("mocka.default_mocks")
 
-function mockNgx(conf)
-    if not conf then
-        ngx = default_mocks.makeNgxMock()
-    else
-        ngx =  conf
-    end
-end
 
-function clearMocks(inNgx)
-    mocks = {}
-    if not inNgx then
-        ngx = default_mocks.makeNgxMock()
-    end
-end

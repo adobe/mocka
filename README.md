@@ -70,7 +70,9 @@ Stubs treat even the async nature of nginx - ran on demand
 
 ### mock(...) - Mocking
 
-Mock whatever methods you want
+Mock whatever methods you want. Mocks are reset after each test. And loose
+whatever stubbing you did. That is why if any stub is needed than it should be
+declared at beforeEach level or test level.
 
 ``` 
     local classToMock = mock("path.to.class", {"method1", "method2"})

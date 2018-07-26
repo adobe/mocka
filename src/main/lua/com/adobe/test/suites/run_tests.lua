@@ -50,6 +50,7 @@ local run_tests = function(tests)
     resetStats()
     local startFullTime = os.clock()
     for i, module in ipairs(tests) do
+        clearSuite()
         print("\n\t Running " .. module .. '\n\t -----------------------------------------------------------------------\n')
         table.insert(mockaStats.suites, {
             name = module,
@@ -60,7 +61,6 @@ local run_tests = function(tests)
             tests = {},
             time = 0
         })
-        clearMocks()
         local startTime = os.clock()
         require(module)
         local elapsed = os.clock() - startTime
@@ -74,7 +74,7 @@ local run_tests = function(tests)
 
     mockaStats.time = elapsedFullTime
     print("\n Tests: " .. mockaStats.no .. " Pass: " .. mockaStats.noOK .. " Fail: " .. mockaStats.noNOK ..
-            " Ignored : " .. mockaStats.noIgnored .. " Duration: " .. tostring(mockaStats.time))
+            " Ignored : " .. mockaStats.noIgnored .. " Duration: " .. tostring(mockaStats.time) .. "s")
 
     xmlOutput()
     if(mockaStats.noNOK > 0) then

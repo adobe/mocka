@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -z "${LUAROCKS_FILE}" ]; then
+if [ ! -z "${LUAROCKS_FILE}" ]; then
     sudo luarocks make ${LUAROCKS_FILE}
 fi
 
