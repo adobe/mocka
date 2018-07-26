@@ -16,8 +16,6 @@ build = {
    platforms = {
       haiku = {
          modules = {
-            ["luacov.cobertura.luatoxml"] = "luacov-cobertura/luacov/cobertura/luatoxml.lua",
-            ["luacov.reporter.cobertura"] = "luacov-cobertura/luacov/reporter/cobertura.lua",
             mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
             ["mocka.debugger"] = "src/main/lua/com/adobe/test/framework/debugger.lua",
             ["mocka.default_mocks"] = "src/main/lua/com/adobe/test/framework/default_mocks.lua",
@@ -30,8 +28,6 @@ build = {
       },
       macosx = {
          modules = {
-            ["luacov.cobertura.luatoxml"] = "luacov-cobertura/luacov/cobertura/luatoxml.lua",
-            ["luacov.reporter.cobertura"] = "luacov-cobertura/luacov/reporter/cobertura.lua",
             mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
             ["mocka.debugger"] = "src/main/lua/com/adobe/test/framework/debugger.lua",
             ["mocka.default_mocks"] = "src/main/lua/com/adobe/test/framework/default_mocks.lua",
@@ -44,8 +40,6 @@ build = {
       },
       mingw32 = {
          modules = {
-            ["luacov.cobertura.luatoxml"] = "luacov-cobertura/luacov/cobertura/luatoxml.lua",
-            ["luacov.reporter.cobertura"] = "luacov-cobertura/luacov/reporter/cobertura.lua",
             mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
             ["mocka.debugger"] = "src/main/lua/com/adobe/test/framework/debugger.lua",
             ["mocka.default_mocks"] = "src/main/lua/com/adobe/test/framework/default_mocks.lua",
@@ -58,8 +52,6 @@ build = {
       },
       unix = {
          modules = {
-            ["luacov.cobertura.luatoxml"] = "luacov-cobertura/luacov/cobertura/luatoxml.lua",
-            ["luacov.reporter.cobertura"] = "luacov-cobertura/luacov/reporter/cobertura.lua",
             mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
             ["mocka.debugger"] = "src/main/lua/com/adobe/test/framework/debugger.lua",
             ["mocka.default_mocks"] = "src/main/lua/com/adobe/test/framework/default_mocks.lua",
@@ -72,8 +64,6 @@ build = {
       },
       win32 = {
          modules = {
-            ["luacov.cobertura.luatoxml"] = "luacov-cobertura/luacov/cobertura/luatoxml.lua",
-            ["luacov.reporter.cobertura"] = "luacov-cobertura/luacov/reporter/cobertura.lua",
             mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
             ["mocka.debugger"] = "src/main/lua/com/adobe/test/framework/debugger.lua",
             ["mocka.default_mocks"] = "src/main/lua/com/adobe/test/framework/default_mocks.lua",
