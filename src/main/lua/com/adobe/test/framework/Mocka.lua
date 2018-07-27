@@ -302,6 +302,13 @@ require = function(path)
         return table
     elseif path == "ffi" then
         return oldRequire("ffi")
+    elseif path == "debug" then
+        local sts, module = pcall(oldRequire, path)
+        if not sts then
+            return debug
+        else
+            return module
+        end
     end
 
     --wanna force reload the package
