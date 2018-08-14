@@ -16,6 +16,10 @@ function cobertura_reporter:new(conf)
 		return nil, err
 	end
 
+	self.mangleFile = conf.cobertura.mangleFile or function(fileName)
+		return fileName
+	end
+
 	if conf.cobertura.filenameparser then
 		local parsed_data = {}
 		local files = {}
@@ -132,6 +136,13 @@ function cobertura_reporter:on_end()
 	end
 	self.cobertura.coverage["line-rate"] = (total_hits / (total_hits + total_miss))
 
+	local cjson = require "cjson"
+	for k,v in pairs(self.cobertura.coverage.packages) do
+		for i,j in pairs(v.package.classes) do
+			self.cobertura.coverage.packages[k].package.classes[i].class.filename =
+				self.mangleFile(j.class.filename)
+		end
+	end
 	local xml = luatoxml.toxml(self.cobertura)
 	self:write(xml)
 end
