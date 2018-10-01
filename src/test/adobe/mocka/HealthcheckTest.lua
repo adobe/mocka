@@ -3,7 +3,6 @@
 --- Created by vdatcu.
 --- DateTime: 11/05/2018 14:10
 ---
-
 beforeEach(function()
     spy("cjson", "encode", function(data)
         return "before_each_" .. data
@@ -115,4 +114,23 @@ test('ability to mock auto generating classes singleton pattern post require', f
     end)
 
     assertEquals(autoRunning:doSomething(), false)
+end)
+
+test('capture errors as failures with stack trace', function()
+    local t = {}
+    print(t.x.y)
+end)
+
+test('captures failures independent from error', function()
+    assertEquals(true, false)
+end)
+
+test('validate the failures and the errors', function()
+    assertEquals(mockaStats.noNOK, 1)
+    assertEquals(mockaStats.noErrors, 1)
+    assertEquals(mockaStats.suites[1].noErrors, 1)
+    assertEquals(mockaStats.suites[1].noNOK, 1)
+    --assertNotNil(mockaStats.suites[1].tests[10].errorMessage)
+    --assertNotNil(mockaStats.suites[1].tests[11].failureTrace)
+    --assertNotNil(mockaStats.suites[1].tests[11].failureMessage)
 end)
