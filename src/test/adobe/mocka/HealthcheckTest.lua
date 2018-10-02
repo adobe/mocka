@@ -3,6 +3,7 @@
 --- Created by vdatcu.
 --- DateTime: 11/05/2018 14:10
 ---
+local originalCjson = oldRequire("cjson")
 beforeEach(function()
     spy("cjson", "encode", function(data)
         return "before_each_" .. data
@@ -130,7 +131,7 @@ test('validate the failures and the errors', function()
     assertEquals(mockaStats.noErrors, 1)
     assertEquals(mockaStats.suites[1].noErrors, 1)
     assertEquals(mockaStats.suites[1].noNOK, 1)
-    --assertNotNil(mockaStats.suites[1].tests[10].errorMessage)
-    --assertNotNil(mockaStats.suites[1].tests[11].failureTrace)
-    --assertNotNil(mockaStats.suites[1].tests[11].failureMessage)
+    assertNotNil(mockaStats.suites[1].tests[12].errorMessage)
+    assertNotNil(mockaStats.suites[1].tests[13].failureTrace)
+    assertNotNil(mockaStats.suites[1].tests[13].failureMessage)
 end)
