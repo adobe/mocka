@@ -42,35 +42,7 @@ build = {
             ["mocka.ws_server"] = "src/main/lua/com/adobe/test/framework/ws_server.lua"
          }
       },
-      mingw32 = {
-         modules = {
-            ["luacov.cobertura.luatoxml"] = "luacov-cobertura/luacov/cobertura/luatoxml.lua",
-            ["luacov.reporter.cobertura"] = "luacov-cobertura/luacov/reporter/cobertura.lua",
-            mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
-            ["mocka.debugger"] = "src/main/lua/com/adobe/test/framework/debugger.lua",
-            ["mocka.default_mocks"] = "src/main/lua/com/adobe/test/framework/default_mocks.lua",
-            ["mocka.http_util"] = "src/main/lua/com/adobe/test/framework/http_util.lua",
-            ["mocka.messaging_queue"] = "src/main/lua/com/adobe/test/framework/messaging_queue.lua",
-            ["mocka.ngx_suite"] = "src/main/lua/com/adobe/test/suites/run_ngx_tests.lua",
-            ["mocka.suite"] = "src/main/lua/com/adobe/test/suites/run_tests.lua",
-            ["mocka.ws_server"] = "src/main/lua/com/adobe/test/framework/ws_server.lua"
-         }
-      },
       unix = {
-         modules = {
-            ["luacov.cobertura.luatoxml"] = "luacov-cobertura/luacov/cobertura/luatoxml.lua",
-            ["luacov.reporter.cobertura"] = "luacov-cobertura/luacov/reporter/cobertura.lua",
-            mocka = "src/main/lua/com/adobe/test/framework/Mocka.lua",
-            ["mocka.debugger"] = "src/main/lua/com/adobe/test/framework/debugger.lua",
-            ["mocka.default_mocks"] = "src/main/lua/com/adobe/test/framework/default_mocks.lua",
-            ["mocka.http_util"] = "src/main/lua/com/adobe/test/framework/http_util.lua",
-            ["mocka.messaging_queue"] = "src/main/lua/com/adobe/test/framework/messaging_queue.lua",
-            ["mocka.ngx_suite"] = "src/main/lua/com/adobe/test/suites/run_ngx_tests.lua",
-            ["mocka.suite"] = "src/main/lua/com/adobe/test/suites/run_tests.lua",
-            ["mocka.ws_server"] = "src/main/lua/com/adobe/test/framework/ws_server.lua"
-         }
-      },
-      win32 = {
          modules = {
             ["luacov.cobertura.luatoxml"] = "luacov-cobertura/luacov/cobertura/luatoxml.lua",
             ["luacov.reporter.cobertura"] = "luacov-cobertura/luacov/reporter/cobertura.lua",
