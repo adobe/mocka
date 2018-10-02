@@ -3,7 +3,6 @@
 --- Created by vdatcu.
 --- DateTime: 11/05/2018 14:10
 ---
-local originalCjson = oldRequire("cjson")
 beforeEach(function()
     spy("cjson", "encode", function(data)
         return "before_each_" .. data
