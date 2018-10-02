@@ -32,6 +32,7 @@ mockaStats = {
     suites = {},
     no = 0,
     noOK = 0,
+    noErrors = 0,
     noNOK = 0,
     noIgnored = 0,
     time = 0
@@ -43,6 +44,7 @@ function resetStats()
         no = 0,
         noOK = 0,
         noNOK = 0,
+        noErrors = 0,
         noIgnored = 0,
         time = 0
     }
@@ -421,8 +423,15 @@ function test(description, fn, assertFail)
         local callingFunction = debug.getinfo(2)
         print(string.format("%s in %s : %s", result, callingFunction.short_src,
                 callingFunction.currentline))
-        mockaStats.noNOK = mockaStats.noNOK + 1;
-        si.noNOK = si.noNOK + 1
+        if(ti.failureMessage) then
+            mockaStats.noNOK = mockaStats.noNOK + 1;
+            si.noNOK = si.noNOK + 1
+            ti.failureTrace = result
+        else
+            mockaStats.noErrors = mockaStats.noErrors + 1;
+            si.noErrors = si.noErrors + 1
+            ti.errorMessage = result
+        end
     else
         print("\t\t " .. description .. " ----- SUCCESS : " .. tostring(elapsed) .. "s")
         mockaStats.noOK = mockaStats.noOK + 1;
