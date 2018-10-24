@@ -163,17 +163,22 @@ function Debugger:retrieveLocalVariables()
     return local_vars
 end
 
-function Debugger:getVars(entry)
+function Debugger:getVars(entry, depth)
     local vars = {}
+    depth = depth or 1
     local dont = false
+    if(depth == 4) then
+        return tostring(entry)
+    end
+
     if type(entry) == "table" then
         for k, v in ipairs(entry) do
-            vars[k] = self:getVars(v)
+            vars[k] = self:getVars(v, depth + 1)
             dont = true
         end
         if not dont then
             for i, j in pairs(entry) do
-                vars[i] = self:getVars(j)
+                vars[i] = self:getVars(j, depth + 1)
             end
         end
         return vars
