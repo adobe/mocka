@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites disabled="1" errors="0" failures="0" name="" tests="8" time="0.001408">
+	<testsuite name="src.test.adobe.luamock.HealthcheckTest" tests="8" disabled="1" errors="" failures="0" id="0" time="0.001331" timestamp="">
+		<testcase name="Mocka is loaded and works" assertions="9" classname="src.test.adobe.luamock.HealthcheckTest" status="" time="2e-05">
+		</testcase>
+		<testcase name="spy works lazy mode" assertions="2" classname="src.test.adobe.luamock.HealthcheckTest" status="" time="0.000561">
+		</testcase>
+		<testcase name="spy works post mortem mode" assertions="2" classname="src.test.adobe.luamock.HealthcheckTest" status="" time="3.2e-05">
+		</testcase>
+		<testcase name="spies are reset for each test" assertions="1" classname="src.test.adobe.luamock.HealthcheckTest" status="" time="3.1e-05">
+		</testcase>
+		<testcase name="spies are preserved if beforEach exists" assertions="1" classname="src.test.adobe.luamock.HealthcheckTest" status="" time="5.0000000000007e-06">
+		</testcase>
+		<testcase name="xtest is always ignored" assertions="0" classname="src.test.adobe.luamock.HealthcheckTest" status="" time="5.8e-05">
+		</testcase>
+		<testcase name="first run a test" assertions="0" classname="src.test.adobe.luamock.HealthcheckTest" status="" time="1.0000000000001e-06">
+		</testcase>
+		<testcase name="this test sets a global variable" assertions="1" classname="src.test.adobe.luamock.HealthcheckTest" status="" time="0">
+			<skipped/>
+		</testcase>
+	</testsuite>
+</testsuites>

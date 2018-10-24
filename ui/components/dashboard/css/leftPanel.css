@@ -1,0 +1,171 @@
+.leftPanelWrapper {
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    width: 350px;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    position: absolute;
+    background-color: #A3D3DD;
+}
+
+.leftPanelWrapper .logo {
+    margin-left: 80px;
+    padding: 9px;
+    cursor: pointer;
+}
+
+.leftPanelWrapper .logo .imageOfLogo {
+    background: url('../resources/luaMock.png');
+    background-repeat: no-repeat;
+    height: 40px;
+    width: 40px;
+    background-size: 40px 40px;
+    float:left;
+}
+
+.leftPanelWrapper .logo .textOfLogo {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #2D4166;
+    line-height: 40px;
+    margin-left: 45px;
+}
+
+.leftPanelWrapper .searchWrapper {
+    margin-top: 10px;
+    margin-left: 40px;
+}
+.leftPanelWrapper .searchWrapper input{
+    background-color: #73B2BE;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.separator {
+    height: 40px;
+    background: #478B98;
+    line-height: 40px;
+    text-align: left;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    color: #ebebeb;
+    padding: 4px;
+    padding-left: 10px;
+}
+
+.separator span {
+    position: relative;
+}
+
+.main-menu-wrapper {
+    padding: 0px 0px 10px 0px;
+    background-color: #F8FDFE;
+    min-height: 75%;
+}
+
+.main-menu-wrapper .category {
+    line-height: 40px;
+    color: #7f7f7f;
+    font-size: 18px;
+    font-weight: bold;
+    padding-left: 14px;
+    cursor: pointer;
+    overflow: hidden;
+    border-bottom: 1px solid #D2EEF3;
+}
+
+.category .category-name {
+    line-height: 45px;
+}
+
+
+.category.selected {
+    background-color: #D2EEF3;
+}
+
+.selector {
+    float: right;
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-right:20px solid #f4f6f8;
+    display: none
+}
+.category.selected .selector {
+    display: none;
+}
+
+.element {
+    clear: both;
+    margin-left: 20px;
+    cursor: pointer;
+    padding-left: 9px;
+    overflow: hidden;
+    margin-right: 20px;
+    border-top: 1px solid #F8FDFE;
+}
+
+.element .selector {
+    position: absolute;
+    right: 0px;
+    z-index: 100;
+}
+
+.element.selected .selector {
+    display: inline;
+}
+
+.elements {
+    margin-bottom: 10px;
+}
+
+.element-name {
+    font-size: 14px;
+}
+
+.element .icon:before {
+    line-height: 45px;
+}
+
+
+
+.category:hover {
+    background-color: #D2EEF3;
+    transition: .5s ease;
+}
+
+.category:hover .element:hover{
+    background-color: #F8FDFE;
+    transition: .5s ease;
+}
+.icon:before {
+    margin-left: 4px;
+    margin-right: 15px;
+    font-size: 18px;
+    line-height: 47px;
+}
+.project:before {
+    content: '\f07b';
+    color: darkcyan;
+}
+
+.play:before {
+    color: deeppink;
+    content: '\f04b';
+}
+.analytics:before {
+    content: '\f200';
+    color: #C8E29F;
+}
+
+.debugger:before {
+    content: '\f108';
+    color: #4c6ef5;
+}
+
+.docs:before {
+    content: '\f02d';
+    color: #0e87e3;
+}
