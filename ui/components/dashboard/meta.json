@@ -1,0 +1,29 @@
+{
+  "views": {
+    "index": {
+      "css": ["dashboard.css"],
+      "controller": "Dashboard",
+      "view": "dashboard.html"
+    },
+    "leftPanel": {
+      "css": ["leftPanel.css"],
+      "controller": "LeftPanel",
+      "view": "leftPanel.html"
+    },
+    "topPanel": {
+      "css": ["topPanel.css"],
+      "controller": "TopPanel",
+      "view": "topPanel.html"
+    },
+    "card": {
+      "css": ["card.css"],
+      "controller": "TopPanel",
+      "view": "card.html"
+    },
+    "tests": {
+      "css": ["tests.css"],
+      "controller": "TopPanel",
+      "view": "tests.html"
+    }
+  }
+}

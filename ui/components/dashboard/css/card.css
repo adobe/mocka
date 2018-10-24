@@ -1,0 +1,66 @@
+.kard {
+    width: 200px;
+    height: 80px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background-color: #F8FDFE;
+    cursor: pointer;
+}
+
+.kard:hover {
+    background-color: #D2EEF3;
+    transition: .5s ease;
+}
+
+.kard .icon {
+    height: 80px;
+}
+
+.kard .icon:before {
+    line-height: 80px;
+    font-size: 25px;
+    margin-left: 12px;
+    color: #fff;
+}
+
+.kard-label {
+    line-height: 20px;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 12px;
+    color: #2D4166;
+}
+
+.unit-tests {
+    background-color: red;
+}
+
+.unit:before {
+    content: '\f19c';
+}
+
+.integration-tests {
+    background-color: lime;
+}
+
+.integration:before {
+    content: '\f0ac';
+}
+
+.performance-tests {
+    background-color: orange;
+}
+
+.performance:before {
+    content: '\f0fb';
+}
+
+.smoke-tests {
+    background-color: black;
+}
+
+.smoke:before {
+    content: '\f0c2';
+}
