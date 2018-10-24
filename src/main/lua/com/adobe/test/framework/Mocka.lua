@@ -9,6 +9,8 @@
 -- save original require in order to alter it
 oldRequire = require
 
+isNgx = false
+
 -- object to that keeps the track of mocks for testing
 local mocks = {}
 
@@ -22,15 +24,31 @@ local mirror = {}
 -- before each function rememberer
 local beforeFn;
 
+-- after each function rememberer
+local afterFn;
+
 -- stats for the framework needed for outputing results
 mockaStats = {
     suites = {},
     no = 0,
     noOK = 0,
+    noErrors = 0,
     noNOK = 0,
     noIgnored = 0,
     time = 0
 }
+
+function resetStats()
+    mockaStats = {
+        suites = {},
+        no = 0,
+        noOK = 0,
+        noNOK = 0,
+        noErrors = 0,
+        noIgnored = 0,
+        time = 0
+    }
+end
 
 ---
 -- @param t1 {object}
@@ -59,6 +77,24 @@ local function _compare(t1, t2)
     return true
 end
 
+--- should be here because of using global mocka definitions
+local default_mocks = require("mocka.default_mocks")
+
+function mockNgx(conf)
+    if not isNgx then
+        if not conf then
+            ngx = default_mocks.makeNgxMock()
+        else
+            ngx =  conf
+        end
+    end
+end
+
+
+function clearSuite()
+    beforeFn = nil
+    afterFn = nil
+end
 ---
 -- @param name {string} - name of the function that we want to make
 -- @param classToMock {string} - name of the class we are making the function for
@@ -73,7 +109,7 @@ local function _makeFunction(name, classToMock)
         table.insert(callingArguments, self)
         classToMock["__" .. name]['latestCallWith'] = callingArguments
         if name == 'new' and classToMock["__" .. name].doReturn == nil then
-            local o = callingArguments or {}
+            local o = ... or {}
             setmetatable(o, self)
             self.__index = self
             return o
@@ -100,10 +136,16 @@ end
 -- @param t object - the object to clone
 --
 local function _clone (t) -- shallow-copy
-    if type(t) ~= "table" then return t end
+    if type(t) ~= "table" then
+        return t
+    end
+
     local meta = getmetatable(t)
     local target = {}
-    for k, v in pairs(t) do target[k] = v end
+    for k, v in pairs(t) do
+        target[k] = v
+    end
+
     setmetatable(target, meta)
     return target
 end
@@ -118,48 +160,86 @@ local function _makeDoReturnFunction(obj)
     end
 end
 
+local function __prepareSpy(path, class)
+    local success = false
+
+    for method, impl in pairs(class) do
+        --- put all but not privates line __index
+        -- TODO: maybe in the future I can index private methods
+        success = true
+        if impl ~= nil and type(impl) == 'function'
+                and not string.find(method, "__") then
+            spies[path]["__" .. method] = {
+                calls = 0,
+                name = path .. "." .. method,
+                latestCallWith = nil,
+                doReturn = impl
+            }
+            spies[path][method] = _makeFunction(method, spies[path])
+        end
+    end
+    return success
+end
+
+local function __doSpy(path, class)
+    local mapObj = {}
+    local success = false
+    for method, method_real in pairs(class) do
+        -- don't index private methods
+        -- TODO: maybe in the future I can index private methods
+        success = true
+        if not string.find(method, "__") and type(method_real) == 'function' then
+            mapObj[method] = spies[path]["__" .. method]
+            mapObj[method]["stub"] = _makeDoReturnFunction(spies[path]["__" .. method])
+        end
+    end
+
+    return success, mapObj
+end
+
 local function __makeSpy(path)
-    if path and not mirror[path] then
+    if path and (not mirror[path] or type(mirror[path]) ~= 'table')then
         return
     end
 
+
     if path then
-        for method, impl in pairs(mirror[path]) do
-            --- put all but not privates line __index
-            -- TODO: maybe in the future I can index private methods
-            if impl ~= nil and type(impl) == 'function'
-                    and not string.find(method, "__") then
-                spies[path]["__" .. method] = {
-                    calls = 0,
-                    name = path .. "." .. method,
-                    latestCallWith = nil,
-                    doReturn = impl
-                }
-                spies[path][method] = _makeFunction(method, spies[path])
-            end
+        local success = __prepareSpy(path, mirror[path])
+
+        -- maybe class is auto instantiated in require - singleton like
+        if not success then
+            __prepareSpy(path, getmetatable(mirror[path]))
         end
     end
 
     if not path then
         for k, v in pairs(mirror) do
             if type(v) == 'table' then
-                for method, impl in pairs(v) do
-                    --- put all but not privates line __index
-                    -- TODO: maybe in the future I can index private methods
-                    if impl ~= nil and type(impl) == 'function'
-                            and not string.find(method, "__") then
-                        spies[k]["__" .. method] = {
-                            calls = 0,
-                            name = k .. "." .. method,
-                            latestCallWith = nil,
-                            doReturn = impl
-                        }
-                        spies[k][method] = _makeFunction(method, spies[k])
-                    end
+                local success = __prepareSpy(k, v)
+
+                -- maybe class is auto instantiated in require - singleton like
+                if not success then
+                    __prepareSpy(k, getmetatable(v))
                 end
             end
         end
     end
+end
+
+function clearTest()
+    mocks = {}
+
+    if isNgx then
+        -- in ngx context spies must be preserved but reset (integration tests)
+        lazy_spies = {}
+        __makeSpy()
+    else
+        -- in non ngx context - unit tests spies and mirrors must be reset everything should be fresh
+        spies = {}
+        mirror = {}
+        lazy_spies = {}
+    end
+    mockNgx()
 end
 
 --- Converts a table to a string
@@ -193,15 +273,11 @@ function spy(class, method, fn)
     end
 
 
-    local mapObj = {}
+    local success, mapObj = __doSpy(class, mirror[class])
 
-    for method, method_real in pairs(mirror[class]) do
-        -- don't index private methods
-        -- TODO: maybe in the future I can index private methods
-        if not string.find(method, "__") and type(method_real) == 'function' then
-            mapObj[method] = spies[class]["__" .. method]
-            mapObj[method]["stub"] = _makeDoReturnFunction(spies[class]["__" .. method])
-        end
+    -- auto generated singleton class
+    if not success then
+        success, mapObj = __doSpy(class, getmetatable(mirror[class]))
     end
 
     if method and fn then
@@ -228,6 +304,13 @@ require = function(path)
         return table
     elseif path == "ffi" then
         return oldRequire("ffi")
+    elseif path == "debug" then
+        local sts, module = pcall(oldRequire, path)
+        if not sts then
+            return debug
+        else
+            return module
+        end
     end
 
     --wanna force reload the package
@@ -241,9 +324,9 @@ require = function(path)
 
         spies[path] = oldRequire(path)
         mirror[path] = _clone(spies[path])
+        __makeSpy(path)
         -- this means that the require has been done and now it's the time to init any lazy spy
         if lazy_spies[path] then
-            __makeSpy(path)
             for method, info in pairs(lazy_spies[path]) do
                 spy(info.class, info.method, info.fn)
             end
@@ -262,6 +345,15 @@ function beforeEach(fn)
     beforeFn = fn
 end
 
+
+---
+-- @param fn {function} - the function to be ran afterEach Test
+-- Saves the function in a variable in order to call it before each test for a suite
+---
+function afterEach(fn)
+    afterFn = fn
+end
+
 ---
 -- @param description  {string}
 -- @param ... {optional}
@@ -270,7 +362,7 @@ end
 function xtest(description, ...)
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
-        name = description,
+        name = description:gsub("\"", "&quot;"),
         className = mockaStats.suites[#mockaStats.suites].name,
         time = 0,
         failureMessage = nil,
@@ -296,7 +388,7 @@ end
 function test(description, fn, assertFail)
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
-        name = description,
+        name = description:gsub("\"", "&quot;"),
         className = mockaStats.suites[#mockaStats.suites].name,
         time = 0,
         failureMessage = nil,
@@ -314,8 +406,6 @@ function test(description, fn, assertFail)
         end
     end
 
-    __makeSpy()
-
     if (beforeFn ~= nil) then
         pcall(beforeFn)
     end
@@ -329,19 +419,32 @@ function test(description, fn, assertFail)
     ti.time = elapsed
 
     if not status and not assertFail then
-        print("\t\t " .. description .. " ----- FAIL ")
+        print("\t\t " .. description .. " ----- FAIL : " .. tostring(elapsed) .. "s")
         local callingFunction = debug.getinfo(2)
         print(string.format("%s in %s : %s", result, callingFunction.short_src,
-            callingFunction.currentline))
-        mockaStats.noNOK = mockaStats.noNOK + 1;
-        si.noNOK = si.noNOK + 1
+                callingFunction.currentline))
+        if(ti.failureMessage) then
+            mockaStats.noNOK = mockaStats.noNOK + 1;
+            si.noNOK = si.noNOK + 1
+            ti.failureTrace = result
+        else
+            mockaStats.noErrors = mockaStats.noErrors + 1;
+            si.noErrors = si.noErrors + 1
+            ti.errorMessage = result
+        end
     else
-        print("\t\t " .. description .. " ----- SUCCESS ")
+        print("\t\t " .. description .. " ----- SUCCESS : " .. tostring(elapsed) .. "s")
         mockaStats.noOK = mockaStats.noOK + 1;
         si.noOK = si.noOK + 1
     end
     mockaStats.no = mockaStats.no + 1;
     si.no = si.no + 1
+
+    if (afterFn ~= nil) then
+        pcall(afterFn)
+    end
+
+    clearTest()
 end
 
 ---
@@ -467,7 +570,7 @@ function table.tostring(tbl)
     for k, v in pairs(tbl) do
         if not done[k] then
             table.insert(result,
-                table.key_to_str(k) .. "=" .. table.val_to_str(v))
+                    table.key_to_str(k) .. "=" .. table.val_to_str(v))
         end
     end
     return "{" .. table.concat(result, ",") .. "}"
@@ -516,20 +619,5 @@ function assertNotEquals(t1, t2)
     end
 end
 
---- should be here because of using global mocka definitions
-local default_mocks = require("mocka.default_mocks")
 
-function mockNgx(conf)
-    if not conf then
-        ngx = default_mocks.makeNgxMock()
-    else
-        ngx =  conf
-    end
-end
 
-function clearMocks(inNgx)
-    mocks = {}
-    if not inNgx then
-        ngx = default_mocks.makeNgxMock()
-    end
-end

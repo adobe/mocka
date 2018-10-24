@@ -3,7 +3,6 @@
 --- Created by vdatcu.
 --- DateTime: 11/05/2018 14:10
 ---
-
 beforeEach(function()
     spy("cjson", "encode", function(data)
         return "before_each_" .. data
@@ -83,4 +82,55 @@ test('xtest is always ignored', function()
     end)
 
     assertEquals(global, "notChanged")
+end)
+
+
+test('properties passed to mock constructor should be there', function()
+
+    mock("test.constructor", {"new"})
+    local mockedConstructor = require("test.constructor"):new({ foo = "bar"})
+    assertEquals(mockedConstructor.foo, "bar")
+end)
+
+test('ability to lazy mock auto generating classes singleton pattern', function()
+    spy("src.test.adobe.mocka.auto_running_class", "doSomething", function()
+        return false
+    end)
+
+    local original = oldRequire "src.test.adobe.mocka.auto_running_class"
+    local autoRunning = require "src.test.adobe.mocka.auto_running_class"
+
+    assertEquals(autoRunning:doSomething(), false)
+    assertEquals(original:doSomething(), true)
+
+end)
+
+test('ability to mock auto generating classes singleton pattern post require', function()
+    local autoRunning = require "src.test.adobe.mocka.auto_running_class"
+    assertEquals(autoRunning:doSomething(), true)
+
+    spy("src.test.adobe.mocka.auto_running_class", "doSomething", function()
+        return false
+    end)
+
+    assertEquals(autoRunning:doSomething(), false)
+end)
+
+test('capture errors as failures with stack trace', function()
+    local t = {}
+    print(t.x.y)
+end)
+
+test('captures failures independent from error', function()
+    assertEquals(true, false)
+end)
+
+test('validate the failures and the errors', function()
+    assertEquals(mockaStats.noNOK, 1)
+    assertEquals(mockaStats.noErrors, 1)
+    assertEquals(mockaStats.suites[1].noErrors, 1)
+    assertEquals(mockaStats.suites[1].noNOK, 1)
+    assertNotNil(mockaStats.suites[1].tests[12].errorMessage)
+    assertNotNil(mockaStats.suites[1].tests[13].failureTrace)
+    assertNotNil(mockaStats.suites[1].tests[13].failureMessage)
 end)

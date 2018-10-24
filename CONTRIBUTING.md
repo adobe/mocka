@@ -1,4 +1,4 @@
-# LuaMock Community Contributing Guide 1.0
+# Mocka Community Contributing Guide 1.0
 
 The goal of this document is to create a contribution process that:
 
@@ -15,17 +15,28 @@ contributors can be involved in decision making.
 * A **TC (Technical Committee)** is a group of committers representing the required technical
 expertise to resolve rare disputes.
 
+# Code Of Conduct
+
+This project adheres to the Adobe [code of conduct](CODE_OF_CONDUCT.md). By participating, you are
+expected to uphold this code, be courteous and respectful. Please report unacceptable behavior to
+[Grp-opensourceoffice@adobe.com](mailto:Grp-opensourceoffice@adobe.com).
+
 # Logging Issues
 
-Log an issue for any question or problem you might have. When in doubt, log an issue, and
-any additional policies about what to include will be provided in the responses. The only
-exception is security dislosures which should be sent privately.
+[Log an issue](https://github.com/adobe/mocka/issues/new) for any question or problems
+you might have. When in doubt, [log an issue](https://github.com/adobe/mocka/issues/new),
+and any additional policies about what to include will be provided in our response.
+The only exception is security dislosures which should be sent privately (TODO: how?).
 
 Committers may direct you to another repository, ask for additional clarifications, and
 add appropriate metadata before the issue is addressed.
 
-Please be courteous and respectful. Every participant is expected to follow the
-project's Code of Conduct.
+# Contributor License Agreement
+
+All third-party contributions to this project must be accompanied by a signed contributor
+license agreement. This gives Adobe permission to redistribute your contributions as part
+of the project. [Sign our CLA](http://opensource.adobe.com/cla.html). You only need to
+submit an Adobe CLA one time, so if you have submitted one previously, you are good to go!
 
 # Contributions
 
@@ -81,6 +92,3 @@ Members can be added to the TC at any time. Any committer can nominate another c
 to the TC and the TC uses its standard consensus seeking process to evaluate whether or
 not to add this new member. Members who do not participate consistently at the level of
 a majority of the other members are expected to resign.
-
-**Read more at [http://adobe.github.io/cla.html](http://adobe.github.io/cla.html)**
-

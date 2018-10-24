@@ -16,6 +16,7 @@ Please delete options that are not relevant.
 
 ## Checklist:
 
+- [ ] I have signed the [Adobe CLA](http://opensource.adobe.com/cla.html)
 - [ ] My code follows the style guidelines of this project
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas

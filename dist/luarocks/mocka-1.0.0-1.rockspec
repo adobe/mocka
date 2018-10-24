@@ -15,7 +15,7 @@ local function make_plat(plat)
     } }
 end
 source = {
-    url = "git+https://github.com/adobe/luaMock.git",
+    url = "git+https://github.com/adobe/mocka.git",
     tag = "v1.0.0"
 }
 description = {
@@ -33,6 +33,9 @@ dependencies = {
     "lua-resty-iputils",
     "penlight",
     "ldoc",
+    "luacov",
+    "luacov-coveralls",
+    "luacov-cobertura",
     "luacheck"
 }
 build = {
@@ -43,10 +46,5 @@ build = {
 		haiku = make_plat("haiku"),
 		win32 = make_plat("win32"),
 		mingw32 = make_plat("mingw32")
-	},
-	install = {
-      bin = {
-        ['luacov-cobertura'] = 'luacov-cobertura/bin/luacov-cobertura'
-      }
-    }
+	}
 }
