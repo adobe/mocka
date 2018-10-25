@@ -5,10 +5,19 @@
     color: #fff;
 }
 
+.FOLDER:before {
+    margin-top: 3px;
+    color: #bbb;
+}
 
 .FOLDER.close:before {
     content: '\f07b';
 }
 .FOLDER.open:before {
     content: '\f07c';
+}
+.FILE:before {
+    content: '\f1c9';
+    margin-top: 3px;
+    color: #bbb;
 }
