@@ -1,0 +1,78 @@
+#!/usr/bin/env lua
+
+require("luacov")
+local cjson = require "cjson"
+local luaFiles = {}
+local help_message = ([[
+Mocka - the one testing framework for LUA and Openresty
+Usage:
+   mocka [options] [pattern...]
+   Launch your Lua programs with -lluacov to perform accounting.
+Options:
+   -t filename, --test filename
+      Use a unit test file, that has been written with mocka framework.
+   -h, --help
+      Show this help message and exit.
+Examples:
+   mocka -t foo/bar.lua
+   mocka foo/bar.lua
+]])
+
+local function read_key(i)
+    if arg[i]:sub(1, 1) ~= "-" or #arg[i] == 1 then
+        return nil, arg[i], i + 1
+    end
+
+    if arg[i]:sub(2, 2) == "-" then
+        local key, value = arg[i]:match("^%-%-([^=]+)=(.*)$")
+        if key then
+            return key, value, i + 1
+        else
+            return arg[i]:sub(3), arg[i + 1], i + 2
+        end
+    else
+        local key = arg[i]:sub(2, 2)
+        local value = arg[i]:sub(3)
+        if #value == 0 then
+            i = i + 1
+            value = arg[i]
+        elseif value:sub(1, 1) == "=" then
+            value = value:sub(2)
+        end
+        return key, value, i + 1
+    end
+end
+
+local function norm_pat(p)
+    return (p:gsub("\\", "/"):gsub("^.", ""):gsub("/", "."):gsub("^.", ""):gsub("%.lua$", ""))
+end
+
+local i = 1
+while arg[i] do
+    local key, value
+    key, value, i = read_key(i)
+    if key then
+        if (key == "h") or (key == "help") then
+            print(help_message)
+            os.exit(0)
+        elseif (key == "t") or (key == "test") then
+            table.insert(luaFiles, norm_pat(value))
+        else
+            print(help_message)
+            os.exit(0)
+        end
+    else
+        table.insert(luaFiles, norm_pat(value))
+    end
+end
+
+if(luaFiles and #luaFiles > 0) then
+    print("Running tests for " .. cjson.encode(luaFiles))
+    require("mocka.suite")(luaFiles)
+    os.exit(0)
+end
+
+print(help_message)
+os.exit(0)
+
+
