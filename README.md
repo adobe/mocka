@@ -3,7 +3,7 @@ Testing Framework for Lua - Mocka [![Build Status](https://travis-ci.org/adobe/m
 ------
 
 The one lua testing framework that mocks classes, runs with real classes from
-your project, has nginx embeded methods for openresty individual testing. Has a suite
+your project, has nginx embedded methods for openresty individual testing. Has a suite
 of libraries preinstalled and you can specify libraries to install.
 
 Mocka runs better in docker than in standalone - all you need to do is pull
