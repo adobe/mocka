@@ -1,0 +1,50 @@
+#!/usr/bin/env lua
+
+require("luacov")
+local cjson = require "cjson"
+local argparse = require "mocka.argparse"
+local luaFiles = {}
+local help_message = ([[
+Mocka - the one testing framework for LUA and Openresty
+Usage:
+   mocka [options] [pattern...]
+   Launch your Lua programs with -lluacov to perform accounting.
+Options:
+   -t filename, --test filename
+      Use a unit test file, that has been written with mocka framework.
+   -h, --help
+      Show this help message and exit.
+Examples:
+   mocka -t foo/bar.lua
+   mocka foo/bar.lua
+]])
+
+local i = 1
+while arg[i] do
+    local key, value
+    key, value, i = argparse.read_key(arg, i)
+    if key then
+        if (key == "h") or (key == "help") then
+            print(help_message)
+            os.exit(0)
+        elseif (key == "t") or (key == "test") then
+            table.insert(luaFiles, argparse.norm_path(value))
+        else
+            print(help_message)
+            os.exit(0)
+        end
+    else
+        table.insert(luaFiles, argparse.norm_path(value))
+    end
+end
+
+if(luaFiles and #luaFiles > 0) then
+    print("Running tests for " .. cjson.encode(luaFiles))
+    require("mocka.suite")(luaFiles)
+    os.exit(0)
+end
+
+print(help_message)
+os.exit(0)
+
+
