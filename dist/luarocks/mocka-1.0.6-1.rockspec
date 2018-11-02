@@ -9,7 +9,7 @@ description = {
    license = "Apache2"
 }
 dependencies = {
-   "luafilesystem", "lua-websockets", "lua-cjson = 2.1.0", "lua-ev", "luabitop", "lua-resty-iputils", "penlight", "ldoc", "luacov", "luacov-coveralls", "luacov-cobertura", "luacheck", "lua < 5.3"
+   "luafilesystem", "lua-websockets", "lua-cjson = 2.1.0", "lua-ev", "luabitop", "lua-resty-iputils", "penlight", "ldoc", "luacov", "luacov-coveralls", "luacov-cobertura", "luacheck", "lua >= 5.1, < 5.3"
 }
 build = {
    type = "builtin",
