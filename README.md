@@ -13,7 +13,8 @@ the image and run it like so
 Table of contents
 ----
 1. [Installing](#installing)
-2. [Usage inside test classes](#ussage-inside-test-classes)
+2. [Running](#running)
+3. [Usage inside test classes](#ussage-inside-test-classes)
     1. [Mocking](#mock---mocking)
         - [Alter mock behaviour](#alter-mock-behaviour)
     2. [Running and skipping tests](#test-and-xtest---running-and-skipping)
@@ -26,8 +27,8 @@ Table of contents
         - [assertNil](#assertnil)
         - [assertNotNil](#assertnotnil)
         - [Verify a mock has been called](#calls---verify-a-mock-has-been-called)
-3. [Dependencies](#dependencies)
-4. [Contributing](https://github.com/adobe/mocka/blob/master/CONTRIBUTING.md)
+4. [Dependencies](#dependencies)
+5. [Contributing](https://github.com/adobe/mocka/blob/master/CONTRIBUTING.md)
         
 
 ## Installing
@@ -35,15 +36,26 @@ Table of contents
 - `sudo luarocks install luacov`
 
 __Optional__:
-- `sudo luarocks install luacov-coveralls`
 - `lua -lluacov run_tests.lua`
 - `luacov`
 - `luacov-cobertura -o coverage_report.xml`
 
-Sugest using:
+Suggest using:
  
 __GitHub Pull Request Coverage Status__ and __Cobertura Plugin__
 
+
+## Running
+
+- `mocka <path_to_file>` - run a test file written in mocka framework style
+- `mocka -t <path_to_file>` - run a test file written in mocka framework style (you can pass multiple -t files and the command will run all)
+
+If you need coverage report in a human readable form:
+
+``` 
+   luacov
+   luacov-cobertura -o coverage_report.xml
+```
 
 ## Usage inside test classes
 
