@@ -28,7 +28,8 @@ build = {
             ["mocka.require"] = "src/main/lua/com/adobe/test/framework/require_lua.lua",
             ["mocka.server"] = "src/main/lua/com/adobe/test/framework/server.lua",
             ["mocka.suite"] = "src/main/lua/com/adobe/test/suites/run_tests.lua",
-            ["mocka.ws_server"] = "src/main/lua/com/adobe/test/framework/ws_server.lua"
+            ["mocka.ws_server"] = "src/main/lua/com/adobe/test/framework/ws_server.lua",
+            ["mocka.argparse"] = "src/main/lua/com/adobe/test/framework/argparse.lua"
          }
       },
       macosx = {
@@ -45,7 +46,8 @@ build = {
             ["mocka.require"] = "src/main/lua/com/adobe/test/framework/require_lua.lua",
             ["mocka.server"] = "src/main/lua/com/adobe/test/framework/server.lua",
             ["mocka.suite"] = "src/main/lua/com/adobe/test/suites/run_tests.lua",
-            ["mocka.ws_server"] = "src/main/lua/com/adobe/test/framework/ws_server.lua"
+            ["mocka.ws_server"] = "src/main/lua/com/adobe/test/framework/ws_server.lua",
+            ["mocka.argparse"] = "src/main/lua/com/adobe/test/framework/argparse.lua"
          }
       },
       unix = {
@@ -62,7 +64,8 @@ build = {
             ["mocka.require"] = "src/main/lua/com/adobe/test/framework/require_lua.lua",
             ["mocka.server"] = "src/main/lua/com/adobe/test/framework/server.lua",
             ["mocka.suite"] = "src/main/lua/com/adobe/test/suites/run_tests.lua",
-            ["mocka.ws_server"] = "src/main/lua/com/adobe/test/framework/ws_server.lua"
+            ["mocka.ws_server"] = "src/main/lua/com/adobe/test/framework/ws_server.lua",
+            ["mocka.argparse"] = "src/main/lua/com/adobe/test/framework/argparse.lua"
          },
          install = {
            bin = {
