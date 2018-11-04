@@ -219,4 +219,14 @@ local plugin = {
   end
 }
 
-return plugin
+local sts, inst = pcall(require, "mocka.argparse")
+if sts and inst then
+  return plugin
+end
+
+ide:Print(string.format([[
+  mocka_sts needs `mocka` plugin.
+  Please install with `luarocks install mocka`
+]], inst))
+
+return nil
