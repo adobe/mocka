@@ -1,16 +1,18 @@
+dofile 'interpreters/luabase.lua'
 local MockaTests = {}
 MockaTests.api = {
   test = {
     type = "function",
     description = "test fn",
-    args = "(filename: string [, mode: string])",
+    args = "(filename: string, fn: function, [, test_failure: boolean])",
     returns = "(nil)"
   }
 }
+MockaTests.interpreter = MakeLuaInterpreter()
 MockaTests.runTestId = ID("mocka.bar.runtest")
 MockaTests.runTestIdFilePopup =  ID("mocka.file.runtest")
 MockaTests.testFile = nil
-MockaTests.interpreter = {}
+
 MockaTests.bitmaps = {
   testIcon = wx.wxBitmap({
     -- columns rows colors chars-per-pixel --
@@ -104,11 +106,15 @@ end
 
 function MockaTests:onRegister(this)
   MockaTests:appendMockaToolbar()
-  ide:AddAPI("lua", "mocka", MockaTests.api)
+  ide:AddAPI("lua", "mocka", self.api)
+  self.interpreter.name = "Lua5.1 - extended"
+  self.interpreter.api = {"baselib", "mocka", "wxwidgets", "luajit2"}
+  ide:AddInterpreter("mocka", self.interpreter)
 end
 
 function MockaTests:onUnRegister(this)
   ide:RemoveAPI("lua", "mocka")
+  ide:RemoveInterpreter("mocka")
 end
 
 function MockaTests:fileExists(file)
