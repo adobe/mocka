@@ -1,4 +1,8 @@
 dofile 'interpreters/luabase.lua'
+local json = require "json"
+local lfs = require "lfs"
+local norm_path = require "mocka.argparse".norm_path
+
 local MockaTests = {}
 MockaTests.api = {
   test = {
@@ -16,6 +20,7 @@ MockaTests.testFile = nil
 MockaTests.bitmaps = {
   testIcon = ide:GetBitmap("RUN-NOW", "MOCKA", wx.wxSize(16,16))
 }
+
 
 function MockaTests:addMenuItem(menu, id, label, icon, where, event, fn)
   local menuItem = menu[where](menu, id, label)
@@ -70,7 +75,6 @@ function MockaTests:onRegister(this)
   ide:AddAPI("lua", "mocka", self.api)
   self.interpreter.name = "Lua5.1 - extended"
   self.interpreter.api = {"baselib", "mocka", "wxwidgets", "luajit2"}
-  ide:AddInterpreter("mocka", self.interpreter)
 end
 
 function MockaTests:onUnRegister(this)
@@ -91,11 +95,16 @@ end
 
 function MockaTests:isdir(path)
    -- "/" works on both Unix and Windows
-   return self:fileExists(path.."/")
+   local attr = lfs.attributes(path)
+   if type(attr) == "table" and attr.mode == "directory" then
+     return true
+   end
+
+   return false
 end
 
 function MockaTests:search(file, txt)
-  if(not file:find("%.lua")) then
+  if(not file:find("%.lua$")) then
     return false
   end
   if self:isdir(file) then
@@ -117,7 +126,7 @@ function MockaTests:enableRunTestMenu(filePath)
   end
   local exists = self:search(filePath, "test%(")
   if(exists) then
-    self.testFile = filePath:gsub(ide:GetProject(), "")
+    self.testFile = filePath:gsub(ide:GetProject():gsub("%-", "%%-"), "")
     self.runTestButton:Enable(true)
   else
     self.testFile = nil
@@ -156,6 +165,17 @@ function MockaTests:onMenuFiletree(this, menu, tree, event)
   end
 end
 
+function MockaTests:onProjectLoad(this, project)
+   ide:ExecuteCommand(
+      'ldoc -a --filter t.dump ' .. ide:GetProject() .. "/tick", 
+      ide:GetProject(), 
+      function(s) 
+        ide:GetOutput():Write(s) 
+      end
+    )
+   ide:AddInterpreter("mocka", self.interpreter)
+end
+
 local plugin = {
   name = "mocka_zbs",
   description = "Mocka ZeroBrane plugin",
@@ -177,6 +197,9 @@ local plugin = {
   end,
   onMenuFiletree = function(...)
     MockaTests:onMenuFiletree(...)
+  end,
+  onProjectLoad = function(...)
+    MockaTests:onProjectLoad(...)
   end
 }
 
