@@ -13,6 +13,8 @@ Usage:
 Options:
    -t filename, --test filename
       Use a unit test file, that has been written with mocka framework.
+   -p directory, --project-source-dir directory
+      Set the project root - where all your lua / c files or packages are located.
    -h, --help
       Show this help message and exit.
 Examples:
