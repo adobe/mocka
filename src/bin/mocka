@@ -3,6 +3,7 @@
 require("luacov")
 local cjson = require "cjson"
 local argparse = require "mocka.argparse"
+local path = require "pl.path"
 local luaFiles = {}
 local help_message = ([[
 Mocka - the one testing framework for LUA and Openresty
@@ -29,6 +30,16 @@ while arg[i] do
             os.exit(0)
         elseif (key == "t") or (key == "test") then
             table.insert(luaFiles, argparse.norm_path(value))
+        elseif (key == "p") or (key == "project-source-dir") then
+            local abs_location = path.abspath(value)
+            if string.find(package.path, abs_location) == nil then
+                package.path = package.path .. string.format([[
+                            ;%s/?.lua;%s/?/init.lua]], abs_location, abs_location)
+            end
+            if string.find(package.cpath, abs_location) == nil then
+                package.cpath = package.path .. string.format([[
+                            ;%s/?.so;%s/?/init.so]], abs_location, abs_location)
+            end
         else
             print(help_message)
             os.exit(0)
