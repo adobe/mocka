@@ -20,6 +20,7 @@ Options:
 Examples:
    mocka -t foo/bar.lua
    mocka foo/bar.lua
+   mocka foo/bar.lua -p ./src/lua
 ]])
 
 local i = 1
