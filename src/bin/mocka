@@ -32,7 +32,7 @@ while arg[i] do
             print(help_message)
             os.exit(0)
         elseif (key == "t") or (key == "test") then
-            table.insert(luaFiles, argparse.norm_path(value))
+            table.insert(luaFiles, path.abspath(value))
         elseif (key == "p") or (key == "project-source-dir") then
             local abs_location = path.abspath(value)
             if string.find(package.path, abs_location) == nil then
@@ -48,13 +48,13 @@ while arg[i] do
             os.exit(0)
         end
     else
-        table.insert(luaFiles, argparse.norm_path(value))
+        table.insert(luaFiles, path.abspath(value))
     end
 end
 
 if(luaFiles and #luaFiles > 0) then
     print("Running tests for " .. cjson.encode(luaFiles))
-    require("mocka.suite")(luaFiles)
+    require("mocka.suite")(luaFiles, dofile)
     os.exit(0)
 end
 
