@@ -13,11 +13,14 @@ Usage:
 Options:
    -t filename, --test filename
       Use a unit test file, that has been written with mocka framework.
+   -p directory, --project-source-dir directory
+      Set the project root - where all your lua / c files or packages are located.
    -h, --help
       Show this help message and exit.
 Examples:
    mocka -t foo/bar.lua
    mocka foo/bar.lua
+   mocka foo/bar.lua -p ./src/lua
 ]])
 
 local i = 1
@@ -30,6 +33,16 @@ while arg[i] do
             os.exit(0)
         elseif (key == "t") or (key == "test") then
             table.insert(luaFiles, path.abspath(value))
+        elseif (key == "p") or (key == "project-source-dir") then
+            local abs_location = path.abspath(value)
+            if string.find(package.path, abs_location) == nil then
+                package.path = package.path .. string.format([[
+                            ;%s/?.lua;%s/?/init.lua]], abs_location, abs_location)
+            end
+            if string.find(package.cpath, abs_location) == nil then
+                package.cpath = package.path .. string.format([[
+                            ;%s/?.so;%s/?/init.so]], abs_location, abs_location)
+            end
         else
             print(help_message)
             os.exit(0)

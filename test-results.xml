@@ -1,50 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites disabled="1" errors="1" failures="1" name="" tests="20" time="0.003556">
-	<testsuite name="src.test.adobe.mocka.HealthcheckTest" tests="14" disabled="1" errors="1" failures="1" id="0" time="0.002889" timestamp="">
-		<testcase name="Mocka is loaded and works" assertions="9" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="3.2e-05">
+<testsuites disabled="1" errors="1" failures="1" name="" tests="21" time="0.004077">
+	<testsuite name="src.test.adobe.mocka.HealthcheckTest" tests="14" disabled="1" errors="1" failures="1" id="0" time="0.002492" timestamp="">
+		<testcase name="Mocka is loaded and works" assertions="9" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="2.8e-05">
 		</testcase>
-		<testcase name="spy works lazy mode" assertions="2" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000714">
+		<testcase name="spy works lazy mode" assertions="2" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000595">
 		</testcase>
-		<testcase name="spy works post mortem mode" assertions="2" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000192">
+		<testcase name="spy works post mortem mode" assertions="2" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000189">
 		</testcase>
-		<testcase name="spies are reset for each test" assertions="1" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000172">
+		<testcase name="spies are reset for each test" assertions="1" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000135">
 		</testcase>
-		<testcase name="spies are preserved if beforEach exists" assertions="1" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000142">
+		<testcase name="spies are preserved if beforEach exists" assertions="1" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000109">
 		</testcase>
-		<testcase name="xtest is always ignored" assertions="0" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="5.9999999999999e-05">
+		<testcase name="xtest is always ignored" assertions="0" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="5.5e-05">
 		</testcase>
-		<testcase name="first run a test" assertions="0" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="9.9999999999927e-07">
+		<testcase name="first run a test" assertions="0" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="1.0000000000001e-06">
 		</testcase>
 		<testcase name="this test sets a global variable" assertions="1" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0">
 			<skipped/>
 		</testcase>
-		<testcase name="properties passed to mock constructor should be there" assertions="1" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="1.1000000000001e-05">
+		<testcase name="properties passed to mock constructor should be there" assertions="1" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="9.0000000000003e-06">
 		</testcase>
-		<testcase name="ability to lazy mock auto generating classes singleton pattern" assertions="2" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000217">
+		<testcase name="ability to lazy mock auto generating classes singleton pattern" assertions="2" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000186">
 		</testcase>
-		<testcase name="ability to mock auto generating classes singleton pattern post require" assertions="2" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="0.000111">
+		<testcase name="ability to mock auto generating classes singleton pattern post require" assertions="2" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="9.6000000000001e-05">
 		</testcase>
-		<testcase name="capture errors as failures with stack trace" assertions="0" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="7.9999999999993e-06">
+		<testcase name="capture errors as failures with stack trace" assertions="0" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="8.0000000000002e-06">
 			<error message="internal test error" type="error">./src/test/adobe/mocka/HealthcheckTest.lua:121: attempt to index field 'x' (a nil value)</error>
 		</testcase>
-		<testcase name="captures failures independent from error" assertions="1" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="9.0000000000003e-06">
+		<testcase name="captures failures independent from error" assertions="1" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="8.0000000000002e-06">
 			<failure message="assertEquals failed: expected [false], was [true]" type="failure">/usr/local/share/lua/5.1/mocka.lua:588: assertEquals failed: expected [false], was [true]</failure>
 		</testcase>
-		<testcase name="validate the failures and the errors" assertions="7" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="5.0000000000015e-06">
+		<testcase name="validate the failures and the errors" assertions="7" classname="src.test.adobe.mocka.HealthcheckTest" status="" time="5.9999999999999e-06">
 		</testcase>
 	</testsuite>
-	<testsuite name="src.test.adobe.mocka.argparseTest" tests="6" disabled="0" errors="0" failures="0" id="1" time="0.000611" timestamp="">
-		<testcase name="read -t key correctly" assertions="2" classname="src.test.adobe.mocka.argparseTest" status="" time="7.9999999999993e-06">
+	<testsuite name="src.test.adobe.mocka.argparseTest" tests="6" disabled="0" errors="0" failures="0" id="1" time="0.000549" timestamp="">
+		<testcase name="read -t key correctly" assertions="2" classname="src.test.adobe.mocka.argparseTest" status="" time="7.0000000000001e-06">
 		</testcase>
-		<testcase name="read --test key correctly" assertions="2" classname="src.test.adobe.mocka.argparseTest" status="" time="1.6e-05">
+		<testcase name="read --test key correctly" assertions="2" classname="src.test.adobe.mocka.argparseTest" status="" time="1.7e-05">
 		</testcase>
 		<testcase name="read multiple same keys correctly" assertions="4" classname="src.test.adobe.mocka.argparseTest" status="" time="9.0000000000003e-06">
 		</testcase>
-		<testcase name="split by =" assertions="4" classname="src.test.adobe.mocka.argparseTest" status="" time="1.0000000000001e-05">
+		<testcase name="split by =" assertions="4" classname="src.test.adobe.mocka.argparseTest" status="" time="9.0000000000003e-06">
 		</testcase>
-		<testcase name="test no args" assertions="2" classname="src.test.adobe.mocka.argparseTest" status="" time="4.9999999999998e-06">
+		<testcase name="test no args" assertions="2" classname="src.test.adobe.mocka.argparseTest" status="" time="4.0000000000005e-06">
 		</testcase>
-		<testcase name="test normalize unix path" assertions="4" classname="src.test.adobe.mocka.argparseTest" status="" time="1.9000000000002e-05">
+		<testcase name="test normalize unix path" assertions="4" classname="src.test.adobe.mocka.argparseTest" status="" time="1.7000000000001e-05">
+		</testcase>
+	</testsuite>
+	<testsuite name="src.test.adobe.mocka.projectRootTest" tests="1" disabled="0" errors="0" failures="0" id="2" time="0.000955" timestamp="">
+		<testcase name="it should set a project root and work" assertions="2" classname="src.test.adobe.mocka.projectRootTest" status="" time="0.000782">
 		</testcase>
 	</testsuite>
 </testsuites>
