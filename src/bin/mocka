@@ -3,6 +3,7 @@
 require("luacov")
 local cjson = require "cjson"
 local argparse = require "mocka.argparse"
+local path = require "pl.path"
 local luaFiles = {}
 local help_message = ([[
 Mocka - the one testing framework for LUA and Openresty
@@ -28,19 +29,19 @@ while arg[i] do
             print(help_message)
             os.exit(0)
         elseif (key == "t") or (key == "test") then
-            table.insert(luaFiles, argparse.norm_path(value))
+            table.insert(luaFiles, path.abspath(value))
         else
             print(help_message)
             os.exit(0)
         end
     else
-        table.insert(luaFiles, argparse.norm_path(value))
+        table.insert(luaFiles, path.abspath(value))
     end
 end
 
 if(luaFiles and #luaFiles > 0) then
     print("Running tests for " .. cjson.encode(luaFiles))
-    require("mocka.suite")(luaFiles)
+    require("mocka.suite")(luaFiles, dofile)
     os.exit(0)
 end
 
