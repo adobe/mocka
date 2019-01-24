@@ -8,7 +8,6 @@ local tests = {
     "src.test.adobe.mocka.HealthcheckTest",
     "src.test.adobe.mocka.argparseTest",
     "src.test.adobe.mocka.projectRootTest"
-
 }
 
 require("mocka.suite")(tests)

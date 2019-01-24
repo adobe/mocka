@@ -53,6 +53,7 @@ __GitHub Pull Request Coverage Status__ and __Cobertura Plugin__
 to the directory provided in -p (this helps a lot when working with packages). !The path to root of project
 is more or less the same as for your luarocks module - where your lua files are all located!
 
+
 If you need coverage report in a human readable form:
 
 ``` 
