@@ -355,6 +355,18 @@ function afterEach(fn)
 end
 
 ---
+-- @param text {string} - text to escape for characters like quotes & and other stuff
+-- from here: https://stackoverflow.com/questions/1091945/what-characters-do-i-need-to-escape-in-xml-documents
+--
+local function escape_xml_characters(text)
+    return text:gsub("\"", "&quot;")
+        :gsub("'", "&apos;")
+        :gsub("<", "&lt;")
+        :gsub(">", "&gt;")
+        :gsub("&", "&amp;")
+end
+
+---
 -- @param description  {string}
 -- @param ... {optional}
 -- This method is used to ignore a test and records that a test has been ignored for the final report
@@ -362,7 +374,7 @@ end
 function xtest(description, ...)
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
-        name = description:gsub("\"", "&quot;"),
+        name = escape_xml_characters(description),
         className = mockaStats.suites[#mockaStats.suites].name,
         time = 0,
         failureMessage = nil,
@@ -388,7 +400,7 @@ end
 function test(description, fn, assertFail)
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
-        name = description:gsub("\"", "&quot;"),
+        name = escape_xml_characters(description),
         className = mockaStats.suites[#mockaStats.suites].name,
         time = 0,
         failureMessage = nil,

@@ -49,7 +49,7 @@ local xmlOutput = function()
     end
 end
 
-local run_tests = function(tests)
+local run_tests = function(tests, requireAlternative)
     resetStats()
     local startFullTime = os.clock()
     for i, module in ipairs(tests) do
@@ -66,7 +66,8 @@ local run_tests = function(tests)
             time = 0
         })
         local startTime = os.clock()
-        require(module)
+        local executionFunction = requireAlternative or require
+        executionFunction(module)
         local elapsed = os.clock() - startTime
 
         mockaStats.suites[i].time = elapsed
