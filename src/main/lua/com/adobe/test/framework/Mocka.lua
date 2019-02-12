@@ -611,6 +611,26 @@ function assertNil(t1)
     end
 end
 
+function assertTrue(t1)
+    local errorMessage = "assertTrue failed: expected to be true, was [%s]"
+    local sn, si, tn, ti = getCurrentRunInfo()
+    ti.assertions = ti.assertions + 1
+    if t1 ~= true then
+        ti.failureMessage = string.format(errorMessage, valToString(t1))
+        error(ti.failureMessage)
+    end
+end
+
+function assertFalse(t1)
+    local errorMessage = "assertTrue failed: expected to be false, was [%s]"
+    local sn, si, tn, ti = getCurrentRunInfo()
+    ti.assertions = ti.assertions + 1
+    if t1 ~= false then
+        ti.failureMessage = string.format(errorMessage, valToString(t1))
+        error(ti.failureMessage)
+    end
+end
+
 function assertNotNil(t1)
     local errorMessage = "assertNotNil failed";
     local sn, si, tn, ti = getCurrentRunInfo()
