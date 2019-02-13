@@ -21,6 +21,8 @@ test("Mocka is loaded and works", function()
     assertNotEquals({1,2,3}, {2,3,1})
     assertEquals({ foo = "bar" , bar = "foo" }, { foo = "bar", bar = "foo" })
     assertEquals({ foo = { a = "b"}, bar = "foo" }, { foo = { a = "b"}, bar = "foo" })
+    assertTrue(3 < 5)
+    assertFalse(3 > 5)
 end)
 
 test("spy works lazy mode", function()
