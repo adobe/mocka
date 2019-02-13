@@ -26,6 +26,8 @@ Table of contents
         - [assertNotEquals](#assertnotequals)
         - [assertNil](#assertnil)
         - [assertNotNil](#assertnotnil)
+        - [assertTrue](#asserttrue)
+        - [assertFalse](#assertfalse)
         - [Verify a mock has been called](#calls---verify-a-mock-has-been-called)
 4. [Dependencies](#dependencies)
 5. [Contributing](https://github.com/adobe/mocka/blob/master/CONTRIBUTING.md)
@@ -208,6 +210,20 @@ The only method that you don't want to alter if you mock is the __new__ function
 ```
     local x = "string"
     assertNotNil(x)
+```
+
+#### assertTrue
+
+```
+    local x = 3 < 5
+    assertTrue(x)
+```
+
+#### assertFalse
+
+```
+    local x = 3 > 5
+    assertFalse(x)
 ```
 
 #### calls(...) - verify a mock has been called
