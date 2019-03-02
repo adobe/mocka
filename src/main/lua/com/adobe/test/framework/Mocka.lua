@@ -21,6 +21,8 @@ local lazy_spies = {}
 
 local mirror = {}
 
+local inTestRequires = {}
+
 -- before each function rememberer
 local beforeFn;
 
@@ -236,8 +238,8 @@ function clearTest()
     else
         -- in non ngx context - unit tests spies and mirrors must be reset everything should be fresh
         -- resetting only requires that have been done in test not outside
-        for k, v in pairs(mirror) do
-            if v.__inTest then
+        for k, _ in pairs(mirror) do
+            if inTestRequires[k] then
                 mirror[k] = nil
                 spies[k] = nil
             end
@@ -245,6 +247,7 @@ function clearTest()
         lazy_spies = {}
         __makeSpy()
     end
+    inTestRequires = {}
     mockNgx()
 end
 
@@ -337,7 +340,9 @@ require = function(path)
             end
             lazy_spies[path] = nil
         end
-        mirror[path].__inTest = inTest
+        if inTest then
+            inTestRequires[path]  = true
+        end
         return spies[path]
     end
 end

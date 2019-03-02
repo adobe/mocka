@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites disabled="0" errors="0" failures="0" name="" tests="3" time="0.00485">
-	<testsuite name="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/spyTest.lua" tests="3" disabled="0" errors="0" failures="0" id="0" time="0.004748" timestamp="">
-		<testcase name="override lazy spy" assertions="1" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/spyTest.lua" status="" time="0.001008">
+<testsuites disabled="1" errors="1" failures="1" name="" tests="14" time="0.019144">
+	<testsuite name="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" tests="14" disabled="1" errors="1" failures="1" id="0" time="0.01905" timestamp="">
+		<testcase name="Mocka is loaded and works" assertions="11" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0.000557">
 		</testcase>
-		<testcase name="override preloaded module spy" assertions="1" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/spyTest.lua" status="" time="0.000109">
+		<testcase name="spy works lazy mode" assertions="2" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0.0012">
 		</testcase>
-		<testcase name="just beforeEach on preload" assertions="1" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/spyTest.lua" status="" time="6.0000000000001e-05">
+		<testcase name="spy works post mortem mode" assertions="2" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0.001973">
+		</testcase>
+		<testcase name="spies are reset for each test" assertions="1" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0.000927">
+		</testcase>
+		<testcase name="spies are preserved if beforEach exists" assertions="1" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0.001316">
+		</testcase>
+		<testcase name="xtest is always ignored" assertions="0" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0.000773">
+		</testcase>
+		<testcase name="first run a test" assertions="0" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="7.9999999999941e-06">
+		</testcase>
+		<testcase name="this test sets a global variable" assertions="1" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0">
+			<skipped/>
+		</testcase>
+		<testcase name="properties passed to mock constructor should be there" assertions="1" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0.00012400000000001">
+		</testcase>
+		<testcase name="ability to lazy mock auto generating classes singleton pattern" assertions="2" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0.000666">
+		</testcase>
+		<testcase name="ability to mock auto generating classes singleton pattern post require" assertions="2" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0.000392">
+		</testcase>
+		<testcase name="capture errors as failures with stack trace" assertions="0" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="1.4e-05">
+			<error message="internal test error" type="error">...WAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua:123: attempt to index field 'x' (a nil value)</error>
+		</testcase>
+		<testcase name="captures failures independent from error" assertions="1" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="5.6e-05">
+			<failure message="assertEquals failed: expected [false], was [true]" type="failure">/usr/local/share/lua/5.1/mocka.lua:615: assertEquals failed: expected [false], was [true]</failure>
+		</testcase>
+		<testcase name="validate the failures and the errors" assertions="7" classname="/Users/trifan/DEVELOPMENT/GATEWAY/luaMock/src/test/adobe/mocka/HealthcheckTest.lua" status="" time="0.000171">
 		</testcase>
 	</testsuite>
 </testsuites>
