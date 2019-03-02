@@ -278,7 +278,6 @@ function spy(class, method, fn)
         return
     end
 
-
     local success, mapObj = __doSpy(class, mirror[class])
 
     -- auto generated singleton class
@@ -330,7 +329,6 @@ require = function(path)
 
         spies[path] = oldRequire(path)
         mirror[path] = _clone(spies[path])
-        mirror[path].__inTest = inTest
         __makeSpy(path)
         -- this means that the require has been done and now it's the time to init any lazy spy
         if lazy_spies[path] then
@@ -339,6 +337,7 @@ require = function(path)
             end
             lazy_spies[path] = nil
         end
+        mirror[path].__inTest = inTest
         return spies[path]
     end
 end
