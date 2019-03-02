@@ -1,7 +1,7 @@
 local resty_http = require "resty.http"
 local cjson = require "cjson"
 local HttpRequest = {}
-local DEFAULT_TIMEOUT = 10000
+local DEFAULT_TIMEOUT = 60000
 
 function HttpRequest:request(host, port, ssl)
     self.req_object = {
