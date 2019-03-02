@@ -235,9 +235,15 @@ function clearTest()
         __makeSpy()
     else
         -- in non ngx context - unit tests spies and mirrors must be reset everything should be fresh
-        spies = {}
-        mirror = {}
+        -- resetting only requires that have been done in test not outside
+        for k, v in pairs(mirror) do
+            if v.__inTest then
+                mirror[k] = nil
+                spies[k] = nil
+            end
+        end
         lazy_spies = {}
+        __makeSpy()
     end
     mockNgx()
 end
@@ -324,6 +330,7 @@ require = function(path)
 
         spies[path] = oldRequire(path)
         mirror[path] = _clone(spies[path])
+        mirror[path].__inTest = inTest
         __makeSpy(path)
         -- this means that the require has been done and now it's the time to init any lazy spy
         if lazy_spies[path] then
@@ -372,6 +379,7 @@ end
 -- This method is used to ignore a test and records that a test has been ignored for the final report
 ---
 function xtest(description, ...)
+    inTest = true
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
         name = escape_xml_characters(description),
@@ -387,6 +395,7 @@ function xtest(description, ...)
     si.no = si.no + 1
     mockaStats.no = mockaStats.no + 1;
     print("\t\t " .. description .. " -- IGNORED")
+    inTest = false
 end
 
 ---
@@ -398,6 +407,7 @@ end
 -- than runs the test logic and counts if the test has failed or succeeded + duration.
 ---
 function test(description, fn, assertFail)
+    inTest = true
     table.insert(mockaStats.suites[#mockaStats.suites].tests, {
         assertions = 0,
         name = escape_xml_characters(description),
@@ -457,6 +467,7 @@ function test(description, fn, assertFail)
     end
 
     clearTest()
+    inTest = false
 end
 
 ---
