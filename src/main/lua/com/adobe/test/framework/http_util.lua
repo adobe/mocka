@@ -1,6 +1,7 @@
 local resty_http = require "resty.http"
 local cjson = require "cjson"
 local HttpRequest = {}
+local DEFAULT_TIMEOUT = 60000
 
 function HttpRequest:request(host, port, ssl)
     self.req_object = {
@@ -11,7 +12,7 @@ function HttpRequest:request(host, port, ssl)
         ssl_verify = false
     }
     self.host = 'localhost'
-    self.timeout = 10000
+    self._timeout = DEFAULT_TIMEOUT
 
     host = host or "localhost"
     ssl = ssl or false
@@ -31,7 +32,7 @@ end
 
 function HttpRequest:timeout(timeout)
     if timeout then
-        self.timeout = timeout
+        self._timeout = timeout
     end
 
     return self
@@ -105,7 +106,7 @@ end
 function HttpRequest:_makeRequest()
     print("making request ", self.host)
     local httpc = resty_http.new()
-    httpc:set_timeout(self.timeout)
+    httpc:set_timeout(self._timeout)
     local res, err = httpc:request_uri(self.host, self.req_object)
     if res then
         print(string.format("req to host=%s method=%s path=%s responded with status=%s",
