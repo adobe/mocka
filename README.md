@@ -14,6 +14,7 @@ Table of contents
 ----
 1. [Installing](#installing)
 2. [Running](#running)
+	1. [Run with docker](#run-with-docker)
 3. [Usage inside test classes](#ussage-inside-test-classes)
     1. [Mocking](#mock---mocking)
         - [Alter mock behaviour](#alter-mock-behaviour)
@@ -34,7 +35,7 @@ Table of contents
         
 
 ## Installing
-- `sudo luarocks make mocka-1.0-1.rockspec`
+- `sudo luarocks make mocka-1.0.0-1.rockspec`
 - `sudo luarocks install luacov`
 
 __Optional__:
@@ -62,6 +63,21 @@ If you need coverage report in a human readable form:
    luacov
    luacov-cobertura -o coverage_report.xml
 ```
+
+### Run with docker
+#### Build docker image and tag it with latest
+```
+make build-docker 
+``` 
+#### Run unit tests
+```
+make run-tests
+``` 
+
+#### Build docker image and run unit tests on local machine
+```
+make build-and-test 
+``` 
 
 ## Usage inside test classes
 
