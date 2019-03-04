@@ -606,8 +606,13 @@ end
 
 -- assertions
 
-function assertEquals(t1, t2)
+function assertEquals(t1, t2, customErrorMessage)
     local errorMessage = "assertEquals failed: expected [%s], was [%s]"
+
+    if customErrorMessage ~= nil and customErrorMessage ~= "" then
+        errorMessage = errorMessage .. " - " .. customErrorMessage
+    end
+
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
     if not _compare(t1, t2) then
@@ -616,8 +621,13 @@ function assertEquals(t1, t2)
     end
 end
 
-function assertNil(t1)
+function assertNil(t1, customErrorMessage)
     local errorMessage = "assertNil failed: expected nil, was [%s]"
+
+    if customErrorMessage ~= nil and customErrorMessage ~= "" then
+        errorMessage = errorMessage .. " - " .. customErrorMessage
+    end
+
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
     if t1 ~= nil then
@@ -626,8 +636,13 @@ function assertNil(t1)
     end
 end
 
-function assertTrue(t1)
+function assertTrue(t1, customErrorMessage)
     local errorMessage = "assertTrue failed: expected to be true, was [%s]"
+
+    if customErrorMessage ~= nil and customErrorMessage ~= "" then
+        errorMessage = errorMessage .. " - " .. customErrorMessage
+    end
+
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
     if t1 ~= true then
@@ -636,8 +651,13 @@ function assertTrue(t1)
     end
 end
 
-function assertFalse(t1)
+function assertFalse(t1, customErrorMessage)
     local errorMessage = "assertTrue failed: expected to be false, was [%s]"
+
+    if customErrorMessage ~= nil and customErrorMessage ~= "" then
+        errorMessage = errorMessage .. " - " .. customErrorMessage
+    end
+
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
     if t1 ~= false then
@@ -646,8 +666,13 @@ function assertFalse(t1)
     end
 end
 
-function assertNotNil(t1)
+function assertNotNil(t1, customErrorMessage)
     local errorMessage = "assertNotNil failed";
+
+    if customErrorMessage ~= nil and customErrorMessage ~= "" then
+        errorMessage = errorMessage .. " - " .. customErrorMessage
+    end
+
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
     if t1 == nil then
@@ -656,8 +681,13 @@ function assertNotNil(t1)
     end
 end
 
-function assertNotEquals(t1, t2)
+function assertNotEquals(t1, t2, customErrorMessage)
     local errorMessage = "assertNotEquals failed"
+
+    if customErrorMessage ~= nil and customErrorMessage ~= "" then
+        errorMessage = errorMessage .. " - " .. customErrorMessage
+    end
+
     local sn, si, tn, ti = getCurrentRunInfo()
     ti.assertions = ti.assertions + 1
     if _compare(t1, t2) then

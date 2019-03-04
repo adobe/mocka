@@ -124,7 +124,7 @@ test('capture errors as failures with stack trace', function()
 end)
 
 test('captures failures independent from error', function()
-    assertEquals(true, false)
+    assertEquals(true, false, "Custom error message!")
 end)
 
 test('validate the failures and the errors', function()
