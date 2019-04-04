@@ -312,8 +312,6 @@ require = function(path)
         return table
     elseif path == "ffi" then
         return oldRequire("ffi")
-    elseif path == "ngx.re" then
-        return oldRequire("ngx.re")
     elseif path == "debug" then
         local sts, module = pcall(oldRequire, path)
         if not sts then
