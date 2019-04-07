@@ -7,7 +7,11 @@
 --
 
 -- save original require in order to alter it
-oldRequire = require
+local oldReq = require
+oldRequire = function(path)
+    package.loaded[path] = nil
+    return oldReq(path)
+end
 
 isNgx = false
 
@@ -304,6 +308,7 @@ end
 ---
 require = function(path)
     --some people require os | string | table  -> natural functions(globals)
+    package.loaded[path] = nil
     if path == 'os' then
         return os
     elseif path == 'string' then
@@ -321,8 +326,6 @@ require = function(path)
         end
     end
 
-    --wanna force reload the package
-    package.loaded[path] = nil
     if (mocks[path] ~= nil) then
         return mocks[path]
     else
