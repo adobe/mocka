@@ -2,6 +2,8 @@ local resty_http = require "resty.http"
 local cjson = require "cjson"
 local HttpRequest = {}
 local DEFAULT_TIMEOUT = 60000
+local POOL_SIZE = 10
+local MAX_IDLE_TIMEOUT = 60000
 
 function HttpRequest:request(host, port, ssl)
     self.req_object = {
@@ -108,6 +110,7 @@ function HttpRequest:_makeRequest()
     local httpc = resty_http.new()
     httpc:set_timeout(self._timeout)
     local res, err = httpc:request_uri(self.host, self.req_object)
+    httpc:set_keepalive(MAX_IDLE_TIMEOUT, POOL_SIZE)
     if res then
         print(string.format("req to host=%s method=%s path=%s responded with status=%s",
             self.host, self.req_object.method, self.req_object.path, res.status))
