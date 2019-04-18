@@ -9,7 +9,6 @@
 -- save original require in order to alter it
 local oldReq = require
 oldRequire = function(path)
-    package.loaded[path] = nil
     return oldReq(path)
 end
 
