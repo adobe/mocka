@@ -7,7 +7,10 @@
 --
 
 -- save original require in order to alter it
-oldRequire = require
+local oldReq = require
+oldRequire = function(path)
+    return oldReq(path)
+end
 
 isNgx = false
 
