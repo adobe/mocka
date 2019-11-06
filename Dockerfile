@@ -15,7 +15,7 @@ ENV DIST_SOURCE=./dist/luarocks
 ENV PACKAGE=mocka
 ENV COVERALLS_REPO_TOKEN=
 ENV DOCS_FOLDER=
-
+ENV LUACHECK_PARAMS=
 
 ADD ./docker /scripts
 RUN chmod -R +x /scripts
