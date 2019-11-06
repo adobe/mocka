@@ -16,8 +16,8 @@ if [ ! -z "${LUA_LIBRARIES}" ]; then
     cp -r /mocka_space/${LUA_LIBRARIES}* /usr/local/share/lua/5.1/
 fi
 
-echo " Running luacheck for ${LUA_LIBRARIES} "
-luacheck "${LUA_LIBRARIES}" --globals=ngx --no-self
+echo " Running luacheck for ${LUA_LIBRARIES} with ${LUACHECK_PARAMS}"
+luacheck "${LUA_LIBRARIES}" --globals=ngx --no-self "${LUACHECK_PARAMS}"
 
 if [ ! -z run_tests.lua ]; then
 
