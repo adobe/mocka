@@ -9,6 +9,9 @@
 -- save original require in order to alter it
 local oldReq = require
 oldRequire = function(path)
+    --[[
+    todo: reset clean cache or not also all requires under old require should be oldRequires and not go through the mocka engine
+    ]]--
     return oldReq(path)
 end
 
@@ -307,7 +310,7 @@ end
 ---
 require = function(path)
     --some people require os | string | table  -> natural functions(globals)
-    package.loaded[path] = nil
+    --package.loaded[path] = nil
     if path == 'os' then
         return os
     elseif path == 'string' then
@@ -325,6 +328,8 @@ require = function(path)
         end
     end
 
+    --wanna force reload the package
+    package.loaded[path] = nil
     if (mocks[path] ~= nil) then
         return mocks[path]
     else

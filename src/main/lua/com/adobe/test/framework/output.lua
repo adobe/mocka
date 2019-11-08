@@ -12,7 +12,7 @@ local errorMessage = '\t\t\t<error message="internal test error" type="error">%s
 local skippedMessage = '\t\t\t<skipped/>\n'
 
 local INTEGRATION_TESTS_RESULTS_HEADER = "---- INTEGRATION TESTS ----\n\n"
-local ALL_SUITES_FORMAT = "Tests: %s - Time: %s - Disabled: %s - Errors: %s - Failed: %s  \n\n"
+local ALL_SUITES_FORMAT = "\n\nTests: %s - Time: %s - Disabled: %s - Errors: %s - Failed: %s  \n\n"
 local SUITE_FORMAT = "\n%s - Tests: %s - Time: %s \n\n"
 local TEST_FORMAT = "\t[%s] - Time: %s - "
 local FAILURE_FORMAT = "%s - Message: %s - Trace: %s\n"
@@ -63,7 +63,6 @@ function Output:list()
     table.insert(listOut, INTEGRATION_TESTS_RESULTS_HEADER)
     local allSuitesMessages = string.format(ALL_SUITES_FORMAT, tostring(mockaStats.no), tostring(mockaStats.time), tostring(
             mockaStats.noIgnored), tostring(mockaStats.noErrors or 0), tostring(mockaStats.noNOK))
-    table.insert(listOut, allSuitesMessages)
 
     for i, suite in ipairs(mockaStats.suites) do
         local suiteMessage = string.format(SUITE_FORMAT, tostring(suite.name), tostring(suite.no), tostring(suite.time))
@@ -85,6 +84,7 @@ function Output:list()
             table.insert(listOut, testMessage)
         end
     end
+    table.insert(listOut, allSuitesMessages)
 
     return listOut
 end
