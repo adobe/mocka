@@ -321,8 +321,6 @@ require = function(path)
         return oldRequire("ffi")
     elseif path == "resty.lrucache" then
         return oldRequire('resty.lrucache')
-    elseif path:find("table") then
-        return oldRequire(path)
     elseif path == "debug" then
         local sts, module = pcall(oldRequire, path)
         if not sts then
