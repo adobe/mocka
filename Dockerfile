@@ -17,16 +17,15 @@ ENV COVERALLS_REPO_TOKEN=
 ENV DOCS_FOLDER=
 ENV LUACHECK_PARAMS=
 
-ADD ./docker /scripts
-RUN chmod -R +x /scripts
-
-ADD ./ /tmp/mocka/
-
 RUN  yum update -y \
         && yum install sudo wget curl make gcc g++ pcre-devel zlib-devel readline-devel lua-devel git geoip-devel \
         jq sudo ncurses-libs libc-dev build-base git bash unzip libev libev-devel  glibc-devel -y
 
 #RUN ln -s /usr/bin/lua5.1 /usr/bin/lua
+
+ADD ./docker /scripts
+ADD ./ /tmp/mocka/
+RUN chmod -R +x /scripts
 
 RUN /scripts/lua_rocks.sh
 
@@ -45,6 +44,8 @@ RUN sudo luarocks install lua-cjson 2.1.0-1\
 
 RUN /scripts/mocka.sh
 
+
 RUN rm -rf /tmp/mocka
 
+RUN export PATH=/usr/local/openresty/bin:/usr/local/openresty/nginx/sbin:$PATH
 CMD "/scripts/run_tests.sh"
