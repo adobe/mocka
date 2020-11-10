@@ -44,8 +44,8 @@ RUN sudo luarocks install lua-cjson 2.1.0-1\
 
 RUN /scripts/mocka.sh
 
-
 RUN rm -rf /tmp/mocka
 
-RUN export PATH=/usr/local/openresty/bin:/usr/local/openresty/nginx/sbin:$PATH
+ENV PATH="/usr/local/openresty/bin:/usr/local/openresty/nginx/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 CMD "/scripts/run_tests.sh"
