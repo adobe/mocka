@@ -3,9 +3,10 @@ services:
   mocka_openresty:
     mem_limit: 2048m
     image: mocka:latest
-    entrypoint:  /scripts/loop.sh
+    entrypoint:  /scripts/start_nginx.sh
     privileged: true
     cap_add:
       - SYS_PTRACE
     volumes:
       - ./nginx:/usr/local/openresty/nginx/conf
+      - ./example/openresty:/usr/local/openresty/nginx/conf/tests
