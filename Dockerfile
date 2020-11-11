@@ -48,4 +48,7 @@ RUN rm -rf /tmp/mocka
 
 ENV PATH="/usr/local/openresty/bin:/usr/local/openresty/nginx/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
+ADD ./nginx /usr/local/openresty/nginx/conf
+RUN mkdir /var/log/nginx
+
 CMD "/scripts/run_tests.sh"
