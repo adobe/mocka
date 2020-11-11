@@ -34,7 +34,7 @@ return function()
         assertNil(err)
         assertEquals(res.status, 200)
 
-        calls("adobe.module.say".say, 1)
+        calls(spy("adobe.module.say").say, 1)
         assertEquals(res.body, "hello")
     end)
 end

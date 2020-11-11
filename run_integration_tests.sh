@@ -2,8 +2,8 @@
 TESTS_SPECIFIED=$1
 
 function cid(){
-    CID=`docker-compose -f docker-compose-integration_${GATEWAY_FLAVOUR}.yml ps -q $1`
-    echo -n $CID | tee /tmp/last-cid
+    CID=`docker-compose -f docker-compose.yml ps -q $1`
+    echo $CID | tee /tmp/last-cid
     `docker inspect -f "{{.State.Running}}" $CID` || kill -SIGINT $SELF_PID
 }
 

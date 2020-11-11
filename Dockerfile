@@ -40,7 +40,8 @@ RUN git config --global url."https://".insteadOf git://
 RUN sudo luarocks install lua-cjson 2.1.0-1\
     && sudo luarocks install lua-ev \
     && sudo luarocks install luabitop \
-    && sudo luarocks install lua-resty-iputils
+    && sudo luarocks install lua-resty-iputils \
+    && sudo luarocks install lua-resty-http 0.13
 
 RUN /scripts/mocka.sh
 
