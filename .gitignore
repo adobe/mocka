@@ -1,5 +1,6 @@
 .idea/
 *.iml
+logs/
 devops
 test-results.xml
 *.src.rock
