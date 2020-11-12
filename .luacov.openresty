@@ -1,0 +1,7 @@
+exclude = {
+    ".*test.*$",
+    ".*mocka.*$",
+    ".*5%.1.*$",
+    ".*ngx.*$",
+    ".*lualib.*resty.*$"
+}
