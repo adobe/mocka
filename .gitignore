@@ -1,6 +1,11 @@
 .idea/
 *.iml
 logs/
+test-results-openresty.xml
+luacov.report.out
+luacov.stats.out
+coverage_report.xml
+coverage_modules.lua
 devops
 test-results.xml
 *.src.rock
