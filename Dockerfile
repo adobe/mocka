@@ -44,7 +44,6 @@ RUN sudo luarocks install lua-cjson 2.1.0-1\
     && sudo luarocks install lua-resty-http 0.13
 
 RUN /scripts/mocka.sh
-
 RUN rm -rf /tmp/mocka
 
 ENV PATH="/usr/local/openresty/bin:/usr/local/openresty/nginx/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
