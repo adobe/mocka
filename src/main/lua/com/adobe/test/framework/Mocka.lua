@@ -35,6 +35,10 @@ local beforeFn;
 -- after each function rememberer
 local afterFn;
 
+local globalBeforeFn;
+
+local globalAfterFn;
+
 -- stats for the framework needed for outputing results
 mockaStats = {
     suites = {},
@@ -356,6 +360,9 @@ require = function(path)
     end
 end
 
+function globalBeforeEach(fn)
+    globalBeforeFn = fn
+end
 
 ---
 -- @param fn {function} - the function to be ran beforeEach Test
@@ -365,6 +372,9 @@ function beforeEach(fn)
     beforeFn = fn
 end
 
+function globalAfterEach(fn)
+    globalAfterFn = fn
+end
 
 ---
 -- @param fn {function} - the function to be ran afterEach Test
@@ -441,6 +451,10 @@ function test(description, fn, assertFail)
         end
     end
 
+    if (globalBeforeFn ~= nil) then
+        pcall(globalBeforeFn)
+    end
+
     if (beforeFn ~= nil) then
         pcall(beforeFn)
     end
@@ -477,6 +491,10 @@ function test(description, fn, assertFail)
 
     if (afterFn ~= nil) then
         pcall(afterFn)
+    end
+
+    if (globalAfterFn ~= nil) then
+        pcall(globalAfterFn)
     end
 
     clearTest()
