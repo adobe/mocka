@@ -35,8 +35,10 @@ local beforeFn;
 -- after each function rememberer
 local afterFn;
 
+-- global before each function rememberer
 local globalBeforeFn;
 
+-- global before each function rememberer
 local globalAfterFn;
 
 -- stats for the framework needed for outputing results
@@ -360,6 +362,10 @@ require = function(path)
     end
 end
 
+---
+-- @param fn {function} - the function to be ran beforeEach Test
+-- Saves the function in a variable in order to call it before each and every test and every suite
+---
 function globalBeforeEach(fn)
     globalBeforeFn = fn
 end
@@ -372,6 +378,10 @@ function beforeEach(fn)
     beforeFn = fn
 end
 
+---
+-- @param fn {function} - the function to be ran beforeEach Test
+-- Saves the function in a variable in order to call it after each and every test and every suite
+---
 function globalAfterEach(fn)
     globalAfterFn = fn
 end
