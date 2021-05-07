@@ -307,6 +307,15 @@ function spy(class, method, fn)
     return mapObj
 end
 
+function reset_spy(class, method)
+    if not spies and spies[class] then
+        spies[class][method] = mirror[class][method]
+    end
+
+    if not lazy_spies and lazy_spies[class] then
+        lazy_spies[class][method] = mirror[class][method]
+    end
+end
 
 ---
 -- @param path {string} - path to require
