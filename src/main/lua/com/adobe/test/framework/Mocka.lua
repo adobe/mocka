@@ -308,7 +308,7 @@ function spy(class, method, fn)
 end
 
 function reset_spy(class, method)
-    if spies and spies[class] and mirror[class] then
+    if spies and spies[class] then
         spies[class][method] = mirror[class][method]
     end
 end
